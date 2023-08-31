@@ -18,7 +18,7 @@ def create_app():
             "version": "dev",
         }
 
-    @app.route("/invoke/{flux_app}", methods=["POST"])
+    @app.route("/invoke/<string:flux_app>", methods=["POST"])
     def route_invoke(flux_app: str):
         return invoke(flux_app, request.get_json())
 
