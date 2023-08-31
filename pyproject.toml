@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "flux-dev-kit"
+version = "0.0.0"
+description = "A Rippling Flux local development kit"
+authors = ["Dominic Barnes <dbarnes@rippling.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Flask = "^2.3.3"
+flux-kit-references = {git = "git@github.com:Rippling/flux-kit-references.git"}
+werkzeug = "^2.3.7"
+jsonpickle = "^3.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
