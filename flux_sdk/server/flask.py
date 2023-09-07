@@ -1,4 +1,4 @@
-import os
+from importlib.metadata import version
 import traceback
 
 from flask import Flask, request
@@ -15,7 +15,8 @@ def create_app():
     def route_index():
         return {
             "app": "Rippling Flux Server",
-            "version": "dev",
+            "version": version("flux_sdk"),
+            "flask_version": version("flask"),
         }
 
     @app.route("/invoke/<string:flux_app>", methods=["POST"])

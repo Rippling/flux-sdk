@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "flux-dev-kit"
+name = "flux-sdk"
 version = "0.0.0"
-description = "A Rippling Flux local development kit"
-authors = ["Dominic Barnes <dbarnes@rippling.com>"]
+description = "Rippling Flux App development tools."
+authors = ["Rippling Apps <apps@rippling.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
