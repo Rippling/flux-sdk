@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "flux-sdk"
+name = "rippling.flux-sdk"
 version = "0.0.0"
 description = "Rippling Flux App development tools."
 authors = ["Rippling Apps <apps@rippling.com>"]

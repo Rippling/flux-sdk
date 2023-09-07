@@ -76,7 +76,7 @@ click = ">=8.0,<9"
 type = "git"
 url = "git@github.com:Rippling/flux-kit-references.git"
 reference = "HEAD"
-resolved_reference = "4efce9a8e3aaf87c1440d59518ff7d3a11fc56ea"
+resolved_reference = "eaad953d720da001c6def7b2edd9aed5fa94b158"
 
 [[package]]
 name = "importlib-metadata"
