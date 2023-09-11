@@ -1,0 +1,17 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - '*.*.*' # only match semver tags
+
+jobs:
+  pypi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Publish to PyPI (via Poetry)
+        uses: JRubics/poetry-publish@v1.17
+        with:
+          # NOTE: this secret should be added for the entire Rippling org, but is currently a repository secret
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
