@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rippling-flux-sdk"
-version = "0.0.0"
+version = "0.0.1"
 description = "Defines the interfaces and data-models used by Rippling Flux Apps."
 authors = ["Rippling Apps <apps@rippling.com>"]
 packages = [{include="flux_sdk"}]
