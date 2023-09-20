@@ -1,9 +1,8 @@
 name: publish
 
 on:
-  push:
-    tags:
-      - '*.*.*' # only match semver tags
+  release:
+    types: [published]
 
 jobs:
   pypi:
