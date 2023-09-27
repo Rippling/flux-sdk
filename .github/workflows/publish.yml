@@ -1,16 +1,27 @@
 name: publish
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
   pypi:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set Package Version
+        run: |
+          pip install poetry
+          poetry version "`poetry version -s`.$GITHUB_RUN_NUMBER"
+
       - name: Publish to PyPI (via Poetry)
         uses: JRubics/poetry-publish@v1.17
         with:
-          # NOTE: this secret should be added for the entire Rippling org, but is currently a repository secret
           pypi_token: ${{ secrets.PYPI_TOKEN }}
+
+          # NOTE: un-comment the configuration below to publish to Test PyPI instead
+          # pypi_token: ${{ secrets.TEST_PYPI_TOKEN }}
+          # repository_name: testpypi
+          # repository_url: https://test.pypi.org/legacy/
