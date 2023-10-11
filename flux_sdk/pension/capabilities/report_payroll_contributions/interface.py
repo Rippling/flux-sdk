@@ -12,8 +12,6 @@ class ReportPayrollContributions(ABC):
     This class represents the "update payroll contribution" capability. The developer is supposed to implement
     format_contributions method in their implementation. For further details regarding their
     implementation details, check their documentation.
-
-    A instance of this class cannot be initiated unless either of these 2 methods are implemented.
     """
 
     @staticmethod
