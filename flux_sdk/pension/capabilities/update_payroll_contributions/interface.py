@@ -1,5 +1,4 @@
-import abc
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from flux_sdk.pension.capabilities.update_payroll_contributions.data_models import (
     EmployeePayrollRecord,
@@ -7,7 +6,7 @@ from flux_sdk.pension.capabilities.update_payroll_contributions.data_models impo
 )
 
 
-class UpdatePayrollContributions(metaclass=abc.ABCMeta):
+class UpdatePayrollContributions(ABC):
     """
     This class represents the "update payroll contribution" capability. The developer is supposed to implement
     format_contributions method in their implementation. For further details regarding their
@@ -15,15 +14,6 @@ class UpdatePayrollContributions(metaclass=abc.ABCMeta):
 
     A instance of this class cannot be initiated unless either of these 2 methods are implemented.
     """
-
-    @classmethod
-    def __subclasshook__(cls, subclass):
-        return (
-            (hasattr(subclass, "format_contributions") and callable(subclass.format_contributions))
-            and (hasattr(subclass, "get_file_name") and callable(subclass.get_file_name))
-            or NotImplemented
-        )
-
 
     @staticmethod
     @abstractmethod
@@ -34,14 +24,13 @@ class UpdatePayrollContributions(metaclass=abc.ABCMeta):
         :return: str
         """
 
-
     @staticmethod
     @abstractmethod
-    def format_contributions(employee_payroll_records: list[EmployeePayrollRecord], payroll_upload_settings: PayrollUploadSettings) -> bytes:
+    def format_contributions(employee_payroll_records: list[EmployeePayrollRecord],
+                             payroll_upload_settings: PayrollUploadSettings) -> bytes:
         """
         This method receives a list of EmployeePayrollRecord. The developer is expected to return the bytes of the formatted contributions
         :param employee_payroll_records:
         :param payroll_upload_settings:
         :return: bytes
         """
-

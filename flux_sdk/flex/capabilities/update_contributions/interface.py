@@ -1,11 +1,10 @@
-import abc
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from flux_sdk.flex.capabilities.update_contributions.data_models import EmployeeContribution
 from flux_sdk.flux_core.data_models import AppContext, CompanyInfo, File
 
 
-class UpdateContributions(metaclass=abc.ABCMeta):
+class UpdateContributions(ABC):
     """
     This class represents the "update contributions" capability. The developer is supposed to implement
     get_formatted_enrollment_files in their implementation. For further details regarding their
@@ -13,13 +12,6 @@ class UpdateContributions(metaclass=abc.ABCMeta):
 
     An instance of this class cannot be initiated unless this method is implemented.
     """
-
-    @classmethod
-    def __subclasshook__(cls, subclass):
-        return (
-            hasattr(subclass, "get_formatted_contributions_files") and callable(subclass.get_formatted_contributions_files)
-            or NotImplemented
-        )
 
     @staticmethod
     @abstractmethod
