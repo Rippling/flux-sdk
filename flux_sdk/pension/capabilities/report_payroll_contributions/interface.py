@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.pension.capabilities.update_payroll_contributions.data_models import (
+from flux_sdk.pension.capabilities.report_payroll_contributions.data_models import (
     EmployeePayrollRecord,
     PayrollUploadSettings,
 )
 
 
-class UpdatePayrollContributions(ABC):
+class ReportPayrollContributions(ABC):
     """
     This class represents the "update payroll contribution" capability. The developer is supposed to implement
     format_contributions method in their implementation. For further details regarding their
