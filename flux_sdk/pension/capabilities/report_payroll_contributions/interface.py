@@ -9,7 +9,7 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
 
 class ReportPayrollContributions(ABC):
     """
-    This class represents the "update payroll contribution" capability. The developer is supposed to implement
+    This class represents the "report payroll contribution" capability. The developer is supposed to implement
     format_contributions method in their implementation. For further details regarding their
     implementation details, check their documentation.
     """
