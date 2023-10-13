@@ -1,5 +1,4 @@
-import abc
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from io import IOBase
 
 from flux_sdk.pension.capabilities.update_deduction_elections.data_models import (
@@ -7,7 +6,7 @@ from flux_sdk.pension.capabilities.update_deduction_elections.data_models import
 )
 
 
-class UpdateDeductionElections(metaclass=abc.ABCMeta):
+class UpdateDeductionElections(ABC):
     """
     This class represents the "update deduction elections" capability. The developer is supposed to implement
     parse_deductions or parse_deduction method in their implementation. For further details regarding their
@@ -15,14 +14,6 @@ class UpdateDeductionElections(metaclass=abc.ABCMeta):
 
     A instance of this class cannot be initiated unless either of these 2 methods are implemented.
     """
-
-
-    @classmethod
-    def __subclasshook__(cls, subclass):
-        return (
-            (hasattr(subclass, "parse_deductions") and callable(subclass.parse_deductions))
-            or NotImplemented
-        )
 
     @staticmethod
     @abstractmethod

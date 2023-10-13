@@ -12,7 +12,7 @@ from flux_sdk.flux_core.data_models import (
 
 class PayrunInfo:
     """
-    This is the one of the params for "format_contributions" method in the UpdatePayrollContributions
+    This is the one of the params for "format_contributions" method in the ReportPayrollContributions
     interface.
     """
     """
@@ -54,7 +54,7 @@ class PayrunInfo:
 
 class PayrollUploadSettings:
     """
-    This is the one of the params for "format_contributions" and "format_contribution" method in the UpdatePayrollContributions
+    This is the one of the params for "format_contributions" and "format_contribution" method in the ReportPayrollContributions
     interface.
     """
     """
@@ -136,7 +136,7 @@ class EmployeeDeduction:
 
 class EmployeePayrollRecord:
     """
-    This is the one of the params for "format_contributions" method in the UpdatePayrollContributions
+    This is the one of the params for "format_contributions" method in the ReportPayrollContributions
     interface.
     """
     """
