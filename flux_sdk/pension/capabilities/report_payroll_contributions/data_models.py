@@ -56,7 +56,7 @@ class PayrunInfo:
 class PayrollUploadSettings:
     """
     This is the one of the params for "format_contributions" and "format_contribution" method in the
-    UpdatePayrollContributions interface.
+    ReportPayrollContributions interface.
     """
     """
     env: This field denotes the app environments. TS denotes the Testing environment and AP denotes the live environment 
