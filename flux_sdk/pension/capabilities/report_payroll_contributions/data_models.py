@@ -52,13 +52,15 @@ class PayrunInfo:
     """
     pay_frequency: Optional[str]
 
+
 class PayrollUploadSettings:
     """
-    This is the one of the params for "format_contributions" and "format_contribution" method in the ReportPayrollContributions
-    interface.
+    This is the one of the params for "format_contributions" and "format_contribution" method in the
+    ReportPayrollContributions interface.
     """
     """
-    env: This field denotes the app enviroments. TS denotes the Testing enviroment and AP denotes the live enviroment for the App
+    env: This field denotes the app environments. TS denotes the Testing environment and AP denotes the live environment
+         for the App
     """
     environment: str
     """
@@ -81,7 +83,6 @@ class PayrollUploadSettings:
     customer_partner_settings: This dict contains the settings value specified on manifest in key-value pair
     """
     customer_partner_settings: dict
-
 
 
 class PayrollRunContribution:
@@ -185,6 +186,3 @@ class EmployeePayrollRecord:
     eoy_info: This field indicates the value of the eoy info for the employee
     """
     eoy_info: Optional[EoyInfo]
-
-
-
