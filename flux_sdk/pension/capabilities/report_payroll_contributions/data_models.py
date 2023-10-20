@@ -83,7 +83,10 @@ class PayrollUploadSettings:
     customer_partner_settings: This dict contains the settings value specified on manifest in key-value pair
     """
     customer_partner_settings: dict
-
+    """
+        company_name: This field denotes the Company Name
+    """
+    company_name: str
 
 class PayrollRunContribution:
     """
