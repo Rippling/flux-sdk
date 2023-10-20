@@ -1,36 +1,21 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Union
-
-from common import StrModelChoices
+from typing import Optional
 
 
 class RipplingLeaveTypes(Enum):
     VACATION = 1
-    # SICK = 2
-    WFH = 3
-    JURY_DUTY = 4
-    BEREAVEMENT = 5
-    PERSONAL_DAYS = 6
-    UNPAID = 7
-    ERC = 8
-    CUSTOM = 9
-    PARENTAL_LEAVE = 10
-    OTHER_LEAVE_OF_ABSENCE = 11
-    # PARENTAL = 1
-    MEDICAL = 12
-    # CAREGIVER = 3
-    MILITARY = 13
-    # OTHER = 5
-
-# class TiltLeaveTypeName(Enum):
-#     PARENTAL = 1
-#     MEDICAL = 2
-#     CAREGIVER = 3
-#     MILITARY = 4
-#     OTHER = 5
-
-
+    WFH = 2
+    JURY_DUTY = 3
+    BEREAVEMENT = 4
+    PERSONAL_DAYS = 5
+    UNPAID = 6
+    ERC = 7
+    CUSTOM = 8
+    PARENTAL_LEAVE = 9
+    OTHER_LEAVE_OF_ABSENCE = 10
+    MEDICAL = 11
+    MILITARY = 12
 
 class EmployeeState(Enum):
     """
@@ -42,6 +27,8 @@ class EmployeeState(Enum):
     ACCEPTED = 3
     TERMINATED = 4
     ACTIVE = 5
+    ON_LEAVE = 6
+    MILITARY_LEAVE = 7
 
 
 class Address:
@@ -67,7 +54,7 @@ class Gender(Enum):
     DECLINE_TO_SELF_IDENTIFY = 3
 
 
-class MaritalStatus:
+class MaritalStatus(Enum):
     """
     Developers are expected to use this to fill martial status of employee inside the file.
     """
@@ -116,7 +103,7 @@ class Employee:
     martial_status: MaritalStatus
     leave_of_absence_type: RipplingLeaveTypes
     leave_of_absence_start_date: datetime
-    leave_of_absence_end_date: datetime
+    leave_of_absence_return_date: datetime
     is_leave_of_absence_paid: bool
 
 
