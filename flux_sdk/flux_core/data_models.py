@@ -27,8 +27,6 @@ class EmployeeState(Enum):
     ACCEPTED = 3
     TERMINATED = 4
     ACTIVE = 5
-    ON_LEAVE = 6
-    MILITARY_LEAVE = 7
 
 
 class Address:
@@ -101,10 +99,6 @@ class Employee:
     is_rehire: bool
     is_international_employee: bool
     martial_status: MaritalStatus
-    leave_of_absence_type: RipplingLeaveTypes
-    leave_of_absence_start_date: datetime
-    leave_of_absence_return_date: datetime
-    is_leave_of_absence_paid: bool
 
 
 class ContributionType(Enum):

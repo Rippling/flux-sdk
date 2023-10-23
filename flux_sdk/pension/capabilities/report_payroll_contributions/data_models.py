@@ -6,7 +6,7 @@ from flux_sdk.flux_core.data_models import (
     ContributionType,
     DeductionType,
     Employee,
-    PayrollRunType,
+    PayrollRunType, RipplingLeaveTypes,
 )
 
 
@@ -137,8 +137,6 @@ class EoyInfo:
 
 
 
-
-
 class EmployeeDeduction:
     """
     This contains employee deduction details corresponding to a deduction type.
@@ -148,6 +146,14 @@ class EmployeeDeduction:
     amount: Decimal
     total_pay_for_percentage_contribution: Optional[Decimal]
 
+class LeaveInfo:
+    """
+    This contains employee leave of absence details corresponding to a leave type.
+    """
+    leave_type: RipplingLeaveTypes
+    start_date: datetime
+    return_date: datetime
+    is_paid: bool
 
 class EmployeePayrollRecord:
     """
@@ -200,3 +206,11 @@ class EmployeePayrollRecord:
     eoy_info: This field indicates the value of the eoy info for the employee
     """
     eoy_info: Optional[EoyInfo]
+    """
+    leave_info: This field indicates the value of the leave info for the employee for this payroll run
+    """
+    leave_infos: list[LeaveInfo]
+    """
+    ytd_leave_infos: This field indicates the value of the leave info for the employee ytd
+    """
+    ytd_leave_infos: list[LeaveInfo]
