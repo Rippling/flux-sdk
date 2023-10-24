@@ -15,3 +15,4 @@ class EmployeeDeductionSetting(object):
     deduction_type: DeductionType
     value: float
     is_percentage: bool
+    id: str
