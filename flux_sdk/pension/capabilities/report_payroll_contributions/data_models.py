@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Optional
 
@@ -151,8 +151,8 @@ class LeaveInfo:
     This contains employee leave of absence details corresponding to a leave type.
     """
     leave_type: LeaveType
-    start_date: datetime.date
-    return_date: datetime.date
+    start_date: date
+    return_date: date
     is_paid: bool
 
 class EmployeePayrollRecord:
