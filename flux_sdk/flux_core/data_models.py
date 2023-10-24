@@ -3,6 +3,20 @@ from enum import Enum
 from typing import Optional
 
 
+class LeaveType(Enum):
+    VACATION = 1
+    WFH = 2
+    JURY_DUTY = 3
+    BEREAVEMENT = 4
+    PERSONAL_DAYS = 5
+    UNPAID = 6
+    ERC = 7
+    CUSTOM = 8
+    PARENTAL_LEAVE = 9
+    OTHER_LEAVE_OF_ABSENCE = 10
+    MEDICAL = 11
+    MILITARY = 12
+
 class EmployeeState(Enum):
     """
     This enum is an exhaustive list of all employee status types supported by Rippling. Developers are expected to
@@ -38,7 +52,7 @@ class Gender(Enum):
     DECLINE_TO_SELF_IDENTIFY = 3
 
 
-class MaritalStatus:
+class MaritalStatus(Enum):
     """
     Developers are expected to use this to fill martial status of employee inside the file.
     """
@@ -102,6 +116,8 @@ class ContributionType(Enum):
     COMPANY_MATCH_ROTH = 7
     COMPANY_MATCH_AFTER_TAX = 8
     LOAN = 9
+    _401K_CATCHUP = 10
+    ROTH_401K_CATCHUP = 11
 
 class DeductionType(Enum):
     """
@@ -115,6 +131,8 @@ class DeductionType(Enum):
     _401K_LOAN_PAYMENT = 2
     AFTER_TAX_401K = 3
     _403B = 4
+    _401K_CATCHUP = 5
+    ROTH_401K_CATCHUP = 6
 
 
 class PayrollRunType(Enum):

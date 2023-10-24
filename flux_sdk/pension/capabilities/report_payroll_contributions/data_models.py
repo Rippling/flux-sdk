@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Optional
 
@@ -7,6 +7,7 @@ from flux_sdk.flux_core.data_models import (
     DeductionType,
     Employee,
     PayrollRunType,
+    LeaveType,
 )
 
 
@@ -126,6 +127,16 @@ class EoyInfo:
     year_to_date_hours: This dict contains the year to date total hours if the EmploymentType is Hourly
     """
     year_to_date_hours: Decimal
+    """
+    year_to_date_pretax_catchup: This dict contains the year to date total pre-tax catchup contribution
+    """
+    year_to_date_pretax_catchup: Decimal
+    """
+    year_to_date_roth_catchup: This dict contains the year to date total roth catchup contribution
+    """
+    year_to_date_roth_catchup: Decimal
+
+
 
 
 class EmployeeDeduction:
@@ -137,6 +148,14 @@ class EmployeeDeduction:
     amount: Decimal
     total_pay_for_percentage_contribution: Optional[Decimal]
 
+class LeaveInfo:
+    """
+    This contains employee leave of absence details corresponding to a leave type.
+    """
+    leave_type: LeaveType
+    start_date: date
+    return_date: date
+    is_paid: bool
 
 class EmployeePayrollRecord:
     """
@@ -189,3 +208,11 @@ class EmployeePayrollRecord:
     eoy_info: This field indicates the value of the eoy info for the employee
     """
     eoy_info: Optional[EoyInfo]
+    """
+    leave_info: This field indicates the value of the leave info for the employee for this payroll run
+    """
+    leave_infos: list[LeaveInfo]
+    """
+    ytd_leave_infos: This field indicates the value of the leave info for the employee ytd
+    """
+    ytd_leave_infos: list[LeaveInfo]
