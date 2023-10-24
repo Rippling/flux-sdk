@@ -6,7 +6,8 @@ from flux_sdk.flux_core.data_models import (
     ContributionType,
     DeductionType,
     Employee,
-    PayrollRunType, LeaveType,
+    PayrollRunType,
+    LeaveType,
 )
 
 
