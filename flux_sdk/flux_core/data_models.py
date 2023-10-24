@@ -132,7 +132,7 @@ class DeductionType(Enum):
     AFTER_TAX_401K = 3
     _403B = 4
     _401K_CATCHUP = 5
-    ROTH_401K_CATCH = 6
+    ROTH_401K_CATCHUP = 6
 
 
 class PayrollRunType(Enum):
