@@ -128,16 +128,14 @@ class EoyInfo:
     """
     year_to_date_hours: Decimal
     """
-    year_to_date_hours: This dict contains the year to date total hours if the EmploymentType is Hourly
+    year_to_date_pretax_catchup: This dict contains the year to date total pre-tax catchup contribution
     """
     year_to_date_pretax_catchup: Decimal
     """
-    year_to_date_pretax_catchup: This dict contains the year to date total pre-tax catchup contribution
+    year_to_date_roth_catchup: This dict contains the year to date total roth catchup contribution
     """
     year_to_date_roth_catchup: Decimal
-    """
-    year_to_date_pretax_catchup: This dict contains the year to date total roth catchup contribution
-    """
+
 
 
 
