@@ -6,7 +6,7 @@ from flux_sdk.flux_core.data_models import (
     ContributionType,
     DeductionType,
     Employee,
-    PayrollRunType, RipplingLeaveTypes,
+    PayrollRunType, LeaveType,
 )
 
 
@@ -150,9 +150,9 @@ class LeaveInfo:
     """
     This contains employee leave of absence details corresponding to a leave type.
     """
-    leave_type: RipplingLeaveTypes
-    start_date: datetime
-    return_date: datetime
+    leave_type: LeaveType
+    start_date: datetime.date
+    return_date: datetime.date
     is_paid: bool
 
 class EmployeePayrollRecord:

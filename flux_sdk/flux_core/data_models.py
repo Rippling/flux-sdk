@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Optional
 
 
-class RipplingLeaveTypes(Enum):
+class LeaveType(Enum):
     VACATION = 1
     WFH = 2
     JURY_DUTY = 3
@@ -117,7 +117,7 @@ class ContributionType(Enum):
     COMPANY_MATCH_AFTER_TAX = 8
     LOAN = 9
     _401K_CATCHUP = 10
-    _401K_ROTH_CATCHUP = 11
+    ROTH_401K_CATCHUP = 11
 
 class DeductionType(Enum):
     """
@@ -132,7 +132,7 @@ class DeductionType(Enum):
     AFTER_TAX_401K = 3
     _403B = 4
     _401K_CATCHUP = 5
-    _401K_ROTH_CATCHUP = 6
+    ROTH_401K_CATCH = 6
 
 
 class PayrollRunType(Enum):
