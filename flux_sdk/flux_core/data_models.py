@@ -98,7 +98,7 @@ class Employee:
     is_new_hire: bool
     is_rehire: bool
     is_international_employee: bool
-    martial_status: MaritalStatus
+    marital_status: Optional[MaritalStatus]
 
 
 class ContributionType(Enum):
