@@ -15,10 +15,11 @@ class UpdateContributions(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_formatted_contributions_files(company_info: CompanyInfo, employee_contributions: list[EmployeeContribution], app_context: AppContext) -> list[File]:
+    def get_formatted_contributions_files(company_info: CompanyInfo, employee_contributions: list[EmployeeContribution],
+                                          app_context: AppContext) -> list[File]:
         """
-        This method receives company information and a list of EmployeeContribution objects. The developer is expected to
-        return the app specific list of formatted contribution files.
+        This method receives company information and a list of EmployeeContribution objects. The developer is expected
+        to return the app specific list of formatted contribution files.
         :param company_info:
         :param employee_contributions:
         :return:

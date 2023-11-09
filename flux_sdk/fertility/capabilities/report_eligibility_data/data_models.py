@@ -1,8 +1,8 @@
 from datetime import date
-from enum import Enum
 from typing import Optional
 
 from flux_sdk.flux_core.data_models import Employee
+
 
 class EmployeeEligibilityRecord:
     employee: Employee

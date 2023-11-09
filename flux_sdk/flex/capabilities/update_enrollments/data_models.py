@@ -3,6 +3,7 @@ from decimal import Decimal
 from enum import Enum
 from typing import Optional
 
+
 class BenefitType(Enum):
     FSA = 0
     HSA = 1
