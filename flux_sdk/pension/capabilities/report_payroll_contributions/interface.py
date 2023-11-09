@@ -7,6 +7,7 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
 )
 
 
+
 class ReportPayrollContributions(ABC):
     """
     This class represents the "report payroll contribution" capability. The developer is supposed to implement
