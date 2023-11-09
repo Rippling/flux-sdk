@@ -6,7 +6,7 @@ from flux_sdk.flux_core.data_models import CompanyInfo, File
 
 class ReportEligibilityData(ABC):
     """
-    This class represents the "upload eligibility data" capability. The developer is supposed to implement
+    This class represents the "report eligibility data" capability. The developer is supposed to implement
     format_eligibility_data_file in their implementation. For further details regarding their
     implementation details, check their documentation.
 
