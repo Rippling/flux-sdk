@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.flex.capabilities.update_contributions.data_models import EmployeeEligibilityRecord
+from flux_sdk.fertility.capabilities.report_eligibility_data.data_models import EmployeeEligibilityRecord
 from flux_sdk.flux_core.data_models import CompanyInfo, File
 
 
