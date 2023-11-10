@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from flux_sdk.flux_core.data_models import File
-from flux_sdk.ben_admin.report_employee_data.data_models import AppConfig, EmployeeData
+from flux_sdk.ben_admin.capabilities.report_employee_data.data_models import AppConfig, EmployeeData
 
 
 class ReportEmployeeData(ABC):
