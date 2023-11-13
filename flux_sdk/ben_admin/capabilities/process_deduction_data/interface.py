@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from flux_sdk.flux_core.data_models import CompanyInfo, File
+from flux_sdk.ben_admin.capabilities.process_deduction_data.data_models import AppConfig
 
 
 class ProcessDeductionData(ABC):
@@ -13,7 +14,7 @@ class ProcessDeductionData(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_file_name(company_info: CompanyInfo) -> str:
+    def get_file_name(app_config: AppConfig, company_info: CompanyInfo) -> str:
         """
         This method receives the basic company info and is expected to return the file name which should be retrieved with the deduction info
 
@@ -25,7 +26,7 @@ class ProcessDeductionData(ABC):
     @abstractmethod
     def process_deductions_file(deductions_file: File):
         """
-        This method receives the file data which contains the deductions relevant to the companies employees.
+        This method receives the file which contains the deductions relevant to the companies employees.
         The developer is supposed to implement the following methods to process this data in accordance with their requirements
 
         :param File:
