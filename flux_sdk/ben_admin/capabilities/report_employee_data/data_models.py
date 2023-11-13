@@ -91,7 +91,7 @@ class EmployeeStatus:
 
 class EmployeeData:
     '''
-    This extends the core definition of an employee to include insurance eligibiliity data
+    This contains the core data about an employee which is relevant to a ben admin provider
     '''
     id: str
     ssn: str
