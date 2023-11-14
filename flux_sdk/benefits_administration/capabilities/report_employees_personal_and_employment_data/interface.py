@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
 from flux_sdk.flux_core.data_models import File
-from flux_sdk.ben_admin.capabilities.report_employee_data.data_models import AppConfig, EmployeeData
+from flux_sdk.benefits_administration.capabilities.report_employees_personal_and_employment_data.data_models import ReportEmployeesPersonalAndEmploymentDataConfig, EmployeeData
 
 
-class ReportEmployeeData(ABC):
+class ReportEmployeesPersonalAndEmploymentData(ABC):
     """
     This class represents the "report employee data" capability. The developer is supposed to implement
     the following methods in their implementation. 
@@ -14,7 +14,7 @@ class ReportEmployeeData(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_formated_file(app_config: AppConfig, employee_data: EmployeeData) -> File:
+    def get_formated_employees_peronal_and_employment_data_file(app_config: ReportEmployeesPersonalAndEmploymentDataConfig, employee_data: EmployeeData) -> File:
         """
         This method receives the apps configuration data and a list of employee data. The developer is expected to create a file, formated to their use case, and return that file.
         The file will be tranfered to the partner company via SFTP
