@@ -5,7 +5,7 @@ from typing import Optional
 from flux_sdk.flux_core.data_models import Address, EmployeeState, Gender
 
 
-class AppConfig:
+class ReportEmployeesPersonalAndEmploymentDataConfig:
     '''
     This contains the application data gathered durring installation which is necesary to prepare employee data or process deductions
     '''
