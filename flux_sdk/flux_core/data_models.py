@@ -17,6 +17,7 @@ class LeaveType(Enum):
     MEDICAL = 11
     MILITARY = 12
 
+
 class EmployeeState(Enum):
     """
     This enum is an exhaustive list of all employee status types supported by Rippling. Developers are expected to
@@ -87,7 +88,7 @@ class Employee:
     w2_start_date: datetime
     address: Address
     status: EmployeeState
-    dob : datetime
+    dob: datetime
     phone_number: str
     is_temporary: bool
     is_hourly: bool
@@ -104,8 +105,8 @@ class Employee:
 class ContributionType(Enum):
     """
     This enum is an exhaustive list of all 401k Contribution types supported by Rippling. Developers are expected
-    to use this to fetch the Employee deduction contribution based on contribution type. If a contribution type your app requires is
-    not present please reach out to apps@rippling.com to add support for that particular deduction.
+    to use this to fetch the Employee deduction contribution based on contribution type. If a contribution type your app
+    requires is not present please reach out to apps@rippling.com to add support for that particular deduction.
     """
     _401K = 1
     ROTH = 2
@@ -118,6 +119,7 @@ class ContributionType(Enum):
     LOAN = 9
     _401K_CATCHUP = 10
     ROTH_401K_CATCHUP = 11
+
 
 class DeductionType(Enum):
     """
@@ -137,8 +139,8 @@ class DeductionType(Enum):
 
 class PayrollRunType(Enum):
     """
-    This enum is an exhaustive list of all payroll run types supported by Rippling. Developers are expected to use this to
-    make decisions for file attributes based on run type.
+    This enum is an exhaustive list of all payroll run types supported by Rippling. Developers are expected to use this
+    to make decisions for file attributes based on run type.
     """
     INIT = 1
     REGULAR = 2
@@ -160,9 +162,11 @@ class PayrollRunType(Enum):
     QUARTERLY_WAGE_RECONCILIATION = 18
     QUARTERLY_CORRECTION = 19
 
+
 class OperatingMode(Enum):
     TEST = "TEST"
     LIVE = "LIVE"
+
 
 class CompanyInfo:
     company_id: str
@@ -178,13 +182,15 @@ class File:
     name: str
     content: bytes
 
+
 class AppContext:
     """
     This is the one of the params for "get_formatted_enrollments_files" method in the UpdateEnrollments
     interface.
     """
     """
-    env: This field denotes the app enviroments. TS denotes the Testing enviroment and AP denotes the live enviroment for the App
+    env: This field denotes the app enviroments. TS denotes the Testing enviroment and AP denotes the live enviroment 
+         for the App
     """
     environment: str
     """
@@ -203,4 +209,3 @@ class AppContext:
     customer_partner_settings: This dict contains the settings value specified on manifest in key-value pair
     """
     customer_partner_settings: dict
-

@@ -15,7 +15,8 @@ class UpdateEnrollments(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_formatted_enrollments_files(company_info: CompanyInfo, employee_enrollments: list[EmployeeEnrollment],  app_context: AppContext) -> list[File]:
+    def get_formatted_enrollments_files(company_info: CompanyInfo, employee_enrollments: list[EmployeeEnrollment],
+                                        app_context: AppContext) -> list[File]:
         """
         This method receives company information and a list of EmployeeEnrollment objects. The developer is expected to
         return the app specific list of formatted enrollment files.
