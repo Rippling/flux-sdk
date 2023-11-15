@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from flux_sdk.flux_core.data_models import Address, EmployeeState, Gender
+from flux_sdk.flux_core.data_models import Employee, EmployeeState
 
 
 class ReportEmployeesPersonalAndEmploymentDataConfig:
@@ -11,18 +11,6 @@ class ReportEmployeesPersonalAndEmploymentDataConfig:
     '''
     auto_enroll: bool
     group_id: str
-    
-
-class Name:
-    title: Optional[str]
-    first: str
-    middle: Optional[str]
-    last: str
-    suffix: Optional[str]
-
-    @property
-    def full_name(self):
-        return f"${self.first} ${self.last}"
     
 
 class EmploymentType(Enum):
@@ -68,12 +56,12 @@ class EmploymentHours:
 
 class Employment:
     hours: EmploymentHours
+    pay: Pay
     is_rehire: bool
     termination_date: Optional[datetime]
     start_date: datetime
     original_hire_date: datetime
     w2_start_date: datetime
-    pay: Pay
     
 
 class BenefitsEligibility(Enum):
@@ -89,21 +77,14 @@ class EmployeeStatus:
     status: EmployeeState
     effective_date: datetime
 
-class EmployeeData:
+
+class EmployeePersonalAndEmploymentData:
     '''
-    This contains the core data about an employee which is relevant to a ben admin provider
+    This contains the core data about an employee which is relevant to a benefits administration provider
     '''
-    id: str
-    ssn: str
-    name: Name
-    dob : datetime
-    phone_number: str
-    business_email: str
-    personal_email: str
-    gender: Gender
+    personal: Employee
     employment: Employment
     pay: Pay
-    address: Address
     status: EmployeeStatus
-    benefits: BenefitsEligibilityStatus
+    benefits_eligibility: BenefitsEligibilityStatus
     
