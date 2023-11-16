@@ -7,7 +7,8 @@ from flux_sdk.flux_core.data_models import Employee, EmployeeState
 
 class ReportEmployeesPersonalAndEmploymentDataConfig:
     '''
-    This contains the application data gathered durring installation which is necesary to prepare employee data or process deductions
+    This contains the application data gathered durring installation
+    which is necesary to prepare employee data or process deductions
     '''
     auto_enroll: bool
     group_id: str
