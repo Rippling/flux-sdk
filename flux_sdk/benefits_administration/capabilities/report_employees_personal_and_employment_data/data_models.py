@@ -91,7 +91,6 @@ class EmployeeBenefitsEligibilityData:
     '''
     personal: Employee
     employment: Employment
-    pay: Pay
     status: EmployeeStatus
     benefits_eligibility: BenefitsEligibility
     
