@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from datetime import date, time, datetime
-from typing import Union, Optional
-
+from datetime import date, datetime, time
+from typing import Optional, Union
 
 # This represents the currently supported types for Record fields. Currently, we only support these primitive types and
 # do not allow for any complex/nested types.
