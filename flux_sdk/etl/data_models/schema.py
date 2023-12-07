@@ -26,8 +26,16 @@ class SchemaField:
     # This maps to the field name in the Rippling Custom Object.
     name: str
 
-    # This is a longer description of the field that will appear in the Rippling Custom Object UI.
+    # This is a longer explanation of the field that will appear in the Rippling Custom Object UI.
     description: str
+
+    # This is used to put this Custom Object into a group/category. If a category with this name already exists, a new
+    # one will not be created.
+    category_name: str
+
+    # When creating a new group/category, this will set a description that will appear in the Rippling Custom Object UI.
+    # If the category already exists, the description will not be updated.
+    category_description: str
 
     # This indicates the data type used in the Rippling Custom Object.
     data_type: SchemaDataType
