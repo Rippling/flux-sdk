@@ -1,34 +1,31 @@
 from dataclasses import dataclass
-from enum import StrEnum
-from typing import Any
+from datetime import date, datetime, time
+from typing import Any, Union
+
+# This is the reduced list of acceptable types that can be used as SQL arguments.
+SQLArgsTypes = Union[str, bool, int, float, datetime, date, time]
 
 
-# Each QueryType represents a particular pattern of executing queries for retrieving data.
-class QueryType(StrEnum):
-    # SQL indicates a database that uses text SQL queries as its primary interface, usually RDBMS but not exclusively.
-    SQL = "sql"
-
-    # MONGODB indicates a MongoDB database, which has its own query API that relies on data structures rather than text.
-    MONGODB = "mongodb"
-
-
-# This is returned by the "prepare_query" hook and is used by Rippling to execute the query for this app using the
-# corresponding connector.
+# This is returned by the "prepare_query" hook for SQL connectors.
 @dataclass
-class Query:
-    # This is always required and indicates which connector type is being used.
-    type: QueryType
+class SQLQuery:
+    # This is the raw text of the query to be executed.
+    text: str
 
-    # This is required for SQL connectors. It is the raw text of the query to be executed.
-    sql_query: str
+    # This is used to add safe interpolation of values into the query, rather than requiring it to be constructed by the
+    # hook. In the sql_query, each "@var" will be replaced with the corresponding "var" from this dict.
+    args: dict[str, SQLArgsTypes]
 
-    # This is optional for SQL connectors. It is used to add safe interpolation of values into the query, rather than
-    # requiring it to be constructed internally. In the sql_query, each "@var" will be replaced with the corresponding
-    # "var" from this dict.
-    sql_query_args: dict[str, Any]
 
-    # This is required for MONGODB connectors. It indicates which collection the query will be executed in.
-    mongo_collection: str
+# This is returned by the "prepare_query" hook for MongoDB connectors.
+@dataclass
+class MongoQuery:
+    # This indicates which collection the query will be executed in.
+    collection: str
 
-    # This is optional for MONGODB connectors. It provides the filter criteria for a basic query.
-    mongo_filter: dict[str, Any]
+    # This provides the filter criteria for a basic query.
+    filter: dict[str, Any]
+
+
+# This is the list of types that can be used to represent a query.
+QueryTypes = Union[SQLQuery, MongoQuery]

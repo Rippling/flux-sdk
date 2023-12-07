@@ -17,11 +17,12 @@ class Record:
     # supported by Custom Objects, this does not need to be a full SchemaField.
     primary_key: str
 
+    # This represents the links in this object. Each key is the field name, which is used to look up the target details.
+    # Each value is the identifier used for the link.
+    references: dict[str, str]
+
     # This is the rest of the raw data for this record.
     fields: dict[str, FieldTypes]
-
-    # This represents the links in this object, which correspond to the Schema references.
-    references: list[Optional[str]]
 
     # This flag can be used by the "process_records" hook to signal to Rippling that the object should not be imported.
     # If a Record is not found after this hook, that will be regarded as an error, so this flag should be used instead.
