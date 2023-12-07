@@ -10,7 +10,7 @@ class ReportEmployeesPersonalAndEmploymentDataConfig:
     This contains the application data gathered durring installation which is necesary to prepare employee data or process deductions
     '''
     auto_enroll: bool
-    group_id: str
+    group_number: str
     
 
 class EmploymentType(Enum):
