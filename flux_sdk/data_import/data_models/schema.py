@@ -78,7 +78,7 @@ class Schema:
 # These are the available lookup-fields for an employee lookup.
 class EmployeeLookup(StrEnum):
     EMPLOYEE_ID = "employee_id"
-    BUSINESS_EMAIL = "business_email"
+    BUSINESS_EMAIL = "work_email"
     PERSONAL_EMAIL = "personal_email"
 
 
@@ -89,4 +89,4 @@ class EmployeeRef(SchemaReference):
     lookup: EmployeeLookup
 
     # This sets a default value to remove the need to define explicitly.
-    object: str = "employee"
+    object: str = "employee__c"
