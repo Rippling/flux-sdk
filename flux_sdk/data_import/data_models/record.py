@@ -2,19 +2,24 @@ from dataclasses import dataclass
 from datetime import date, datetime, time
 from typing import Optional, Union
 
+
 # This represents the currently supported types for Record fields. Currently, we only support these primitive types and
 # do not allow for any complex/nested types.
-SupportedTypes = Union[str, int, float, bool, date, time, datetime, None]
+FieldTypes = Union[str, int, float, bool, date, time, datetime, None]
+
+# Checkpoints can be represented as either timestamp (datetime), sequence number (int) or an opaque token (str).
+CheckpointType = Union[datetime, int, str]
 
 
 # This corresponds to a row in the source database.
 @dataclass
 class Record:
-    # The ID for this record, which becomes external_id in the Custom Object.
+    # The ID for this record, which becomes external_id in the Custom Object. Since only a simple, string value is
+    # supported by Custom Objects, this does not need to be a full SchemaField.
     primary_key: str
 
-    # This is the rest of the raw data for this field.
-    fields: dict[str, SupportedTypes]
+    # This is the rest of the raw data for this record.
+    fields: dict[str, FieldTypes]
 
     # This represents the links in this object, which correspond to the Schema references.
     references: list[Optional[str]]
@@ -31,4 +36,4 @@ class Record:
     #
     # In either case, this value will be passed to the "prepare_query" hook and can be used to adjust the query to only
     # retrieve the records that have changed since the last sync.
-    checkpoint: Optional[Union[datetime, int, str]]
+    checkpoint: Optional[CheckpointType]
