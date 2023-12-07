@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
 
+from flux_sdk.benefits_administration.capabilities.report_employees_personal_and_employment_data.data_models import (
+    EmployeeBenefitsEligibilityData,
+    ReportEmployeesPersonalAndEmploymentDataConfig,
+)
 from flux_sdk.flux_core.data_models import File
-from flux_sdk.benefits_administration.capabilities.report_employees_personal_and_employment_data.data_models import ReportEmployeesPersonalAndEmploymentDataConfig, EmployeePersonalAndEmploymentData
 
 
 class ReportEmployeesPersonalAndEmploymentData(ABC):
@@ -14,9 +17,12 @@ class ReportEmployeesPersonalAndEmploymentData(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_formated_employees_peronal_and_employment_data_file(config: ReportEmployeesPersonalAndEmploymentDataConfig, employee_data: list[EmployeePersonalAndEmploymentData]) -> File:
+    def formated_employees_peronal_and_employment_data(
+        config: ReportEmployeesPersonalAndEmploymentDataConfig,
+        employee_data: list[EmployeeBenefitsEligibilityData]) -> File:
         """
-        This method receives the apps configuration data and a list of employee data. The developer is expected to create a file, formated to their use case, and return that file.
+        This method receives the apps configuration data and a list of employee data.
+        The developer is expected to create a file, formated to their use case, and return that file.
         The file will be tranfered to the partner company via SFTP
 
         :param App

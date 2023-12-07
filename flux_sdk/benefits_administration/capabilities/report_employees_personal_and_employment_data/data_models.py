@@ -7,7 +7,8 @@ from flux_sdk.flux_core.data_models import Employee, EmployeeState
 
 class ReportEmployeesPersonalAndEmploymentDataConfig:
     '''
-    This contains the application data gathered durring installation which is necesary to prepare employee data or process deductions
+    This contains the application data gathered durring installation
+    which is necesary to prepare employee data or process deductions
     '''
     auto_enroll: bool
     group_number: str
@@ -73,18 +74,23 @@ class BenefitsEligibilityStatus:
     eligibility: BenefitsEligibility
     effective_date: datetime
 
+class BenefitsEligibility:
+    """
+    Leaving room for this 
+    """
+    current_status: BenefitsEligibilityStatus
+
 class EmployeeStatus:
     status: EmployeeState
     effective_date: datetime
 
 
-class EmployeePersonalAndEmploymentData:
+class EmployeeBenefitsEligibilityData:
     '''
     This contains the core data about an employee which is relevant to a benefits administration provider
     '''
     personal: Employee
     employment: Employment
-    pay: Pay
     status: EmployeeStatus
-    benefits_eligibility: BenefitsEligibilityStatus
+    benefits_eligibility: BenefitsEligibility
     
