@@ -9,6 +9,16 @@ class BenefitType(Enum):
     HSA = 1
     COMMUTER = 2
 
+
+class HSAFamilyType(Enum):
+    UNSPECIFIED = 0
+    EE_ONLY = 1
+    EE_AND_SPOUSE = 2
+    EE_AND_SPOUSE_AND_ONE_OR_MORE_CHILDREN = 3
+    EE_AND_ONE_CHILD = 4
+    EE_AND_TWO_OR_MORE_CHILDREN = 5
+
+
 class EmployeeEnrollment:
     role_id: str
     employee_number: str
@@ -57,3 +67,6 @@ class EmployeeEnrollment:
     plan_year_start_date: str
     division: str
     has_dependent: bool
+    # the following field reads the value from
+    # https://github.com/Rippling/rippling-protos/blob/d425ea95bb6d5fd220c4a7ad86adef67e966046f/protos/flex_benefits_platform/third_party_flex/v1/company_benefit_records.proto#L42
+    hsa_family_type: Optional[HSAFamilyType]
