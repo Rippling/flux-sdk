@@ -11,6 +11,7 @@ class ReportEmployeesPersonalAndEmploymentDataConfig:
     '''
     auto_enroll: bool
     group_number: str
+    company_id: str
     
 
 class EmploymentType(Enum):
