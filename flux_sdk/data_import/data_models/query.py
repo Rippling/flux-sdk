@@ -14,6 +14,8 @@ class SQLQuery:
 
     # This is used to add safe interpolation of values into the query, rather than requiring it to be constructed by the
     # hook. In the sql_query, each "@var" will be replaced with the corresponding "var" from this dict.
+    #
+    # This is where a variable like "checkpoint" could be added to have it interpolated safely and cleanly.
     args: dict[str, SQLArgsTypes]
 
 
