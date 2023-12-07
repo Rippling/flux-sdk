@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import StrEnum
+from typing import Union
 
 
 # These are the data types supported by Rippling Custom Objects.
@@ -37,17 +38,27 @@ class SchemaField:
     is_unique: bool
 
 
-# A reference indicates a link between objects, which is used by Rippling for more complex queries.
+# These are the available lookup-fields for an employee lookup.
+class EmployeeLookup(StrEnum):
+    EMPLOYEE_ID = "employee_id"
+    BUSINESS_EMAIL = "work_email"
+    PERSONAL_EMAIL = "personal_email"
+
+
+# This is a helper for creating a link/reference to a Rippling employee.
 @dataclass
-class SchemaReference:
-    # This is the name of the field on this object that is being used for the link.
-    origin: str
+class EmployeeReference:
+    lookup: EmployeeLookup
 
-    # This is the name of the object being linked to.
+
+@dataclass
+class CustomObjectReference:
     object: str
-
-    # This is the name of the field on the linked object to use.
     lookup: str
+
+
+# This lists the available types that can be used for schema references.
+ReferenceTypes = Union[EmployeeReference]
 
 
 # A schema describes the shape of an object being imported and is used by Rippling to define the Custom Object.
@@ -59,25 +70,10 @@ class Schema:
     # This indicates which field (by name) is used as the ID for the object.
     primary_key: str
 
-    # These are the links to other objects.
-    references: list[SchemaReference]
+    # These are the links to other objects. The keys are the field names that should be the origin for the link/edge.
+    references: dict[str, ReferenceTypes]
 
     # These are the remaining data fields.
     fields: list[SchemaField]
 
 
-# These are the available lookup-fields for an employee lookup.
-class EmployeeLookup(StrEnum):
-    EMPLOYEE_ID = "employee_id"
-    BUSINESS_EMAIL = "work_email"
-    PERSONAL_EMAIL = "personal_email"
-
-
-# This is a helper for creating a link/reference to a Rippling employee.
-@dataclass
-class EmployeeRef(SchemaReference):
-    # This uses an enum as a helper.
-    lookup: EmployeeLookup
-
-    # This sets a default value to remove the need to define explicitly.
-    object: str = "employee__c"
