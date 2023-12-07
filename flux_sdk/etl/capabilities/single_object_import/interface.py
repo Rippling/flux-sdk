@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from flux_sdk.data_import.data_models.query import QueryType
-from flux_sdk.data_import.data_models.record import CheckpointType, Record
-from flux_sdk.data_import.data_models.schema import Schema
+from flux_sdk.etl.data_models.query import QueryType
+from flux_sdk.etl.data_models.record import CheckpointType, Record
+from flux_sdk.etl.data_models.schema import Schema
 
 
 class SingleObjectImport(ABC):
