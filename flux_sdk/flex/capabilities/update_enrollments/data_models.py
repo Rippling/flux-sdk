@@ -10,6 +10,7 @@ class BenefitType(Enum):
     COMMUTER = 2
 
 
+# specify the family enrollment status for HSA
 class HSAFamilyType(Enum):
     UNSPECIFIED = 0
     EE_ONLY = 1
@@ -67,6 +68,4 @@ class EmployeeEnrollment:
     plan_year_start_date: str
     division: str
     has_dependent: bool
-    # the following field reads the value from
-    # https://github.com/Rippling/rippling-protos/blob/d425ea95bb6d5fd220c4a7ad86adef67e966046f/protos/flex_benefits_platform/third_party_flex/v1/company_benefit_records.proto#L42
     hsa_family_type: Optional[HSAFamilyType]
