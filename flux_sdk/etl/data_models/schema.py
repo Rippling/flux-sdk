@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import StrEnum
-from typing import Union
+from typing import Optional, Union
 
 
 # These are the data types supported by Rippling Custom Objects.
@@ -11,6 +11,7 @@ class SchemaDataType(StrEnum):
     DateTime = "datetime"
     Decimal = "decimal"
     Email = "email"
+    Enum = "enum"
     Integer = "integer"
     LongText = "longtext"
     Percent = "percent"
@@ -37,24 +38,32 @@ class SchemaField:
     # When enabled, this value will be enforced as unique by Rippling Custom Object.
     is_unique: bool
 
+    # When using an Enum data type, this indicates the possible values.
+    enum_values: Optional[list[str]]
 
-# These are the available lookup-fields for an employee lookup.
-class EmployeeLookup(StrEnum):
-    EMPLOYEE_ID = "employee_id"
-    BUSINESS_EMAIL = "work_email"
-    PERSONAL_EMAIL = "personal_email"
-
-
-# This is a helper for creating a link/reference to a Rippling employee.
-@dataclass
-class EmployeeReference:
-    lookup: EmployeeLookup
+    # When using an Enum data type, this indicates if *only* enum_values are accepted, meaning anything else will be
+    # rejected with an error.
+    enum_restricted: bool
 
 
+# This allows creating a reference to an existing Custom Object.
 @dataclass
 class CustomObjectReference:
     object: str
     lookup: str
+
+
+# These are the available lookup-fields for an employee lookup.
+class EmployeeLookup(StrEnum):
+    EMPLOYEE_ID = "employee_id"
+    BUSINESS_EMAIL = "business_email"
+    PERSONAL_EMAIL = "personal_email"
+
+
+# This allows creating a reference to a Rippling employee.
+@dataclass
+class EmployeeReference:
+    lookup: EmployeeLookup
 
 
 # This lists the available types that can be used for schema references.
