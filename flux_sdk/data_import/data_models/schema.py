@@ -58,7 +58,7 @@ class CustomObjectReference:
 
 
 # This lists the available types that can be used for schema references.
-ReferenceTypes = Union[EmployeeReference]
+ReferenceType = Union[CustomObjectReference, EmployeeReference]
 
 
 # A schema describes the shape of an object being imported and is used by Rippling to define the Custom Object.
@@ -71,7 +71,7 @@ class Schema:
     primary_key: str
 
     # These are the links to other objects. The keys are the field names that should be the origin for the link/edge.
-    references: dict[str, ReferenceTypes]
+    references: dict[str, ReferenceType]
 
     # These are the remaining data fields.
     fields: list[SchemaField]
