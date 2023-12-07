@@ -3,7 +3,7 @@ from datetime import date, datetime, time
 from typing import Any, Union
 
 # This is the reduced list of acceptable types that can be used as SQL arguments.
-SQLArgsType = Union[str, bool, int, float, datetime, date, time]
+SQLQueryArg = Union[str, bool, int, float, datetime, date, time]
 
 
 # This is returned by the "prepare_query" hook for SQL connectors.
@@ -16,7 +16,7 @@ class SQLQuery:
     # hook. In the sql_query, each "@var" will be replaced with the corresponding "var" from this dict.
     #
     # This is where a variable like "checkpoint" could be added to have it interpolated safely and cleanly.
-    args: dict[str, SQLArgsType]
+    args: dict[str, SQLQueryArg]
 
 
 # This is returned by the "prepare_query" hook for MongoDB connectors.
@@ -30,4 +30,4 @@ class MongoQuery:
 
 
 # This is the list of types that can be used to represent a query.
-QueryType = Union[SQLQuery, MongoQuery]
+Query = Union[SQLQuery, MongoQuery]
