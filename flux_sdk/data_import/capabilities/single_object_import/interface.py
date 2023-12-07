@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from flux_sdk.data_import.data_models.query import Query
-from flux_sdk.data_import.data_models.record import Record, CheckpointType
+from flux_sdk.data_import.data_models.record import CheckpointType, Record
 from flux_sdk.data_import.data_models.schema import Schema
 
 
