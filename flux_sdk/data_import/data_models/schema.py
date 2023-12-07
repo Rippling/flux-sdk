@@ -1,30 +1,21 @@
 from dataclasses import dataclass
-from enum import Enum, StrEnum
+from enum import StrEnum
 
 
 # These are the data types supported by Rippling Custom Objects.
-#
-# If commented out, that means we do not currently support them for Data Import.
-class SchemaDataType(Enum):
-    Integer = 0
-    Decimal = 1
-    String = 2
-    Bool = 3
-    # Enum = 4
-    DateTime = 5
-    Date = 6
-    # Edge = 7
-    # EdgeMany = 8
-    Currency = 9
-    # Embedded = 10
-    # MultiEnum = 11
-    Percent = 12
-    LongText = 13
-    # Index = 14
-    # PolymorphicEdge = 15
-    Email = 16
-    Url = 17
-    Time = 18
+class SchemaDataType(StrEnum):
+    Bool = "bool"
+    Currency = "currency"
+    Date = "date"
+    DateTime = "datetime"
+    Decimal = "decimal"
+    Email = "email"
+    Integer = "integer"
+    LongText = "longtext"
+    Percent = "percent"
+    String = "string"
+    Time = "time"
+    Url = "url"
 
 
 # A field usually corresponds to a column in a database, it is one datum within a Record.
