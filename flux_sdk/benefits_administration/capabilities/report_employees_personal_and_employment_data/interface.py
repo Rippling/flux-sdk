@@ -14,7 +14,7 @@ class ReportEmployeesPersonalAndEmploymentData(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_formated_employees_peronal_and_employment_data_file(config: ReportEmployeesPersonalAndEmploymentDataConfig, employee_data: list[EmployeePersonalAndEmploymentData]) -> File:
+    def format_employees_peronal_and_employment_data(config: ReportEmployeesPersonalAndEmploymentDataConfig, employee_data: list[EmployeePersonalAndEmploymentData]) -> File:
         """
         This method receives the apps configuration data and a list of employee data. The developer is expected to create a file, formated to their use case, and return that file.
         The file will be tranfered to the partner company via SFTP
