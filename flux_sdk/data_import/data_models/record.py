@@ -33,11 +33,7 @@ class Record:
     drop: bool
 
     # This is used by the "process_records" hook to signal to Rippling the checkpoint that can be observed and recorded
-    # after the sync is complete.
-    #
-    # In the case of datetime/int values, Rippling will keep track of the *highest* value seen from all records. In the
-    # case of str values, Rippling will only record the *last* value seen.
-    #
-    # In either case, this value will be passed to the "prepare_query" hook and can be used to adjust the query to only
-    # retrieve the records that have changed since the last sync.
+    # after the sync is complete. Rippling will keep track of the *highest* value seen from all records. That value will
+    # be passed to the "prepare_query" hook and can be used to adjust the query to only retrieve the records that have
+    # changed since the last sync.
     checkpoint: Optional[CheckpointType]
