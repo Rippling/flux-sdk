@@ -53,7 +53,7 @@ class SchemaReference:
 # A schema describes the shape of an object being imported and is used by Rippling to define the Custom Object.
 @dataclass
 class Schema:
-    # This is the name of the object.
+    # This is the name of the Custom Object.
     name: str
 
     # This indicates which field (by name) is used as the ID for the object.
