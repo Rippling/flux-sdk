@@ -10,7 +10,9 @@ PrimaryKey = Union[str, int]
 # do not allow for any complex/nested types.
 Field = Union[str, int, float, bool, date, time, datetime, None]
 
-# Checkpoints can be represented as either timestamp (datetime), sequence number (int) or an opaque token (str).
+# Checkpoints can be represented as either timestamp (datetime), sequence number (int) or an opaque token (str). Values
+# are compared assuming an increasing sort order, so the largest value in a sync will be treated as the high-water mark
+# for the next sync.
 Checkpoint = Union[datetime, int, str]
 
 
@@ -36,4 +38,6 @@ class Record:
     # after the sync is complete. Rippling will keep track of the *highest* value seen from all records. That value will
     # be passed to the "prepare_query" hook and can be used to adjust the query to only retrieve the records that have
     # changed since the last sync.
+    #
+    # This must be used to enable incremental sync, otherwise a full sync will happen each time.
     checkpoint: Optional[Checkpoint]
