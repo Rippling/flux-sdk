@@ -83,6 +83,7 @@ class EmployeePersonalAndEmploymentData:
     '''
     This contains the core data about an employee which is relevant to a benefits administration provider
     '''
+    id: str
     personal: Employee
     employment: Employment
     pay: Pay
