@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from flux_sdk.data_import.data_models.query import QueryTypes
+from flux_sdk.data_import.data_models.query import QueryType
 from flux_sdk.data_import.data_models.record import CheckpointType, Record
 from flux_sdk.data_import.data_models.schema import Schema
 
@@ -24,7 +24,7 @@ class SingleObjectImport(ABC):
 
     @staticmethod
     @abstractmethod
-    def prepare_query(schema: Schema, checkpoint: Optional[CheckpointType]) -> QueryTypes:
+    def prepare_query(schema: Schema, checkpoint: Optional[CheckpointType]) -> QueryType:
         """
         Use this hook to construct the query that should be run by Rippling to extract records.
         :param schema: The schema generated in the "get_schema" hook for this object.
