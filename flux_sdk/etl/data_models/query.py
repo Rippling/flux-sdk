@@ -1,6 +1,14 @@
 from dataclasses import dataclass
 from datetime import date, datetime, time
+from enum import StrEnum
 from typing import Any, Union
+
+
+# This enum can be used to indicate a connector type where that needs to be communicated to hooks.
+class Connector(StrEnum):
+    SQL = "sql"
+    MONGODB = "mongodb"
+
 
 # This is the reduced list of acceptable types that can be used as SQL arguments.
 SQLQueryArg = Union[str, bool, int, float, datetime, date, time]

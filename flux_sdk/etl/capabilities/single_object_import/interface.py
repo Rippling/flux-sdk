@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from flux_sdk.etl.data_models.query import Query
+from flux_sdk.etl.data_models.query import Connector, Query
 from flux_sdk.etl.data_models.record import Checkpoint, Record
 from flux_sdk.etl.data_models.schema import Schema
 
@@ -30,12 +30,14 @@ class SingleObjectImport(ABC):
 
     @staticmethod
     @abstractmethod
-    def prepare_query(schema: Schema, checkpoint: Optional[Checkpoint]) -> Query:
+    def prepare_query(connector: Connector, schema: Schema, checkpoint: Optional[Checkpoint]) -> Query:
         """
-        Use this hook to construct the query that should be run by Rippling to extract records.
+        Use this hook to construct the query that should be run by Rippling to extract records. If the passed connector
+        is not supported by the hook, it should raise NotImplementedError to make the misconfiguration clear.
 
         The "process_records" hook must decorate records with checkpoint in order to enable incremental sync.
 
+        :param connector: This indicates what type of connector is configured, which may change the returned Query.
         :param schema: The schema generated in the "get_schema" hook for this object.
         :param checkpoint: If included, this is an incremental sync and should adjust the Query accordingly.
         :return: Query
