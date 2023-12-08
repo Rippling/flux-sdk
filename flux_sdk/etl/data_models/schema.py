@@ -14,6 +14,7 @@ class SchemaDataType(StrEnum):
     Enum = "enum"
     Integer = "integer"
     LongText = "longtext"
+    MultiEnum = "multienum"
     Percent = "percent"
     String = "string"
     Time = "time"
@@ -28,14 +29,6 @@ class SchemaField:
 
     # This is a longer explanation of the field that will appear in the Rippling Custom Object UI.
     description: str
-
-    # This is used to put this Custom Object into a group/category. If a category with this name already exists, a new
-    # one will not be created.
-    category_name: str
-
-    # When creating a new group/category, this will set a description that will appear in the Rippling Custom Object UI.
-    # If the category already exists, the description will not be updated.
-    category_description: str
 
     # This indicates the data type used in the Rippling Custom Object.
     data_type: SchemaDataType
@@ -83,6 +76,17 @@ Reference = Union[CustomObjectReference, EmployeeReference]
 class Schema:
     # This is the name of the Custom Object.
     name: str
+
+    # This is a more detailed explanation of the field which will appear in the Rippling Custom Object UI.
+    description: Optional[str]
+
+    # This is used to put this Custom Object into a group/category. If a category with this name already exists, a new
+    # one will not be created.
+    category_name: str
+
+    # When creating a new group/category, this will set a description that will appear in the Rippling Custom Object UI.
+    # If the category already exists, the description will be updated.
+    category_description: Optional[str]
 
     # This indicates which field (by name) is used as the ID for the object.
     primary_key: str
