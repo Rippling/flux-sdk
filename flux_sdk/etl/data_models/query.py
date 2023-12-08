@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from datetime import date, datetime, time
-from enum import StrEnum
+from enum import Enum
 from typing import Any, Union
 
 
 # This enum can be used to indicate a connector type where that needs to be communicated to hooks.
-class Connector(StrEnum):
+class Connector(Enum):
     SQL = "sql"
     MONGODB = "mongodb"
 

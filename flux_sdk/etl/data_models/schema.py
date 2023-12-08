@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import Enum
 from typing import Optional, Union
 
 
 # These are the data types supported by Rippling Custom Objects.
-class SchemaDataType(StrEnum):
+class SchemaDataType(Enum):
     Bool = "bool"
     Currency = "currency"
     Date = "date"
@@ -55,7 +55,7 @@ class CustomObjectReference:
 
 
 # These are the available lookup-fields for an employee lookup.
-class EmployeeLookup(StrEnum):
+class EmployeeLookup(Enum):
     EMPLOYEE_ID = "employee_id"
     BUSINESS_EMAIL = "business_email"
     PERSONAL_EMAIL = "personal_email"
