@@ -21,7 +21,8 @@ class SQLQuery:
     text: str
 
     # This is used to add safe interpolation of values into the query, rather than requiring it to be constructed by the
-    # hook. In the sql_query, each "@var" will be replaced with the corresponding "var" from this dict.
+    # hook. In the sql_query, each "@var" will be replaced with the corresponding "var" from this dict. The query text
+    # must use only alphanumeric characters and underscores in variable names in order to be properly detected.
     #
     # This is where a variable like "checkpoint" could be added to have it interpolated safely and cleanly.
     args: dict[str, SQLQueryArg]
