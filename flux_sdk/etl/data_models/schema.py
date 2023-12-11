@@ -88,8 +88,20 @@ class Schema:
     # If the category already exists, the description will be updated.
     category_description: Optional[str]
 
-    # This indicates which field (by name) is used as the ID for the object.
-    primary_key: str
+    # This is the name of the field used for the primary key (aka: External ID).
+    primary_key_field: str
+
+    # This is the name of the field used for the record name, which is displayed in the Rippling Custom Object UI.
+    name_field: str
+
+    # This is the name of the field that reflects when the record was first created.
+    created_date_field: str
+
+    # This is the name of the field that reflects when the record was last updated.
+    last_modified_date_field: str
+
+    # This is a dedicated reference to a Rippling Employee.
+    owner: EmployeeReference
 
     # These are the links to other objects. The keys are the field names that should be the origin for the link/edge.
     references: dict[str, Reference]
