@@ -98,7 +98,7 @@ columns_180 = [
     "CONT_Contribution_%_Company_Match",
     "CONT_Contribution_$_Company_Match",
     "LOAN_Ref_Number",
-    "LOAN_Amount"
+    "LOAN_Amount",
 ]
 
 
@@ -156,7 +156,9 @@ class ReportPayrollContributionsPayKonnectUtil:
         return gender_code
 
     @staticmethod
-    def _get_employee_status(employee_status: EmployeeState, ytd_leave_infos: list[LeaveInfo]):
+    def _get_employee_status(
+        employee_status: EmployeeState, ytd_leave_infos: list[LeaveInfo]
+    ):
         status = ""
         if employee_status.name == "ACTIVE":
             status = "Active"
@@ -220,16 +222,18 @@ class ReportPayrollContributionsPayKonnectUtil:
 
     @staticmethod
     def _get_loa_info(leave_infos: list[LeaveInfo]) -> str:
-
         leave_type = ""
         for leave_info in leave_infos:
-
             if (
                 leave_info.start_date
                 <= datetime.datetime.now().date()
                 <= leave_info.return_date
             ):
-                leave_type = ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(leave_info.leave_type.name)
+                leave_type = (
+                    ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
+                        leave_info.leave_type.name
+                    )
+                )
 
         return leave_type
 
@@ -269,7 +273,9 @@ class ReportPayrollContributionsPayKonnectUtil:
         company_name_with_underscore = company_name.replace(" ", "_")
 
         transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
-        report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime("%H%M%S")
+        report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime(
+            "%H%M%S"
+        )
         return "{}_{}_{}.csv".format(
             company_name_with_underscore, transmission_date, report_time
         )
@@ -299,17 +305,21 @@ class ReportPayrollContributionsPayKonnectUtil:
                 payroll_contributions: list[
                     PayrollRunContribution
                 ] = employee_payroll_record.payroll_contributions
-                payroll_contribution_map = (
-                    ReportPayrollContributionsPayKonnectUtil._get_payroll_contributions_map(
-                        payroll_contributions
-                    )
+                payroll_contribution_map = ReportPayrollContributionsPayKonnectUtil._get_payroll_contributions_map(
+                    payroll_contributions
                 )
                 employee: Employee = employee_payroll_record.employee
 
-                ssn: str = ReportPayrollContributionsPayKonnectUtil._get_formatted_ssn(employee.ssn)
+                ssn: str = ReportPayrollContributionsPayKonnectUtil._get_formatted_ssn(
+                    employee.ssn
+                )
                 ein: str = payroll_upload_settings.ein
                 company_id: str = payroll_upload_settings.payrun_info.payroll_run_id
-                employee_id: str = employee.employee_id if hasattr(employee, "employee_id") and employee.employee_id else ""
+                employee_id: str = (
+                    employee.employee_id
+                    if hasattr(employee, "employee_id") and employee.employee_id
+                    else ""
+                )
                 try:
                     payroll_employee_contribution_401k: Optional[
                         PayrollRunContribution
@@ -324,22 +334,47 @@ class ReportPayrollContributionsPayKonnectUtil:
                     ] = payroll_contribution_map.get(ContributionType.LOAN.name, None)
 
                     payroll_date_absolute = (
-                        payroll_upload_settings.payrun_info.original_pay_date if hasattr(payroll_upload_settings.payrun_info, "original_pay_date") and payroll_upload_settings.payrun_info.original_pay_date else None
+                        payroll_upload_settings.payrun_info.original_pay_date
+                        if hasattr(
+                            payroll_upload_settings.payrun_info, "original_pay_date"
+                        )
+                        and payroll_upload_settings.payrun_info.original_pay_date
+                        else None
                     )
                     payroll_date = (
                         payroll_date_absolute.strftime("%m/%d/%Y")
                         if payroll_date_absolute
                         else ""
                     )
-                    payroll_start_date = payroll_upload_settings.payrun_info.pay_period_start_date
-                    payroll_start_date = payroll_start_date.strftime("%m/%d/%Y") if payroll_start_date else ""
+                    payroll_start_date = (
+                        payroll_upload_settings.payrun_info.pay_period_start_date
+                    )
+                    payroll_start_date = (
+                        payroll_start_date.strftime("%m/%d/%Y")
+                        if payroll_start_date
+                        else ""
+                    )
 
-                    payroll_end_date = payroll_upload_settings.payrun_info.pay_period_end_date
-                    payroll_end_date = payroll_end_date.strftime("%m/%d/%Y") if payroll_end_date else ""
-                    payroll_run_type: str = ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(payroll_upload_settings.payrun_info.run_type.name)
+                    payroll_end_date = (
+                        payroll_upload_settings.payrun_info.pay_period_end_date
+                    )
+                    payroll_end_date = (
+                        payroll_end_date.strftime("%m/%d/%Y")
+                        if payroll_end_date
+                        else ""
+                    )
+                    payroll_run_type: str = ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
+                        payroll_upload_settings.payrun_info.run_type.name
+                    )
 
-
-                    pay_frequency: str = ReportPayrollContributionsPayKonnectUtil._get_pay_frequency(payroll_upload_settings.payrun_info.pay_frequency) if hasattr(payroll_upload_settings.payrun_info, "pay_frequency") and payroll_upload_settings.payrun_info.pay_frequency else ""
+                    pay_frequency: str = (
+                        ReportPayrollContributionsPayKonnectUtil._get_pay_frequency(
+                            payroll_upload_settings.payrun_info.pay_frequency
+                        )
+                        if hasattr(payroll_upload_settings.payrun_info, "pay_frequency")
+                        and payroll_upload_settings.payrun_info.pay_frequency
+                        else ""
+                    )
 
                     employee_401k: Decimal = (
                         payroll_employee_contribution_401k.amount
@@ -384,32 +419,48 @@ class ReportPayrollContributionsPayKonnectUtil:
                         if employee.address and employee.address.zip_code
                         else ""
                     )
-                    country = ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(employee.address.country) if employee.address and employee.address.country else ""
-                    personal_email = (
-                        employee.personal_email
+                    country = (
+                        ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
+                            employee.address.country
+                        )
+                        if employee.address and employee.address.country
+                        else ""
                     )
+                    personal_email = employee.personal_email
                     work_email = employee.business_email
-                    employee_category = ReportPayrollContributionsPayKonnectUtil._get_employee_category(employee)
-                    pay_type = ReportPayrollContributionsPayKonnectUtil._get_employee_pay_type(employee)
+                    employee_category = (
+                        ReportPayrollContributionsPayKonnectUtil._get_employee_category(
+                            employee
+                        )
+                    )
+                    pay_type = (
+                        ReportPayrollContributionsPayKonnectUtil._get_employee_pay_type(
+                            employee
+                        )
+                    )
                     termination_date = ""
                     if (
                         hasattr(employee, "termination_date")
                         and employee.termination_date
                     ):
                         termination_date = employee.termination_date.strftime("%m%d%Y")
-                    birth_day = ReportPayrollContributionsPayKonnectUtil._date_formatter(
-                        employee.dob
+                    birth_day = (
+                        ReportPayrollContributionsPayKonnectUtil._date_formatter(
+                            employee.dob
+                        )
                     )
                     phone_number = (
-                        employee.phone_number
-                        if employee.phone_number
-                        else ""
+                        employee.phone_number if employee.phone_number else ""
                     )
-                    rehire_date = ReportPayrollContributionsPayKonnectUtil._date_formatter(
-                        employee.start_date
+                    rehire_date = (
+                        ReportPayrollContributionsPayKonnectUtil._date_formatter(
+                            employee.start_date
+                        )
                     )
-                    hire_date = ReportPayrollContributionsPayKonnectUtil._date_formatter(
-                        employee.original_hire_date
+                    hire_date = (
+                        ReportPayrollContributionsPayKonnectUtil._date_formatter(
+                            employee.original_hire_date
+                        )
                     )
                     hours_worked = (
                         employee_payroll_record.hours_worked
@@ -433,7 +484,11 @@ class ReportPayrollContributionsPayKonnectUtil:
                     )
                     if rehire_date == hire_date:
                         rehire_date = ""
-                    employee_work_status_code = ReportPayrollContributionsPayKonnectUtil._get_loa_info(employee_payroll_record.leave_infos)
+                    employee_work_status_code = (
+                        ReportPayrollContributionsPayKonnectUtil._get_loa_info(
+                            employee_payroll_record.leave_infos
+                        )
+                    )
 
                     ytd_leave_infos = []
                     if hasattr(employee_payroll_record, "ytd_leave_infos"):
@@ -448,13 +503,21 @@ class ReportPayrollContributionsPayKonnectUtil:
                     gender = ReportPayrollContributionsPayKonnectUtil._get_gender(
                         employee.gender
                     )
-                    marital_status = (
-                        ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
-                            employee.marital_status
-                        )
+                    marital_status = ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
+                        employee.marital_status
                     )
-                    salary = employee_payroll_record.salary if hasattr(employee_payroll_record, "salary") and employee_payroll_record.salary else Decimal(0)
-                    annual_salary = employee_payroll_record.annual_salary if hasattr(employee_payroll_record, "annual_salary") and employee_payroll_record.annual_salary else Decimal(0)
+                    salary = (
+                        employee_payroll_record.salary
+                        if hasattr(employee_payroll_record, "salary")
+                        and employee_payroll_record.salary
+                        else Decimal(0)
+                    )
+                    annual_salary = (
+                        employee_payroll_record.annual_salary
+                        if hasattr(employee_payroll_record, "annual_salary")
+                        and employee_payroll_record.annual_salary
+                        else Decimal(0)
+                    )
 
                     mapping_from_column_name_to_value = {
                         "Plan_Number": plan_id,
@@ -532,7 +595,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "CONT_Contribution_$_Company_Match": "",
                         "LOAN_Ref_Number": 1,
                         "LOAN_Amount": employee_loan_repayment,
-                        }
+                    }
                     writer.writerow(mapping_from_column_name_to_value)
                 except Exception as e:
                     logger.exception(
@@ -545,5 +608,7 @@ class ReportPayrollContributionsPayKonnectUtil:
             file.name = ReportPayrollContributionsPayKonnectUtil.get_file_name(
                 payroll_upload_settings
             )
-            file.content = ReportPayrollContributionsPayKonnectUtil.to_bytes(output.getvalue())
+            file.content = ReportPayrollContributionsPayKonnectUtil.to_bytes(
+                output.getvalue()
+            )
             return file
