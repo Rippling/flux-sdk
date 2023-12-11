@@ -255,7 +255,7 @@ class ReportPayrollContributionsPayKonnectUtil:
         return dt.replace(microsecond=int(dt.microsecond / 1000) * 1000)
 
     @staticmethod
-    def _convert_to_sentence_case(text: Optional[str]):
+    def _convert_to_sentence_case(text: Optional[str]) -> str:
         return text.capitalize() if text else ""
 
     @staticmethod
@@ -266,18 +266,14 @@ class ReportPayrollContributionsPayKonnectUtil:
         :return: str
         """
 
-        company_name = (
-            payroll_upload_settings.company_legal_name
-            or payroll_upload_settings.company_name
-        )
-        company_name_with_underscore = company_name.replace(" ", "_")
+        plan_name = payroll_upload_settings.customer_partner_settings.get("plan_id", "Plan_Number")
 
         transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
         report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime(
             "%H%M%S"
         )
         return "{}_{}_{}.csv".format(
-            company_name_with_underscore, transmission_date, report_time
+            plan_name, transmission_date, report_time
         )
 
     @staticmethod
@@ -348,6 +344,11 @@ class ReportPayrollContributionsPayKonnectUtil:
                     )
                     payroll_start_date = (
                         payroll_upload_settings.payrun_info.pay_period_start_date
+                        if hasattr(
+                            payroll_upload_settings.payrun_info, "pay_period_start_date"
+                        )
+                           and payroll_upload_settings.payrun_info.pay_period_start_date
+                        else None
                     )
                     payroll_start_date = (
                         payroll_start_date.strftime("%m/%d/%Y")
@@ -357,6 +358,11 @@ class ReportPayrollContributionsPayKonnectUtil:
 
                     payroll_end_date = (
                         payroll_upload_settings.payrun_info.pay_period_end_date
+                        if hasattr(
+                            payroll_upload_settings.payrun_info, "pay_period_end_date"
+                        )
+                           and payroll_upload_settings.payrun_info.pay_period_end_date
+                        else None
                     )
                     payroll_end_date = (
                         payroll_end_date.strftime("%m/%d/%Y")
@@ -365,7 +371,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                     )
                     payroll_run_type: str = ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
                         payroll_upload_settings.payrun_info.run_type.name
-                    )
+                    ) if hasattr(payroll_upload_settings.payrun_info, "run_type") else ""
 
                     pay_frequency: str = (
                         ReportPayrollContributionsPayKonnectUtil._get_pay_frequency(
@@ -469,17 +475,17 @@ class ReportPayrollContributionsPayKonnectUtil:
                     )
                     gross_pay = (
                         employee_payroll_record.gross_pay
-                        if employee_payroll_record.gross_pay
+                        if hasattr(employee_payroll_record, "gross_pay")
                         else Decimal(0)
                     )
                     employee_year_to_date_hours_worked = (
                         employee_payroll_record.eoy_info.year_to_date_hours
-                        if employee_payroll_record.eoy_info
+                        if hasattr(employee_payroll_record, "eoy_info")
                         else Decimal(0)
                     )
                     employee_year_to_date_gross_pay = (
                         employee_payroll_record.eoy_info.year_to_date_gross_pay
-                        if employee_payroll_record.eoy_info
+                        if hasattr(employee_payroll_record, "eoy_info")
                         else Decimal(0)
                     )
                     if rehire_date == hire_date:
@@ -488,7 +494,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         ReportPayrollContributionsPayKonnectUtil._get_loa_info(
                             employee_payroll_record.leave_infos
                         )
-                    )
+                    ) if hasattr(employee_payroll_record, "leave_infos") else ""
 
                     ytd_leave_infos = []
                     if hasattr(employee_payroll_record, "ytd_leave_infos"):
@@ -504,8 +510,8 @@ class ReportPayrollContributionsPayKonnectUtil:
                         employee.gender
                     )
                     marital_status = ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
-                        employee.marital_status
-                    )
+                        employee.marital_status.name
+                    ) if hasattr(employee, "marital_status") else ""
                     salary = (
                         employee_payroll_record.salary
                         if hasattr(employee_payroll_record, "salary")
@@ -603,6 +609,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                             ssn, e
                         )
                     )
+                    raise Exception("[ReportPayrollContribution] Not able to write the row for employee: {}".format(ssn))
 
             file = File()
             file.name = ReportPayrollContributionsPayKonnectUtil.get_file_name(
