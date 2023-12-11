@@ -104,9 +104,11 @@ columns_180 = [
 
 class ReportPayrollContributionsPayKonnectUtil:
     """
-    This class embodies the functionality to "report payroll contributions" for vendors utilizing the payKonnect formatted file.
+    This class embodies the functionality to "report payroll contributions" for vendors utilizing
+    the payKonnect formatted file.
     Developers are required to implement the format_contributions_for_payKonnect_vendor method in their code.
-    To obtain the Plan_Number and Plan_Name from the admin during installation, include the following code in spoke/config/manifest/variable in your app's manifest file:
+    To obtain the Plan_Number and Plan_Name from the admin during installation, include the following code in
+    spoke/config/manifest/variable in your app's manifest file:
     "variables": [
             {
               "name": "plan_id",
@@ -261,20 +263,21 @@ class ReportPayrollContributionsPayKonnectUtil:
     @staticmethod
     def get_file_name(payroll_upload_settings: PayrollUploadSettings) -> str:
         """
-        This method receives a PayrollUploadSettings from which the developer is expected to return file name based on payroll_upload_settings
+        This method receives a PayrollUploadSettings from which the developer
+        is expected to return file name based on payroll_upload_settings
         :param payroll_upload_settings:
         :return: str
         """
 
-        plan_name = payroll_upload_settings.customer_partner_settings.get("plan_id", "Plan_Number")
+        plan_name = payroll_upload_settings.customer_partner_settings.get(
+            "plan_id", "Plan_Number"
+        )
 
         transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
         report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime(
             "%H%M%S"
         )
-        return "{}_{}_{}.csv".format(
-            plan_name, transmission_date, report_time
-        )
+        return "{}_{}_{}.csv".format(plan_name, transmission_date, report_time)
 
     @staticmethod
     def format_contributions_for_payKonnect_vendor(
@@ -347,7 +350,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         if hasattr(
                             payroll_upload_settings.payrun_info, "pay_period_start_date"
                         )
-                           and payroll_upload_settings.payrun_info.pay_period_start_date
+                        and payroll_upload_settings.payrun_info.pay_period_start_date
                         else None
                     )
                     payroll_start_date = (
@@ -361,7 +364,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         if hasattr(
                             payroll_upload_settings.payrun_info, "pay_period_end_date"
                         )
-                           and payroll_upload_settings.payrun_info.pay_period_end_date
+                        and payroll_upload_settings.payrun_info.pay_period_end_date
                         else None
                     )
                     payroll_end_date = (
@@ -369,9 +372,13 @@ class ReportPayrollContributionsPayKonnectUtil:
                         if payroll_end_date
                         else ""
                     )
-                    payroll_run_type: str = ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
-                        payroll_upload_settings.payrun_info.run_type.name
-                    ) if hasattr(payroll_upload_settings.payrun_info, "run_type") else ""
+                    payroll_run_type: str = (
+                        ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
+                            payroll_upload_settings.payrun_info.run_type.name
+                        )
+                        if hasattr(payroll_upload_settings.payrun_info, "run_type")
+                        else ""
+                    )
 
                     pay_frequency: str = (
                         ReportPayrollContributionsPayKonnectUtil._get_pay_frequency(
@@ -491,10 +498,14 @@ class ReportPayrollContributionsPayKonnectUtil:
                     if rehire_date == hire_date:
                         rehire_date = ""
                     employee_work_status_code = (
-                        ReportPayrollContributionsPayKonnectUtil._get_loa_info(
-                            employee_payroll_record.leave_infos
+                        (
+                            ReportPayrollContributionsPayKonnectUtil._get_loa_info(
+                                employee_payroll_record.leave_infos
+                            )
                         )
-                    ) if hasattr(employee_payroll_record, "leave_infos") else ""
+                        if hasattr(employee_payroll_record, "leave_infos")
+                        else ""
+                    )
 
                     ytd_leave_infos = []
                     if hasattr(employee_payroll_record, "ytd_leave_infos"):
@@ -509,9 +520,13 @@ class ReportPayrollContributionsPayKonnectUtil:
                     gender = ReportPayrollContributionsPayKonnectUtil._get_gender(
                         employee.gender
                     )
-                    marital_status = ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
-                        employee.marital_status.name
-                    ) if hasattr(employee, "marital_status") else ""
+                    marital_status = (
+                        ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
+                            employee.marital_status.name
+                        )
+                        if hasattr(employee, "marital_status")
+                        else ""
+                    )
                     salary = (
                         employee_payroll_record.salary
                         if hasattr(employee_payroll_record, "salary")
@@ -609,7 +624,11 @@ class ReportPayrollContributionsPayKonnectUtil:
                             ssn, e
                         )
                     )
-                    raise Exception("[ReportPayrollContribution] Not able to write the row for employee: {}".format(ssn))
+                    raise Exception(
+                        "[ReportPayrollContribution] Not able to write the row for employee: {}".format(
+                            ssn
+                        )
+                    )
 
             file = File()
             file.name = ReportPayrollContributionsPayKonnectUtil.get_file_name(
