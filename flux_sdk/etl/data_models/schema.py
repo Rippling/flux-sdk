@@ -50,20 +50,35 @@ class SchemaField:
 # This allows creating a reference to an existing Custom Object.
 @dataclass
 class CustomObjectReference:
+    # An optional explanation for this reference to be shown in the Rippling Custom Object UI.
+    description: str
+
+    # The name of the Custom Object to link to.
     object: str
+
+    # The name of the field on the Custom Object to use for the link.
     lookup: str
 
 
-# These are the available lookup-fields for an employee lookup.
+# These are the available lookup-fields for a Rippling Employee.
 class EmployeeLookup(Enum):
+    # The Rippling Employee ID.
     EMPLOYEE_ID = "employee_id"
+
+    # The work/business email for a Rippling Employee.
     BUSINESS_EMAIL = "business_email"
+
+    # The personal email for a Rippling Employee.
     PERSONAL_EMAIL = "personal_email"
 
 
 # This allows creating a reference to a Rippling employee.
 @dataclass
 class EmployeeReference:
+    # An optional explanation for this reference to be shown in the Rippling Custom Object UI.
+    description: str
+
+    # The name of the field on the Employee object to use for the link.
     lookup: EmployeeLookup
 
 
