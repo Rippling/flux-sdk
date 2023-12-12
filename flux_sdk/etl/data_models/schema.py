@@ -101,6 +101,10 @@ class Schema:
     # This is the name of the field used for the primary key (aka: External ID).
     primary_key_field: str
 
+    # This is the name of the field used for the record name, which is displayed in the Rippling Custom Object UI. When
+    # not provided,
+    name_field: str
+
     # These are the remaining data fields.
     fields: list[SchemaField]
 
@@ -111,18 +115,13 @@ class Schema:
     # If the category already exists, the description will be updated.
     category_description: Optional[str] = None
 
-    # This is the name of the field used for the record name, which is displayed in the Rippling Custom Object UI. When
-    # not provided,
-    name_field: Optional[str] = None
-
-    # This is the name of the field that reflects when the record was first created.
+    # This is the name of the field that reflects when the record was first created. When a field name is not provided,
+    # Rippling will use the time that the record is first imported.
     created_date_field: Optional[str] = None
 
-    # This is the name of the field that reflects when the record was last updated.
+    # This is the name of the field that reflects when the record was last updated. When a field name is not provided,
+    # Rippling will use the time that the record was last updated.
     last_modified_date_field: Optional[str] = None
-
-    # This is a dedicated reference to a Rippling Employee.
-    owner: Optional[EmployeeReference] = None
 
     # These are the links to other objects. The keys are the field names that should be the origin for the link/edge.
     references: Optional[dict[str, Reference]] = None
