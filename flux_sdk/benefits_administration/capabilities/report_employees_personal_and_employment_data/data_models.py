@@ -33,6 +33,8 @@ class PayFrequency(Enum):
     BI_WEEKLY = 2
     MONTHLY = 3
     SEMI_MONTHLY = 4
+    QUARTERLY = 5
+    ANNUALLY = 6
 
 class PayTimeUnit(Enum):
     HOUR = 1
@@ -52,8 +54,9 @@ class Pay:
 
 class EmploymentHours:
     type: EmploymentType
-    effectiveDate: datetime
+    type_effective_date: datetime
     hours_per_week: Optional[int]
+    hours_effective_date: datetime
 
 class Employment:
     hours: EmploymentHours
