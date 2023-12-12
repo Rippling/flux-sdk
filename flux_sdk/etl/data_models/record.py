@@ -19,12 +19,12 @@ class Record:
     # supported by Custom Objects, this does not need to be a full SchemaField.
     primary_key: str
 
-    # This represents the links in this object. Each key is the field name, which is used to look up the target details.
-    # Each value is the identifier used for the link.
-    references: dict[str, str]
-
     # This is the rest of the raw data for this record.
     fields: dict[str, Field]
+
+    # This represents the links in this object. Each key is the field name, which is used to look up the target details.
+    # Each value is the identifier used for the link.
+    references: Optional[dict[str, str]] = None
 
     # This is used by the "process_records" hook to signal to Rippling the checkpoint that can be observed and recorded
     # after the sync is complete. Rippling will keep track of the *highest* value seen from all records. That value will
@@ -32,8 +32,8 @@ class Record:
     # changed since the last sync.
     #
     # This must be used to enable incremental sync, otherwise a full sync will happen each time.
-    checkpoint: Optional[Checkpoint]
+    checkpoint: Optional[Checkpoint] = None
 
     # This flag can be used by the "process_records" hook to signal to Rippling that the object should not be imported.
     # If a Record is not found after this hook, that will be regarded as an error, so this flag should be used instead.
-    drop: bool
+    drop: Optional[bool] = None

@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from datetime import date, datetime, time
 from enum import Enum
-from typing import Any, Union
+from typing import Any, Union, Optional
 
 
-# This enum can be used to indicate a connector type where that needs to be communicated to hooks.
+# This enum can be used to communicate a connector type to app hooks.
 class Connector(Enum):
     SQL = "sql"
     MONGODB = "mongodb"
@@ -25,7 +25,7 @@ class SQLQuery:
     # must use only alphanumeric characters and underscores in variable names in order to be properly detected.
     #
     # This is where a variable like "checkpoint" could be added to have it interpolated safely and cleanly.
-    args: dict[str, SQLQueryArg]
+    args: Optional[dict[str, SQLQueryArg]] = None
 
 
 # This is returned by the "prepare_query" hook for MongoDB connectors.
@@ -35,7 +35,7 @@ class MongoQuery:
     collection: str
 
     # This provides the filter criteria for a basic query.
-    filter: dict[str, Any]
+    filter: Optional[dict[str, Any]] = None
 
 
 # This is the list of types that can be used to represent a query.
