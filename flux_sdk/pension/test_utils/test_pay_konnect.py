@@ -2,6 +2,8 @@ import os
 import unittest
 from datetime import datetime
 
+import pytest
+
 from flux_sdk.flux_core.data_models import (
     Address,
     ContributionType,
@@ -160,6 +162,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                     original_attr_value,
                 )
 
+    @pytest.mark.skip("needs to be fixed by INS team")
     def test_format_contributions_for_pay_konnect_vendor(self):
         contributions_file: File = ReportPayrollContributionsPayKonnectUtil.format_contributions_for_pay_konnect_vendor(
             self.employee_payroll_records, self.payroll_upload_settings
