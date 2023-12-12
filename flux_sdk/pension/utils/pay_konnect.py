@@ -1,12 +1,12 @@
 import contextlib
 import csv
 import datetime
+from io import StringIO
 import logging
 from decimal import Decimal
 from typing import Optional, Union
 
 from pytz import timezone
-from six import StringIO
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
