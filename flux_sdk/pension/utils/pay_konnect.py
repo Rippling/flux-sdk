@@ -3,10 +3,8 @@ import csv
 import datetime
 import logging
 from decimal import Decimal
+from io import StringIO
 from typing import Optional, Union
-
-from pytz import timezone
-from six import StringIO
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
@@ -227,7 +225,8 @@ class ReportPayrollContributionsPayKonnectUtil:
 
     @staticmethod
     def _pst_now():
-        tz = timezone("US/Pacific")
+        from zoneinfo import ZoneInfo
+        tz = ZoneInfo("US/Pacific")
         dt = datetime.datetime.now(tz=tz)
         # Stripping off microseconds here but not miliseconds because mongo ignores the microseconds part.
         return dt.replace(microsecond=int(dt.microsecond / 1000) * 1000)

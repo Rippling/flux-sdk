@@ -84,7 +84,6 @@ class Employee:
     personal_email: str
     gender: Gender
     termination_date: Optional[datetime]
-    start_date: datetime
     w2_start_date: datetime
     address: Address
     status: EmployeeState

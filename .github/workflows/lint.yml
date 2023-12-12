@@ -3,9 +3,16 @@ on:
   pull_request:
   workflow_dispatch:
 jobs:
-  run-linter:
+  ruff:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Run Linter
         run: ./run_ruff.sh
+
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install mypy
+      - run: mypy ./flux_sdk
