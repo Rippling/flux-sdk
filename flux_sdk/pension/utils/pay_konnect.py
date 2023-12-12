@@ -101,12 +101,14 @@ columns_180 = [
     "LOAN_Amount",
 ]
 
+STANDARD_DATE_FORMAT = "%m/%d/%Y"
+
 
 class ReportPayrollContributionsPayKonnectUtil:
     """
     This class embodies the functionality to "report payroll contributions" for vendors utilizing
-    the payKonnect formatted file.
-    Developers are required to implement the format_contributions_for_payKonnect_vendor method in their code.
+    the PayKonnect formatted file.
+    Developers are required to implement the format_contributions_for_pay_konnect_vendor method in their code.
     To obtain the Plan_Number and Plan_Name from the admin during installation, include the following code in
     spoke/config/manifest/variable in your app's manifest file:
     "variables": [
@@ -149,55 +151,40 @@ class ReportPayrollContributionsPayKonnectUtil:
     @staticmethod
     def _get_gender(gender: Gender) -> str:
         if gender.name == "MALE":
-            gender_code = "Male"
-        elif gender.name == "FEMALE":
-            gender_code = "Female"
+            return "Male"
+        if gender.name == "FEMALE":
+            return "Female"
         else:
-            gender_code = "Not Specified"
-
-        return gender_code
+            return "Not Specified"
 
     @staticmethod
     def _get_employee_status(
         employee_status: EmployeeState, ytd_leave_infos: list[LeaveInfo]
     ):
-        status = ""
         if employee_status.name == "ACTIVE":
-            status = "Active"
-        elif employee_status.name == "TERMINATED":
-            status = "Terminated"
+            return "Active"
+        if employee_status.name == "TERMINATED":
+            return "Terminated"
         for leave_info in ytd_leave_infos:
             if (
                 leave_info.start_date
                 <= datetime.datetime.now().date()
                 <= leave_info.return_date
             ):
-                status = "Leave"
-                break
-        return status
-
-    @staticmethod
-    def _date_formatter(date):
-        formatted_date = date.strftime("%m/%d/%Y")
-        if len(formatted_date) != 10:
-            formatted_date = "0" + formatted_date
-        return formatted_date
-
-    @staticmethod
-    def _get_rounded_decimal(amount: Decimal, precision: int):
-        return round(amount, precision)
+                return "Leave"
+        return ""
 
     @staticmethod
     def _get_pay_frequency(pay_frequency: str) -> str:
         if pay_frequency == "WEEKLY":
             return "Weekly"
-        elif pay_frequency == "BI_WEEKLY":
+        if pay_frequency == "BI_WEEKLY":
             return "Bi-Weekly"
-        elif pay_frequency == "SEMI_MONTHLY":
+        if pay_frequency == "SEMI_MONTHLY":
             return "Semi-Monthly"
-        elif pay_frequency == "MONTHLY":
+        if pay_frequency == "MONTHLY":
             return "Monthly"
-        elif pay_frequency == "QUARTERLY":
+        if pay_frequency == "QUARTERLY":
             return "Quarterly"
         else:
             return "Annually"
@@ -280,7 +267,7 @@ class ReportPayrollContributionsPayKonnectUtil:
         return "{}_{}_{}.csv".format(plan_name, transmission_date, report_time)
 
     @staticmethod
-    def format_contributions_for_payKonnect_vendor(
+    def format_contributions_for_pay_konnect_vendor(
         employee_payroll_records: list[EmployeePayrollRecord],
         payroll_upload_settings: PayrollUploadSettings,
     ) -> File:
@@ -304,21 +291,16 @@ class ReportPayrollContributionsPayKonnectUtil:
                 payroll_contributions: list[
                     PayrollRunContribution
                 ] = employee_payroll_record.payroll_contributions
-                payroll_contribution_map = ReportPayrollContributionsPayKonnectUtil._get_payroll_contributions_map(
-                    payroll_contributions
-                )
+                payroll_contribution_map = {
+                    pc.deduction_type.name: pc for pc in payroll_contributions
+                }
                 employee: Employee = employee_payroll_record.employee
-
                 ssn: str = ReportPayrollContributionsPayKonnectUtil._get_formatted_ssn(
                     employee.ssn
                 )
                 ein: str = payroll_upload_settings.ein
                 company_id: str = payroll_upload_settings.payrun_info.payroll_run_id
-                employee_id: str = (
-                    employee.employee_id
-                    if hasattr(employee, "employee_id") and employee.employee_id
-                    else ""
-                )
+                employee_id: str = getattr(employee, "employee_id", "")
                 try:
                     payroll_employee_contribution_401k: Optional[
                         PayrollRunContribution
@@ -331,64 +313,45 @@ class ReportPayrollContributionsPayKonnectUtil:
                     payroll_employee_loan_repayment: Optional[
                         PayrollRunContribution
                     ] = payroll_contribution_map.get(ContributionType.LOAN.name, None)
-
-                    payroll_date_absolute = (
-                        payroll_upload_settings.payrun_info.original_pay_date
-                        if hasattr(
-                            payroll_upload_settings.payrun_info, "original_pay_date"
-                        )
-                        and payroll_upload_settings.payrun_info.original_pay_date
-                        else None
+                    payroll_date_absolute = getattr(
+                        payroll_upload_settings.payrun_info, "original_pay_date", None
                     )
                     payroll_date = (
-                        payroll_date_absolute.strftime("%m/%d/%Y")
+                        payroll_date_absolute.strftime(STANDARD_DATE_FORMAT)
                         if payroll_date_absolute
                         else ""
                     )
-                    payroll_start_date = (
-                        payroll_upload_settings.payrun_info.pay_period_start_date
-                        if hasattr(
-                            payroll_upload_settings.payrun_info, "pay_period_start_date"
-                        )
-                        and payroll_upload_settings.payrun_info.pay_period_start_date
-                        else None
+                    payroll_start_date = getattr(
+                        payroll_upload_settings.payrun_info,
+                        "pay_period_start_date",
+                        None,
                     )
                     payroll_start_date = (
-                        payroll_start_date.strftime("%m/%d/%Y")
+                        payroll_start_date.strftime(STANDARD_DATE_FORMAT)
                         if payroll_start_date
                         else ""
                     )
-
-                    payroll_end_date = (
-                        payroll_upload_settings.payrun_info.pay_period_end_date
-                        if hasattr(
-                            payroll_upload_settings.payrun_info, "pay_period_end_date"
-                        )
-                        and payroll_upload_settings.payrun_info.pay_period_end_date
-                        else None
+                    payroll_end_date = getattr(
+                        payroll_upload_settings.payrun_info, "pay_period_end_date", None
                     )
                     payroll_end_date = (
-                        payroll_end_date.strftime("%m/%d/%Y")
+                        payroll_end_date.strftime(STANDARD_DATE_FORMAT)
                         if payroll_end_date
                         else ""
                     )
-                    payroll_run_type: str = (
-                        ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
-                            payroll_upload_settings.payrun_info.run_type.name
-                        )
-                        if hasattr(payroll_upload_settings.payrun_info, "run_type")
-                        else ""
+                    payroll_run_type: str = getattr(
+                        payroll_upload_settings.payrun_info, "run_type", ""
                     )
-
-                    pay_frequency: str = (
+                    pay_frequency: str = getattr(
+                        payroll_upload_settings.payrun_info, "pay_frequency", None
+                    )
+                    pay_frequency = (
                         ReportPayrollContributionsPayKonnectUtil._get_pay_frequency(
-                            payroll_upload_settings.payrun_info.pay_frequency
+                            pay_frequency
                         )
-                        if hasattr(payroll_upload_settings.payrun_info, "pay_frequency")
-                        and payroll_upload_settings.payrun_info.pay_frequency
+                        if pay_frequency
                         else ""
                     )
-
                     employee_401k: Decimal = (
                         payroll_employee_contribution_401k.amount
                         if payroll_employee_contribution_401k
@@ -452,49 +415,32 @@ class ReportPayrollContributionsPayKonnectUtil:
                         )
                     )
                     termination_date = ""
-                    if (
-                        hasattr(employee, "termination_date")
-                        and employee.termination_date
-                    ):
-                        termination_date = employee.termination_date.strftime("%m%d%Y")
-                    birth_day = (
-                        ReportPayrollContributionsPayKonnectUtil._date_formatter(
-                            employee.dob
+                    if hasattr(employee, "termination_date"):
+                        termination_date = employee.termination_date.strftime(
+                            STANDARD_DATE_FORMAT
                         )
-                    )
+                    birth_day = employee.dob.strftime(STANDARD_DATE_FORMAT)
                     phone_number = (
                         employee.phone_number if employee.phone_number else ""
                     )
-                    rehire_date = (
-                        ReportPayrollContributionsPayKonnectUtil._date_formatter(
-                            employee.start_date
-                        )
-                    )
-                    hire_date = (
-                        ReportPayrollContributionsPayKonnectUtil._date_formatter(
-                            employee.original_hire_date
-                        )
+                    rehire_date = employee.start_date.strftime(STANDARD_DATE_FORMAT)
+                    hire_date = employee.original_hire_date.strftime(
+                        STANDARD_DATE_FORMAT
                     )
                     hours_worked = (
                         employee_payroll_record.hours_worked
                         if employee_payroll_record.hours_worked
                         else Decimal(0)
                     )
-                    gross_pay = (
-                        employee_payroll_record.gross_pay
-                        if hasattr(employee_payroll_record, "gross_pay")
-                        else Decimal(0)
-                    )
-                    employee_year_to_date_hours_worked = (
-                        employee_payroll_record.eoy_info.year_to_date_hours
-                        if hasattr(employee_payroll_record, "eoy_info")
-                        else Decimal(0)
-                    )
-                    employee_year_to_date_gross_pay = (
-                        employee_payroll_record.eoy_info.year_to_date_gross_pay
-                        if hasattr(employee_payroll_record, "eoy_info")
-                        else Decimal(0)
-                    )
+                    gross_pay = getattr(employee_payroll_record, "gross_pay", 0)
+                    eoy_info = getattr(employee_payroll_record, "eoy_info", None)
+                    employee_year_to_date_hours_worked = Decimal(0)
+                    employee_year_to_date_gross_pay = Decimal(0)
+                    if eoy_info:
+                        employee_year_to_date_hours_worked = eoy_info.year_to_date_hours
+                        employee_year_to_date_gross_pay = (
+                            eoy_info.year_to_date_gross_pay
+                        )
                     if rehire_date == hire_date:
                         rehire_date = ""
                     employee_work_status_code = (
@@ -506,12 +452,9 @@ class ReportPayrollContributionsPayKonnectUtil:
                         if hasattr(employee_payroll_record, "leave_infos")
                         else ""
                     )
-
-                    ytd_leave_infos = []
-                    if hasattr(employee_payroll_record, "ytd_leave_infos"):
-                        ytd_leave_infos: list[
-                            LeaveInfo
-                        ] = employee_payroll_record.ytd_leave_infos
+                    ytd_leave_infos: list[LeaveInfo] = getattr(
+                        employee_payroll_record, "ytd_leave_infos", []
+                    )
                     employee_status = (
                         ReportPayrollContributionsPayKonnectUtil._get_employee_status(
                             employee.status, ytd_leave_infos
@@ -527,17 +470,9 @@ class ReportPayrollContributionsPayKonnectUtil:
                         if hasattr(employee, "marital_status")
                         else ""
                     )
-                    salary = (
-                        employee_payroll_record.salary
-                        if hasattr(employee_payroll_record, "salary")
-                        and employee_payroll_record.salary
-                        else Decimal(0)
-                    )
-                    annual_salary = (
-                        employee_payroll_record.annual_salary
-                        if hasattr(employee_payroll_record, "annual_salary")
-                        and employee_payroll_record.annual_salary
-                        else Decimal(0)
+                    salary = getattr(employee_payroll_record, "salary", Decimal(0))
+                    annual_salary = getattr(
+                        employee_payroll_record, "annual_salary", Decimal(0)
                     )
 
                     mapping_from_column_name_to_value = {

@@ -2,7 +2,7 @@ import os
 import unittest
 from datetime import datetime
 
-from flux_sdk.pension.utils.payKonnect import ReportPayrollContributionsPayKonnectUtil
+from flux_sdk.pension.utils.pay_konnect import ReportPayrollContributionsPayKonnectUtil
 from flux_sdk.flux_core.data_models import (
     Address,
     ContributionType,
@@ -31,6 +31,9 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.payroll_upload_settings: PayrollUploadSettings = PayrollUploadSettings()
         self.payrunInfo = PayrunInfo()
         self.payrunInfo.payroll_run_id = "54321"
+        self.payrunInfo.original_pay_date = datetime(2021, 1, 1)
+        self.payrunInfo.pay_period_start_date = datetime(2021, 1, 1)
+        self.payrunInfo.pay_period_end_date = datetime(2021, 2, 1)
         self.payrunInfo.check_date = datetime(2021, 1, 1)
         self.payrunInfo.paid_at_date = datetime(2021, 1, 1)
         self.payrunInfo.pay_frequency = "WEEKLY"
@@ -65,6 +68,8 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employee.dob = datetime(1990, 1, 1)
         employee.start_date = datetime(2020, 1, 1)
         employee.original_hire_date = datetime(2020, 1, 1)
+        employee.termination_date = datetime(2020, 6, 1)
+        employee.start_date = datetime(2021, 1, 1)
         employee.gender = Gender.FEMALE
         employee.is_full_time = True
         employee.is_contractor = False
@@ -139,9 +144,8 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                     incomplete_employee_payroll_record, required_field, None
                 )
             with self.assertRaises(Exception):
-                ReportPayrollContributionsPayKonnectUtil.format_contributions_for_payKonnect_vendor(
-                    incomplete_employee_payroll_records,
-                    self.payroll_upload_settings,
+                ReportPayrollContributionsPayKonnectUtil.format_contributions_for_pay_konnect_vendor(
+                    incomplete_employee_payroll_records, self.payroll_upload_settings
                 )
 
             for index, incomplete_employee_payroll_record in enumerate(
@@ -156,11 +160,12 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                     original_attr_value,
                 )
 
-    def test_format_contributions_for_payKonnect_vendor(self):
-        contributions_file: File = ReportPayrollContributionsPayKonnectUtil.format_contributions_for_payKonnect_vendor(
+    def test_format_contributions_for_pay_konnect_vendor(self):
+        contributions_file: File = ReportPayrollContributionsPayKonnectUtil.format_contributions_for_pay_konnect_vendor(
             self.employee_payroll_records, self.payroll_upload_settings
         )
         file_content = contributions_file.content.decode()
+        print(file_content)
         with open(
             os.path.join(os.path.dirname(__file__), "contributions.csv")
         ) as contribution_file:
