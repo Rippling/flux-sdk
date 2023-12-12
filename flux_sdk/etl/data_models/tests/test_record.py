@@ -8,13 +8,13 @@ from flux_sdk.etl.data_models.record import Record
 
 class TestRecord(unittest.TestCase):
     def test_validate_empty(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(TypeError):
             Record()  # intentionally empty
 
     def test_validate_primary_key_wrong_type(self):
         with self.assertRaises(ValidationError):
             Record(
-                primary_key=123,  # intentionally int rather than string
+                primary_key=("foo", "bar"),  # intentionally wrong type
                 fields={"some_field": "hello world"},
             )
 
