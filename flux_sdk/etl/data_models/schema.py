@@ -1,6 +1,7 @@
-from dataclasses import dataclass
 from enum import Enum
 from typing import Optional, Union
+
+from pydantic.dataclasses import dataclass
 
 
 # These are the data types supported by Rippling Custom Objects.
@@ -27,37 +28,37 @@ class SchemaField:
     # This maps to the field name in the Rippling Custom Object.
     name: str
 
-    # This is a longer explanation of the field that will appear in the Rippling Custom Object UI.
-    description: str
-
     # This indicates the data type used in the Rippling Custom Object.
     data_type: SchemaDataType
 
+    # This is a longer explanation of the field that will appear in the Rippling Custom Object UI.
+    description: Optional[str] = None
+
     # When enabled, this value will be required to be not empty by Rippling Custom Object.
-    is_required: bool
+    is_required: bool = False
 
     # When enabled, this value will be enforced as unique by Rippling Custom Object.
-    is_unique: bool
+    is_unique: bool = False
 
     # When using an Enum data type, this indicates the possible values.
-    enum_values: Optional[list[str]]
+    enum_values: Optional[list[str]] = None
 
     # When using an Enum data type, this indicates if *only* enum_values are accepted, meaning anything else will be
     # rejected with an error.
-    enum_restricted: bool
+    enum_restricted: bool = False
 
 
 # This allows creating a reference to an existing Custom Object.
 @dataclass
 class CustomObjectReference:
-    # An optional explanation for this reference to be shown in the Rippling Custom Object UI.
-    description: str
-
     # The name of the Custom Object to link to.
     object: str
 
     # The name of the field on the Custom Object to use for the link.
     lookup: str
+
+    # An optional explanation for this reference to be shown in the Rippling Custom Object UI.
+    description: Optional[str] = None
 
 
 # These are the available lookup-fields for a Rippling Employee.
@@ -75,11 +76,11 @@ class EmployeeLookup(Enum):
 # This allows creating a reference to a Rippling employee.
 @dataclass
 class EmployeeReference:
-    # An optional explanation for this reference to be shown in the Rippling Custom Object UI.
-    description: str
-
     # The name of the field on the Employee object to use for the link.
     lookup: EmployeeLookup
+
+    # An optional explanation for this reference to be shown in the Rippling Custom Object UI.
+    description: Optional[str] = None
 
 
 # This lists the available types that can be used for schema references.
@@ -92,36 +93,37 @@ class Schema:
     # This is the name of the Custom Object.
     name: str
 
-    # This is a more detailed explanation of the field which will appear in the Rippling Custom Object UI.
-    description: Optional[str]
-
     # This is used to put this Custom Object into a group/category. If a category with this name already exists, a new
     # one will not be created.
     category_name: str
 
-    # When creating a new group/category, this will set a description that will appear in the Rippling Custom Object UI.
-    # If the category already exists, the description will be updated.
-    category_description: Optional[str]
-
     # This is the name of the field used for the primary key (aka: External ID).
     primary_key_field: str
 
-    # This is the name of the field used for the record name, which is displayed in the Rippling Custom Object UI.
-    name_field: str
-
-    # This is the name of the field that reflects when the record was first created.
-    created_date_field: str
-
-    # This is the name of the field that reflects when the record was last updated.
-    last_modified_date_field: str
-
-    # This is a dedicated reference to a Rippling Employee.
-    owner: EmployeeReference
-
-    # These are the links to other objects. The keys are the field names that should be the origin for the link/edge.
-    references: dict[str, Reference]
-
     # These are the remaining data fields.
     fields: list[SchemaField]
+
+    # This is a more detailed explanation of the field which will appear in the Rippling Custom Object UI.
+    description: Optional[str] = None
+
+    # When creating a new group/category, this will set a description that will appear in the Rippling Custom Object UI.
+    # If the category already exists, the description will be updated.
+    category_description: Optional[str] = None
+
+    # This is the name of the field used for the record name, which is displayed in the Rippling Custom Object UI. When
+    # not provided,
+    name_field: Optional[str] = None
+
+    # This is the name of the field that reflects when the record was first created.
+    created_date_field: Optional[str] = None
+
+    # This is the name of the field that reflects when the record was last updated.
+    last_modified_date_field: Optional[str] = None
+
+    # This is a dedicated reference to a Rippling Employee.
+    owner: Optional[EmployeeReference] = None
+
+    # These are the links to other objects. The keys are the field names that should be the origin for the link/edge.
+    references: Optional[dict[str, Reference]] = None
 
 
