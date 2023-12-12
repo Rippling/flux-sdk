@@ -1,6 +1,7 @@
-from dataclasses import dataclass
 from datetime import date, datetime, time
 from typing import Optional, Union
+
+from pydantic.dataclasses import dataclass
 
 # This represents the currently supported types for Record fields. Currently, we only support these primitive types and
 # do not allow for any complex/nested types.
@@ -13,7 +14,7 @@ Checkpoint = Union[datetime, int, str]
 
 
 # This corresponds to a row in the source database.
-@dataclass
+@dataclass(kw_only=True)
 class Record:
     # The ID for this record, which becomes external_id in the Custom Object. Since only a simple, string value is
     # supported by Custom Objects, this does not need to be a full SchemaField.

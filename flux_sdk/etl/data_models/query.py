@@ -1,7 +1,8 @@
-from dataclasses import dataclass
 from datetime import date, datetime, time
 from enum import Enum
-from typing import Any, Union, Optional
+from typing import Any, Optional, Union
+
+from pydantic.dataclasses import dataclass
 
 
 # This enum can be used to communicate a connector type to app hooks.
@@ -15,7 +16,7 @@ SQLQueryArg = Union[str, bool, int, float, datetime, date, time]
 
 
 # This is returned by the "prepare_query" hook for SQL connectors.
-@dataclass
+@dataclass(kw_only=True)
 class SQLQuery:
     # This is the raw text of the query to be executed.
     text: str
@@ -29,7 +30,7 @@ class SQLQuery:
 
 
 # This is returned by the "prepare_query" hook for MongoDB connectors.
-@dataclass
+@dataclass(kw_only=True)
 class MongoQuery:
     # This indicates which collection the query will be executed in.
     collection: str

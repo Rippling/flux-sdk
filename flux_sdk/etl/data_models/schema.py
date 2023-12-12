@@ -23,7 +23,7 @@ class SchemaDataType(Enum):
 
 
 # A field usually corresponds to a column in a database, it is one datum within a Record.
-@dataclass
+@dataclass(kw_only=True)
 class SchemaField:
     # This maps to the field name in the Rippling Custom Object.
     name: str
@@ -49,7 +49,7 @@ class SchemaField:
 
 
 # This allows creating a reference to an existing Custom Object.
-@dataclass
+@dataclass(kw_only=True)
 class CustomObjectReference:
     # The name of the Custom Object to link to.
     object: str
@@ -74,7 +74,7 @@ class EmployeeLookup(Enum):
 
 
 # This allows creating a reference to a Rippling employee.
-@dataclass
+@dataclass(kw_only=True)
 class EmployeeReference:
     # The name of the field on the Employee object to use for the link.
     lookup: EmployeeLookup
@@ -88,7 +88,7 @@ Reference = Union[CustomObjectReference, EmployeeReference]
 
 
 # A schema describes the shape of an object being imported and is used by Rippling to define the Custom Object.
-@dataclass
+@dataclass(kw_only=True)
 class Schema:
     # This is the name of the Custom Object.
     name: str
