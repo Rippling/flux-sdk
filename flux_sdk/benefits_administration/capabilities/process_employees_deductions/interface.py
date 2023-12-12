@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from flux_sdk.flux_core.data_models import CompanyInfo, File
+from flux_sdk.benefits_administration.capabilities.process_employees_deductions.data_models import DeductionDetails
 
 
 class ProcessEmployeesDeductions(ABC):
@@ -13,7 +14,7 @@ class ProcessEmployeesDeductions(ABC):
 
     @staticmethod
     @abstractmethod
-    def process_employees_deductions_into_rippling(deductions_file: File):
+    def process_employees_deductions_into_rippling(deductions_file: File) -> list[DeductionDetails]:
         """
         This method receives the file which contains the deductions relevant to the companies employees.
         The developer is supposed to implement the following methods to process this data in accordance with their requirements

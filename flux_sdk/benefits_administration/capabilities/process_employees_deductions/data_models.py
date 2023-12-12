@@ -1,0 +1,2 @@
+class DeductionDetails:
+    value: str
