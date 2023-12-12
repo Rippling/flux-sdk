@@ -134,18 +134,6 @@ class ReportPayrollContributionsPayKonnectUtil:
     """
 
     @staticmethod
-    def _get_payroll_contributions_map(
-        payroll_contributions: list[PayrollRunContribution],
-    ) -> dict[str, PayrollRunContribution]:
-        payroll_contribution_map = {}
-        for payroll_contribution in payroll_contributions:
-            payroll_contribution_map[
-                payroll_contribution.deduction_type.name
-            ] = payroll_contribution
-
-        return payroll_contribution_map
-
-    @staticmethod
     def _get_formatted_ssn(ssn: str) -> str:
         return ssn[:3] + "-" + ssn[3:5] + "-" + ssn[5:9]
 
