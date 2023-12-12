@@ -2,7 +2,14 @@ import unittest
 
 from pydantic import ValidationError
 
-from flux_sdk.etl.data_models.schema import Schema, SchemaField, SchemaDataType, EmployeeReference, EmployeeLookup, CustomObjectReference
+from flux_sdk.etl.data_models.schema import (
+    CustomObjectReference,
+    EmployeeLookup,
+    EmployeeReference,
+    Schema,
+    SchemaDataType,
+    SchemaField,
+)
 
 
 class TestSchema(unittest.TestCase):
@@ -61,6 +68,90 @@ class TestSchema(unittest.TestCase):
                     description="This is a description of another_object in the context of some_object.",
                 ),
             },
+        )
+
+
+class TestSchemaField(unittest.TestCase):
+    def test_validate_empty(self):
+        with self.assertRaises(ValidationError):
+            SchemaField()  # intentionally empty
+
+    def test_validate_name_wrong_type(self):
+        with self.assertRaises(ValidationError):
+            SchemaField(
+                name=123,  # intentionally int rather than string
+                data_type=SchemaDataType.LongText,
+            )
+
+    def test_validate_data_type_not_valid_enum_value(self):
+        with self.assertRaises(ValidationError):
+            SchemaField(
+                name="some_field",
+                data_type="not one of the valid enums",
+            )
+
+    def test_validate_success_minimal(self):
+        SchemaField(
+            name="some_text_field",
+            data_type=SchemaDataType.String,
+        )
+
+    def test_validate_success_complete(self):
+        SchemaField(
+            name="some_enum_field",
+            data_type=SchemaDataType.Enum,
+            description="This is a description for a field.",
+            is_required=True,
+            is_unique=False,
+            enum_values=["A", "B", "C"],
+            enum_restricted=True,
+        )
+
+
+class TestCustomObjectReference(unittest.TestCase):
+    def test_validate_empty(self):
+        with self.assertRaises(ValidationError):
+            CustomObjectReference()  # intentionally empty
+
+    def test_validate_object_wrong_type(self):
+        with self.assertRaises(ValidationError):
+            CustomObjectReference(
+                object=123,  # intentionally int rather than string
+                lookup="some_field"
+            )
+
+    def test_validate_success_minimal(self):
+        CustomObjectReference(
+            object="some_object",
+            lookup="some_field",
+        )
+
+    def test_validate_success_complete(self):
+        CustomObjectReference(
+            object="some_object",
+            lookup="some_field",
+            description="This is a description of the reference.",
+        )
+
+
+class TestEmployeeReference(unittest.TestCase):
+    def test_validate_empty(self):
+        with self.assertRaises(ValidationError):
+            EmployeeReference()  # intentionally empty
+
+    def test_validate_lookup_wrong_type(self):
+        with self.assertRaises(ValidationError):
+            EmployeeReference(
+                lookup=123,  # intentionally int rather than string
+            )
+
+    def test_validate_success_minimal(self):
+        EmployeeReference(lookup=EmployeeLookup.EMPLOYEE_ID)
+
+    def test_validate_success_complete(self):
+        EmployeeReference(
+            lookup=EmployeeLookup.BUSINESS_EMAIL,
+            description="This is a description of the reference.",
         )
 
 
