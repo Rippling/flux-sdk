@@ -5,6 +5,9 @@ import logging
 from decimal import Decimal
 from typing import Optional, Union
 
+from pytz import timezone
+from six import StringIO
+
 from flux_sdk.flux_core.data_models import (
     ContributionType,
     Employee,
@@ -18,8 +21,6 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
     PayrollRunContribution,
     PayrollUploadSettings,
 )
-from pytz import timezone
-from six import StringIO
 
 logger = logging.getLogger(__name__)
 
