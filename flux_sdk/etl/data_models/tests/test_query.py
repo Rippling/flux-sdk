@@ -2,7 +2,7 @@ import unittest
 
 from pydantic import ValidationError
 
-from flux_sdk.etl.data_models.query import SQLQuery, MongoQuery
+from flux_sdk.etl.data_models.query import MongoQuery, SQLQuery
 
 
 class TestSQLQuery(unittest.TestCase):
