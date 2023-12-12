@@ -23,6 +23,7 @@ class TestSchema(unittest.TestCase):
                 name=("foo", "bar"),  # intentionally wrong type
                 category_name="some_category",
                 primary_key_field="id",
+                name_field="name",
                 fields=[
                     SchemaField(name="some_field", data_type=SchemaDataType.String),
                 ]
@@ -33,6 +34,7 @@ class TestSchema(unittest.TestCase):
             name="some_object",
             category_name="some_category",
             primary_key_field="id",
+            name_field="name",
             fields=[
                 SchemaField(name="some_field", data_type=SchemaDataType.String),
             ]
