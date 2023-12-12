@@ -2,7 +2,6 @@ import os
 import unittest
 from datetime import datetime
 
-from flux_sdk.pension.utils.pay_konnect import ReportPayrollContributionsPayKonnectUtil
 from flux_sdk.flux_core.data_models import (
     Address,
     ContributionType,
@@ -20,6 +19,7 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
     PayrollUploadSettings,
     PayrunInfo,
 )
+from flux_sdk.pension.utils.pay_konnect import ReportPayrollContributionsPayKonnectUtil
 
 
 class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):

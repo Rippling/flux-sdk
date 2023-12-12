@@ -1,25 +1,25 @@
 import contextlib
 import csv
-import logging
 import datetime
+import logging
 from decimal import Decimal
-from six import StringIO
-from pytz import timezone
 from typing import Optional, Union
 
 from flux_sdk.flux_core.data_models import (
-    File,
-    Employee,
     ContributionType,
-    Gender,
+    Employee,
     EmployeeState,
+    File,
+    Gender,
 )
 from flux_sdk.pension.capabilities.report_payroll_contributions.data_models import (
     EmployeePayrollRecord,
+    LeaveInfo,
     PayrollRunContribution,
     PayrollUploadSettings,
-    LeaveInfo,
 )
+from pytz import timezone
+from six import StringIO
 
 logger = logging.getLogger(__name__)
 
@@ -437,12 +437,14 @@ class ReportPayrollContributionsPayKonnectUtil:
                     employee_year_to_date_hours_worked = Decimal(0)
                     employee_year_to_date_gross_pay = Decimal(0)
                     ytd_employee_401k = Decimal(0)
+                    ytd_plan_compensation = Decimal(0)
                     if eoy_info:
                         employee_year_to_date_hours_worked = eoy_info.year_to_date_hours
                         employee_year_to_date_gross_pay = (
                             eoy_info.year_to_date_gross_pay
                         )
                         ytd_employee_401k = eoy_info.year_to_date_pretax_deferral
+                        ytd_plan_compensation = eoy_info.year_to_date_plan_compensation
                     if rehire_date == hire_date:
                         rehire_date = ""
                     employee_work_status_code = (
@@ -482,7 +484,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "Plan_Name": plan_name,
                         "EIN": ein,
                         "Company_ID": company_id,
-                        "Division": "CLARIFY",
+                        "Division": "",                # Todo: Waiting on clarifications from PayKonnect(Not a blocker)
                         "Payroll_Date": payroll_date,
                         "Payroll_Start_Date": payroll_start_date,
                         "Ending_Payroll_date": payroll_end_date,
@@ -511,7 +513,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "Hire_Date": hire_date,
                         "Termination_Date": termination_date,
                         "ReHire_Date": rehire_date,
-                        "Pay_Group": "CLARIFY",
+                        "Pay_Group": "",
                         "Employee_Category": employee_category,
                         "Employee_Pay_Type": pay_type,
                         "Employee_WorkStatus_Code": employee_work_status_code,
@@ -521,19 +523,19 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "Employee_Location_Code": "",
                         "Pay_Period_Hours": hours_worked,
                         "Pay_Period_Gross_Wages": gross_pay,
-                        "Pay_Period_Plan_Wages": "CLARIFY",
+                        "Pay_Period_Plan_Wages": "",
                         "Pay_Period_Excluded_Wages": "",
                         "YTD_Hours_Worked": employee_year_to_date_hours_worked,
                         "YTD_Total_Compensation": employee_year_to_date_gross_pay,
-                        "YTD_Plan_Compensation": "CLARIFY",
+                        "YTD_Plan_Compensation": ytd_plan_compensation,
                         "YTD_Excluded_Compensation": "",
                         "Officer_Type": "",
                         "Ownership_Percentage": "",
                         "Highly_Comp_Code": "",
                         "Participation_Date": "",
-                        "Eligibility_Code": "CLARIFY",
+                        "Eligibility_Code": "",
                         "Salary_Amount": salary,
-                        "Termination_Reason_Code": "NEED TO ADD",
+                        "Termination_Reason_Code": "",
                         "Sarbanes_Oxley_Reporting_Indicator": "",
                         "Federal_Exemptions": "",
                         "Projected Start Date": "",
