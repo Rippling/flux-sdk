@@ -436,11 +436,13 @@ class ReportPayrollContributionsPayKonnectUtil:
                     eoy_info = getattr(employee_payroll_record, "eoy_info", None)
                     employee_year_to_date_hours_worked = Decimal(0)
                     employee_year_to_date_gross_pay = Decimal(0)
+                    ytd_employee_401k = Decimal(0)
                     if eoy_info:
                         employee_year_to_date_hours_worked = eoy_info.year_to_date_hours
                         employee_year_to_date_gross_pay = (
                             eoy_info.year_to_date_gross_pay
                         )
+                        ytd_employee_401k = eoy_info.year_to_date_pretax_deferral
                     if rehire_date == hire_date:
                         rehire_date = ""
                     employee_work_status_code = (
@@ -542,11 +544,11 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "Earnings": "",
                         "Earnings_YTD": "",
                         "CONT_401K": employee_401k,
-                        "CONT_YTD_401K": "",
+                        "CONT_YTD_401K": ytd_employee_401k,
                         "CONT_Contribution_%_401K": "",
                         "CONT_Contribution_$_401K": "",
-                        "CONT_Company_Match": "",
-                        "CONT_YTD_Company_Match": company_match_contribution,
+                        "CONT_Company_Match": company_match_contribution,
+                        "CONT_YTD_Company_Match": "",
                         "CONT_Contribution_%_Company_Match": "",
                         "CONT_Contribution_$_Company_Match": "",
                         "LOAN_Ref_Number": 1,
