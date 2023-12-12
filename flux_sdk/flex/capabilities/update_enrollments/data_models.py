@@ -9,6 +9,17 @@ class BenefitType(Enum):
     HSA = 1
     COMMUTER = 2
 
+
+# specify the family enrollment status for HSA
+class HSAFamilyType(Enum):
+    UNSPECIFIED = 0
+    EE_ONLY = 1
+    EE_AND_SPOUSE = 2
+    EE_AND_SPOUSE_AND_ONE_OR_MORE_CHILDREN = 3
+    EE_AND_ONE_CHILD = 4
+    EE_AND_TWO_OR_MORE_CHILDREN = 5
+
+
 class EmployeeEnrollment:
     role_id: str
     employee_number: str
@@ -57,3 +68,4 @@ class EmployeeEnrollment:
     plan_year_start_date: str
     division: str
     has_dependent: bool
+    hsa_family_type: Optional[HSAFamilyType]
