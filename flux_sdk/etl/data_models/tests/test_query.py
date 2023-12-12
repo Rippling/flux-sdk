@@ -7,13 +7,13 @@ from flux_sdk.etl.data_models.query import SQLQuery, MongoQuery
 
 class TestSQLQuery(unittest.TestCase):
     def test_validate_empty(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(TypeError):
             SQLQuery()  # intentionally empty
 
     def test_validate_text_wrong_type(self):
         with self.assertRaises(ValidationError):
             SQLQuery(
-                text=123,  # intentionally int rather than string
+                text=("foo", "bar"),  # intentionally wrong type
             )
 
     def test_validate_success_minimal(self):
@@ -30,13 +30,13 @@ class TestSQLQuery(unittest.TestCase):
 
 class TestMongoQuery(unittest.TestCase):
     def test_validate_empty(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(TypeError):
             MongoQuery()  # intentionally empty
 
     def test_validate_collection_wrong_type(self):
         with self.assertRaises(ValidationError):
             MongoQuery(
-                collection=123,  # intentionally int rather than string
+                collection=("foo", "bar"),  # intentionally wrong type
             )
 
     def test_validate_success_minimal(self):

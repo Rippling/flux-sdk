@@ -14,13 +14,13 @@ from flux_sdk.etl.data_models.schema import (
 
 class TestSchema(unittest.TestCase):
     def test_validate_empty(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(TypeError):
             Schema()  # intentionally empty
 
     def test_validate_name_wrong_type(self):
         with self.assertRaises(ValidationError):
             Schema(
-                name=123,  # intentionally int rather than string
+                name=("foo", "bar"),  # intentionally wrong type
                 category_name="some_category",
                 primary_key_field="id",
                 fields=[
@@ -73,13 +73,13 @@ class TestSchema(unittest.TestCase):
 
 class TestSchemaField(unittest.TestCase):
     def test_validate_empty(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(TypeError):
             SchemaField()  # intentionally empty
 
     def test_validate_name_wrong_type(self):
         with self.assertRaises(ValidationError):
             SchemaField(
-                name=123,  # intentionally int rather than string
+                name=("foo", "bar"),  # intentionally wrong type
                 data_type=SchemaDataType.LongText,
             )
 
@@ -110,13 +110,13 @@ class TestSchemaField(unittest.TestCase):
 
 class TestCustomObjectReference(unittest.TestCase):
     def test_validate_empty(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(TypeError):
             CustomObjectReference()  # intentionally empty
 
     def test_validate_object_wrong_type(self):
         with self.assertRaises(ValidationError):
             CustomObjectReference(
-                object=123,  # intentionally int rather than string
+                object=("foo", "bar"),  # intentionally wrong type
                 lookup="some_field"
             )
 
@@ -136,13 +136,13 @@ class TestCustomObjectReference(unittest.TestCase):
 
 class TestEmployeeReference(unittest.TestCase):
     def test_validate_empty(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(TypeError):
             EmployeeReference()  # intentionally empty
 
     def test_validate_lookup_wrong_type(self):
         with self.assertRaises(ValidationError):
             EmployeeReference(
-                lookup=123,  # intentionally int rather than string
+                lookup=("foo", "bar"),  # intentionally wrong type
             )
 
     def test_validate_success_minimal(self):
