@@ -2,7 +2,7 @@ import contextlib
 import csv
 import datetime
 import logging
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from io import StringIO
 from typing import Optional, Union
 
@@ -21,42 +21,43 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
 logger = logging.getLogger(__name__)
 
 COLUMNS_180 = [
-            "SOCIAL SECURITY",
-            "LAST NAME",
-            "FIRST NAME",
-            "MI",
-            "DIVISIONAL CODE",
-            "TOTAL COMPENSATION",
-            "EMPLOYEE 401(K)",
-            "ROTH 401(K)",
-            "LOAN PAYMENT AMOUNT",
-            "MATCH",
-            "PROFIT SHARING",
-            "SAFE HARBOR MATCH",
-            "SAFE HARBOR NEC",
-            "CLIENT SPECIFIC",
-            "HOURS",
-            "ADDRESS 1",
-            "ADDRESS 2",
-            "CITY",
-            "STATE",
-            "ZIP",
-            "DATE OF BIRTH",
-            "CURRENT DATE OF HIRE",
-            "EMPLOYEE ELIGIBILITY DATE",
-            "CURRENT DATE OF TERM",
-            "PRIOR DATE OF HIRE",
-            "PRIOR DATE OF TERM",
-            "ESTIMATED ANNUAL COMPENSATION",
-            "EMPLOYMENT STATUS",
-            "HCE CODE",
-            "KEY EE CODE",
-            "ENROLLMENT ELIGIBILITY",
-            "UNION STATUS CODE",
-            "EMPLOYEE WORK EMAIL",
-        ]
+    "SOCIAL SECURITY",
+    "LAST NAME",
+    "FIRST NAME",
+    "MI",
+    "DIVISIONAL CODE",
+    "TOTAL COMPENSATION",
+    "EMPLOYEE 401(K)",
+    "ROTH 401(K)",
+    "LOAN PAYMENT AMOUNT",
+    "MATCH",
+    "PROFIT SHARING",
+    "SAFE HARBOR MATCH",
+    "SAFE HARBOR NEC",
+    "CLIENT SPECIFIC",
+    "HOURS",
+    "ADDRESS 1",
+    "ADDRESS 2",
+    "CITY",
+    "STATE",
+    "ZIP",
+    "DATE OF BIRTH",
+    "CURRENT DATE OF HIRE",
+    "EMPLOYEE ELIGIBILITY DATE",
+    "CURRENT DATE OF TERM",
+    "PRIOR DATE OF HIRE",
+    "PRIOR DATE OF TERM",
+    "ESTIMATED ANNUAL COMPENSATION",
+    "EMPLOYMENT STATUS",
+    "HCE CODE",
+    "KEY EE CODE",
+    "ENROLLMENT ELIGIBILITY",
+    "UNION STATUS CODE",
+    "EMPLOYEE WORK EMAIL",
+]
 
 STANDARD_DATE_FORMAT = "%m/%d/%Y"
+TWO_PLACES = Decimal(".01")
 
 
 class ReportPayrollContributionsAscensusUtil:
@@ -76,6 +77,7 @@ class ReportPayrollContributionsAscensusUtil:
         ],
     For further details regarding their implementation details, check their documentation.
     """
+
     @staticmethod
     def _get_formatted_ssn(ssn: str) -> str:
         return ssn[:3] + "-" + ssn[3:5] + "-" + ssn[5:9]
@@ -86,9 +88,17 @@ class ReportPayrollContributionsAscensusUtil:
         return data
 
     @staticmethod
+    def _get_amount_from_payroll_contribution(
+        payroll_contribution: Optional[PayrollRunContribution],
+    ):
+        if payroll_contribution is None:
+            return Decimal("0.00")
+        return payroll_contribution.amount.quantize(TWO_PLACES, ROUND_HALF_UP)
+
+    @staticmethod
     def get_file_name(payroll_upload_settings: PayrollUploadSettings) -> str:
         """
-        This method receives a PayrollUploadSettings from which the developer
+        Receives a PayrollUploadSettings from which the developer
         is expected to return file name based on payroll_upload_settings
         :param payroll_upload_settings:
         :return: str
@@ -98,15 +108,19 @@ class ReportPayrollContributionsAscensusUtil:
         payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
 
         if not environment or not client_id:
-            raise RuntimeError("Environment and client_id must be present to upload Vanguard file")
+            raise RuntimeError(
+                "Environment and client_id must be present to upload Vanguard file"
+            )
         timestamp = datetime.datetime.now()
         format_timestamp = timestamp.strftime("%m%d%Y.%H%M%S")
-        return "{}_{}_{}_{}.csv".format(environment, client_id, str(payroll_run_id), format_timestamp)
+        return "{}_{}_{}_{}.csv".format(
+            environment, client_id, payroll_run_id, format_timestamp
+        )
 
     @staticmethod
     def format_contributions_for_ascensus_vendor(
-            employee_payroll_records: list[EmployeePayrollRecord],
-            payroll_upload_settings: PayrollUploadSettings,
+        employee_payroll_records: list[EmployeePayrollRecord],
+        payroll_upload_settings: PayrollUploadSettings,
     ):
         """
         Given a list of EmployeePayrollRecord and the PayrollUploadSettings, prepare a file for upload to the pension
@@ -122,7 +136,9 @@ class ReportPayrollContributionsAscensusUtil:
 
             for employee_payroll_record in employee_payroll_records:
                 employee: Employee = employee_payroll_record.employee
-                ssn = ReportPayrollContributionsAscensusUtil._get_formatted_ssn(employee.ssn)
+                ssn = ReportPayrollContributionsAscensusUtil._get_formatted_ssn(
+                    employee.ssn
+                )
                 payroll_contributions: list[
                     PayrollRunContribution
                 ] = employee_payroll_record.payroll_contributions
@@ -141,9 +157,14 @@ class ReportPayrollContributionsAscensusUtil:
                     work_email = employee.business_email
                     employee_dob = employee.dob.strftime(STANDARD_DATE_FORMAT)
 
-                    current_date_of_hire = employee.start_date.strftime(STANDARD_DATE_FORMAT)
+                    current_date_of_hire = employee.start_date.strftime(
+                        STANDARD_DATE_FORMAT
+                    )
                     current_date_of_term = getattr(employee, "termination_date", None)
-                    if current_date_of_term and employee.status == EmployeeState.TERMINATED:
+                    if (
+                        current_date_of_term
+                        and employee.status == EmployeeState.TERMINATED
+                    ):
                         current_date_of_term = current_date_of_term.strftime(
                             STANDARD_DATE_FORMAT
                         )
@@ -153,30 +174,45 @@ class ReportPayrollContributionsAscensusUtil:
                         STANDARD_DATE_FORMAT
                     )
                     prior_term_date = ""
-                    if hasattr(employee, "termination_date") and employee.termination_date:
-                        prior_term_date = employee.termination_date.strftime(STANDARD_DATE_FORMAT)
+                    if (
+                        hasattr(employee, "termination_date")
+                        and employee.termination_date
+                    ):
+                        prior_term_date = employee.termination_date.strftime(
+                            STANDARD_DATE_FORMAT
+                        )
 
-                    payroll_employee_contribution_401k: Optional[
-                        PayrollRunContribution
-                    ] = payroll_contribution_map.get(ContributionType._401K.name, None)
-                    payroll_company_match_contribution: Optional[
-                        PayrollRunContribution
-                    ] = payroll_contribution_map.get(
-                        ContributionType.COMPANY_MATCH.name, None
+                    payroll_employee_contribution_401k: Decimal = ReportPayrollContributionsAscensusUtil.\
+                        _get_amount_from_payroll_contribution(
+                        payroll_contribution_map.get(ContributionType._401K.name, None)
                     )
-                    payroll_employee_loan_repayment: Optional[
-                        PayrollRunContribution
-                    ] = payroll_contribution_map.get(ContributionType.LOAN.name, None)
-                    payroll_employee_roth_401k: Optional[
-                        PayrollRunContribution
-                    ] = payroll_contribution_map.get(ContributionType.ROTH.name, None)
+                    payroll_company_match_contribution: Decimal = ReportPayrollContributionsAscensusUtil.\
+                        _get_amount_from_payroll_contribution(
+                        payroll_contribution_map.get(
+                            ContributionType.COMPANY_MATCH.name, None
+                        )
+                    )
+                    payroll_employee_loan_repayment: Decimal = ReportPayrollContributionsAscensusUtil.\
+                        _get_amount_from_payroll_contribution(
+                        payroll_contribution_map.get(ContributionType.LOAN.name, None)
+                    )
+                    payroll_employee_roth_401k: Decimal = ReportPayrollContributionsAscensusUtil.\
+                        _get_amount_from_payroll_contribution(
+                        payroll_contribution_map.get(ContributionType.ROTH.name, None)
+                    )
 
-                    gross_pay = getattr(employee_payroll_record, "gross_pay", Decimal(0))
-                    annual_salary = getattr(employee_payroll_record, "annual_salary", Decimal(0))
-                    
-                    hours_worked = getattr(employee_payroll_record, "hours_worked", Decimal(0))
+                    gross_pay = getattr(
+                        employee_payroll_record, "gross_pay", Decimal(0)
+                    )
+                    annual_salary = getattr(
+                        employee_payroll_record, "annual_salary", Decimal(0)
+                    )
 
-                    mapping_from_column_name_to_value ={
+                    hours_worked = getattr(
+                        employee_payroll_record, "hours_worked", Decimal(0)
+                    )
+
+                    mapping_from_column_name_to_value = {
                         "SOCIAL SECURITY": ssn,
                         "LAST NAME": employee_last_name,
                         "FIRST NAME": employee_first_name,
@@ -209,7 +245,7 @@ class ReportPayrollContributionsAscensusUtil:
                         "KEY EE CODE": "",
                         "ENROLLMENT ELIGIBILITY": "",
                         "UNION STATUS CODE": "",
-                        "EMPLOYEE WORK EMAIL": work_email
+                        "EMPLOYEE WORK EMAIL": work_email,
                     }
                     writer.writerow(mapping_from_column_name_to_value)
                 except Exception as e:

@@ -9,21 +9,18 @@ from flux_sdk.flux_core.data_models import (
     Employee,
     EmployeeState,
     File,
-    Gender,
-    LeaveType,
     MaritalStatus,
 )
 from flux_sdk.pension.capabilities.report_payroll_contributions.data_models import (
     EmployeePayrollRecord,
-    LeaveInfo,
     PayrollRunContribution,
     PayrollUploadSettings,
     PayrunInfo,
 )
-from flux_sdk.pension.utils.pay_konnect import ReportPayrollContributionsPayKonnectUtil
+from flux_sdk.pension.utils.ascensus import ReportPayrollContributionsAscensusUtil
 
 
-class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
+class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
     """
     Tests for functions for the UpdatePayrollContributions capability.
     """
@@ -33,14 +30,8 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.payrunInfo = PayrunInfo()
         self.payrunInfo.payroll_run_id = "54321"
         self.payrunInfo.original_pay_date = datetime(2021, 1, 1)
-        self.payrunInfo.pay_period_start_date = datetime(2021, 1, 1)
-        self.payrunInfo.pay_period_end_date = datetime(2021, 2, 1)
-        self.payrunInfo.check_date = datetime(2021, 1, 1)
-        self.payrunInfo.paid_at_date = datetime(2021, 1, 1)
-        self.payrunInfo.pay_frequency = "WEEKLY"
         self.customer_partner_settings: dict = {
-            "plan_id": "HISS001",
-            "plan_name": "Hiss",
+            "client_id": "HISS00",
         }
         self.payroll_upload_settings.customer_partner_settings = (
             self.customer_partner_settings
@@ -49,6 +40,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.payroll_upload_settings.company_legal_name = "RIPPLING TEST"
         self.payroll_upload_settings.company_name = "RIPPLING"
         self.payroll_upload_settings.ein = "123456789"
+        self.payroll_upload_settings.environment = "TS"
 
         self.employee_payroll_records: list[EmployeePayrollRecord] = []
         employeePayrollRecord = EmployeePayrollRecord()
@@ -71,33 +63,27 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employee.original_hire_date = datetime(2020, 1, 1)
         employee.termination_date = datetime(2020, 6, 1)
         employee.start_date = datetime(2021, 1, 1)
-        employee.gender = Gender.FEMALE
-        employee.is_full_time = True
-        employee.is_contractor = False
-        employee.phone_number = "1234543212"
-        employee.personal_email = "test@email.com"
-        employee.is_salaried = True
         employee.status = EmployeeState.ACTIVE
         employee.is_international_employee = False
         employee.marital_status = MaritalStatus.SINGLE
 
         payrollRunContribution1 = PayrollRunContribution()
         payrollRunContribution1.deduction_type = ContributionType._401K
-        payrollRunContribution1.amount = Decimal(1000)
+        payrollRunContribution1.amount = Decimal(1000.001)
 
         payrollRunContribution2 = PayrollRunContribution()
         payrollRunContribution2.deduction_type = ContributionType.LOAN
-        payrollRunContribution2.amount = Decimal(3000)
+        payrollRunContribution2.amount = Decimal(3000.20)
 
         payroll_contributions = [payrollRunContribution1, payrollRunContribution2]
         employeePayrollRecord.payroll_contributions = payroll_contributions
         employeePayrollRecord.employee = employee
 
-        employeePayrollRecord.gross_pay = Decimal(10000)
-        employeePayrollRecord.hours_worked = Decimal(2400)
-        employeePayrollRecord.annual_salary = Decimal(100000)
-
-        self.seed_loa(employeePayrollRecord)
+        employeePayrollRecord.eligible_compensation = 10000
+        employeePayrollRecord.gross_pay = 10000
+        employeePayrollRecord.hours_worked = 2400
+        employeePayrollRecord.annual_salary = 100000
+        employeePayrollRecord.eligible_compensation = 10000
 
         self.employee_payroll_records = [employeePayrollRecord]
 
@@ -110,7 +96,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             curr_obj = getattr(curr_obj, attribute, None)
         return curr_obj
 
-    def set_nested_attribute(self, obj, attribute, value) -> None:
+    def set_nested_attribute(self, obj, attribute, value):
         nested_list = attribute.split(".")
         curr_obj = obj
         for index, attribute in enumerate(nested_list):
@@ -120,7 +106,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                 setattr(curr_obj, attribute, value)
             curr_obj = getattr(curr_obj, attribute, None)
 
-    def test_format_contributions_for_payKonnect_vendor_failure(self) -> None:
+    def test_format_contributions_for_ascensus_vendor_failure(self):
         required_employee_payroll_records_information = [
             "employee.ssn",
             "payroll_contributions",
@@ -143,7 +129,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                     incomplete_employee_payroll_record, required_field, None
                 )
             with self.assertRaises(Exception):
-                ReportPayrollContributionsPayKonnectUtil.format_contributions_for_pay_konnect_vendor(
+                ReportPayrollContributionsAscensusUtil.format_contributions_for_ascensus_vendor(
                     incomplete_employee_payroll_records, self.payroll_upload_settings
                 )
 
@@ -159,12 +145,11 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                     original_attr_value,
                 )
 
-    def test_format_contributions_for_pay_konnect_vendor(self) -> None:
-        contributions_file: File = ReportPayrollContributionsPayKonnectUtil.format_contributions_for_pay_konnect_vendor(
+    def test_format_contributions_for_ascensus_vendor(self):
+        contributions_file: File = ReportPayrollContributionsAscensusUtil.format_contributions_for_ascensus_vendor(
             self.employee_payroll_records, self.payroll_upload_settings
         )
         file_content = contributions_file.content.decode()
-        print(file_content)
         with open(
             os.path.join(os.path.dirname(__file__), "contributions.csv")
         ) as contribution_file:
@@ -173,24 +158,13 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                 file_content.replace("\r\n", "\n"), contribution_file_contents
             )
 
-    def test_get_file_name(self) -> None:
-        file_name = ReportPayrollContributionsPayKonnectUtil.get_file_name(
+    def test_get_file_name(self):
+        file_name = ReportPayrollContributionsAscensusUtil.get_file_name(
             self.payroll_upload_settings
         )
-        transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
-        report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime(
-            "%H%M%S"
-        )
-        test_file_name = "{}_{}_{}.csv".format(
-            "HISS001", transmission_date, report_time
+        timestamp = datetime.now()
+        format_timestamp = timestamp.strftime("%m%d%Y.%H%M%S")
+        test_file_name = "{}_{}_{}_{}.csv".format(
+            "TS", "HISS00","54321", format_timestamp,
         )
         self.assertEqual(file_name, test_file_name)
-
-    def seed_loa(self, employeePayrollRecord) -> None:
-        leave_info = LeaveInfo()
-        leave_info.leave_type = LeaveType.MEDICAL
-        leave_info.start_date = datetime(2021, 1, 1).date()
-        leave_info.return_date = datetime(2021, 1, 10).date()
-        leave_info.is_paid = True
-        employeePayrollRecord.leave_infos = [leave_info]
-        employeePayrollRecord.ytd_leave_infos = [leave_info]
