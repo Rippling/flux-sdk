@@ -104,7 +104,7 @@ class ReportPayrollContributionsAscensusUtil:
         :return: str
         """
         environment = payroll_upload_settings.environment
-        client_id = payroll_upload_settings.customer_partner_settings.get("client_id")
+        client_id: str = payroll_upload_settings.customer_partner_settings.get("client_id")
         payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
 
         if not environment or not client_id:
@@ -121,7 +121,7 @@ class ReportPayrollContributionsAscensusUtil:
     def format_contributions_for_ascensus_vendor(
         employee_payroll_records: list[EmployeePayrollRecord],
         payroll_upload_settings: PayrollUploadSettings,
-    ):
+    ) -> File:
         """
         Given a list of EmployeePayrollRecord and the PayrollUploadSettings, prepare a file for upload to the pension
         provider.  The file will be sent verbatim, so any compression or other formatting required by the pension
@@ -147,8 +147,8 @@ class ReportPayrollContributionsAscensusUtil:
                 }
 
                 try:
-                    employee_first_name: str = employee.first_name
-                    employee_last_name: str = employee.last_name
+                    employee_first_name = employee.first_name
+                    employee_last_name = employee.last_name
                     address_line_1 = employee.address.address_line_1
                     address_line_2 = employee.address.address_line_2
                     zip_code = employee.address.zip_code
@@ -160,7 +160,7 @@ class ReportPayrollContributionsAscensusUtil:
                     current_date_of_hire = employee.start_date.strftime(
                         STANDARD_DATE_FORMAT
                     )
-                    current_date_of_term = getattr(employee, "termination_date", None)
+                    current_date_of_term: Optional[datetime] = getattr(employee, "termination_date", None)
                     if (
                         current_date_of_term
                         and employee.status == EmployeeState.TERMINATED
@@ -207,7 +207,6 @@ class ReportPayrollContributionsAscensusUtil:
                     annual_salary = getattr(
                         employee_payroll_record, "annual_salary", Decimal(0)
                     )
-
                     hours_worked = getattr(
                         employee_payroll_record, "hours_worked", Decimal(0)
                     )
