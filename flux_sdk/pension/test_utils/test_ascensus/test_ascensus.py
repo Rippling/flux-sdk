@@ -79,11 +79,9 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
         employeePayrollRecord.payroll_contributions = payroll_contributions
         employeePayrollRecord.employee = employee
 
-        employeePayrollRecord.eligible_compensation = 10000
-        employeePayrollRecord.gross_pay = 10000
-        employeePayrollRecord.hours_worked = 2400
-        employeePayrollRecord.annual_salary = 100000
-        employeePayrollRecord.eligible_compensation = 10000
+        employeePayrollRecord.gross_pay = Decimal(10000)
+        employeePayrollRecord.hours_worked = Decimal(2400)
+        employeePayrollRecord.annual_salary = Decimal(100000)
 
         self.employee_payroll_records = [employeePayrollRecord]
 
@@ -96,7 +94,7 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
             curr_obj = getattr(curr_obj, attribute, None)
         return curr_obj
 
-    def set_nested_attribute(self, obj, attribute, value):
+    def set_nested_attribute(self, obj, attribute, value) -> None:
         nested_list = attribute.split(".")
         curr_obj = obj
         for index, attribute in enumerate(nested_list):
@@ -106,7 +104,7 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
                 setattr(curr_obj, attribute, value)
             curr_obj = getattr(curr_obj, attribute, None)
 
-    def test_format_contributions_for_ascensus_vendor_failure(self):
+    def test_format_contributions_for_ascensus_vendor_failure(self) -> None:
         required_employee_payroll_records_information = [
             "employee.ssn",
             "payroll_contributions",
@@ -145,7 +143,7 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
                     original_attr_value,
                 )
 
-    def test_format_contributions_for_ascensus_vendor(self):
+    def test_format_contributions_for_ascensus_vendor(self) -> None:
         contributions_file: File = ReportPayrollContributionsAscensusUtil.format_contributions_for_ascensus_vendor(
             self.employee_payroll_records, self.payroll_upload_settings
         )
@@ -158,7 +156,7 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
                 file_content.replace("\r\n", "\n"), contribution_file_contents
             )
 
-    def test_get_file_name(self):
+    def test_get_file_name(self) -> None:
         file_name = ReportPayrollContributionsAscensusUtil.get_file_name(
             self.payroll_upload_settings
         )

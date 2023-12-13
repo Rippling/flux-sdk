@@ -164,6 +164,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             self.employee_payroll_records, self.payroll_upload_settings
         )
         file_content = contributions_file.content.decode()
+        print(file_content)
         with open(
             os.path.join(os.path.dirname(__file__), "contributions.csv")
         ) as contribution_file:

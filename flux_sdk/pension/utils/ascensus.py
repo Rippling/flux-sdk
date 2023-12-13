@@ -103,8 +103,8 @@ class ReportPayrollContributionsAscensusUtil:
         :param payroll_upload_settings:
         :return: str
         """
-        environment = payroll_upload_settings.environment
-        client_id: str = payroll_upload_settings.customer_partner_settings.get("client_id")
+        environment = payroll_upload_settings.customer_partner_settings.get("env", "TS")
+        client_id = str(payroll_upload_settings.customer_partner_settings["client_id"])
         payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
 
         if not environment or not client_id:
@@ -160,7 +160,7 @@ class ReportPayrollContributionsAscensusUtil:
                     current_date_of_hire = employee.start_date.strftime(
                         STANDARD_DATE_FORMAT
                     )
-                    current_date_of_term: Optional[datetime] = getattr(employee, "termination_date", None)
+                    current_date_of_term = getattr(employee, "termination_date", None)
                     if (
                         current_date_of_term
                         and employee.status == EmployeeState.TERMINATED
