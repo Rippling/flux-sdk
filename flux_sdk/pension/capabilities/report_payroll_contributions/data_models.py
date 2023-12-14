@@ -230,6 +230,6 @@ class EmployeePayrollRecord:
     """
     bonus: Optional[Decimal]
     """
-    bonus: This field indicates the value of the total imputed payr for the employee for this payroll run
+    imputed_pay: This field indicates the value of the total imputed pay for the employee for this payroll run
     """
     imputed_pay: Optional[Decimal]
