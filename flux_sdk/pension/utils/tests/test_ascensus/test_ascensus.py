@@ -18,6 +18,7 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
     PayrunInfo,
 )
 from flux_sdk.pension.utils.ascensus import ReportPayrollContributionsAscensusUtil
+from freezegun import freeze_time
 
 
 class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
@@ -157,12 +158,14 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
             )
 
     def test_get_file_name(self) -> None:
-        file_name = ReportPayrollContributionsAscensusUtil.get_file_name(
-            self.payroll_upload_settings
-        )
-        timestamp = datetime.now()
-        format_timestamp = timestamp.strftime("%m%d%Y.%H%M%S")
-        test_file_name = "{}_{}_{}_{}.csv".format(
-            "TS", "HISS00","54321", format_timestamp,
-        )
+        with freeze_time("2016-11-1 10:00"):
+            timestamp = datetime.now()
+            format_timestamp = timestamp.strftime("%m%d%Y.%H%M%S")
+            test_file_name = "{}_{}_{}_{}.csv".format(
+                "TS", "HISS00","54321", format_timestamp,
+            )
+
+            file_name = ReportPayrollContributionsAscensusUtil.get_file_name(
+                self.payroll_upload_settings
+            )
         self.assertEqual(file_name, test_file_name)

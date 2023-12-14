@@ -1,7 +1,7 @@
 import contextlib
 import csv
-import datetime
 import logging
+from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 from io import StringIO
 from typing import Optional, Union
@@ -103,7 +103,7 @@ class ReportPayrollContributionsAscensusUtil:
         :param payroll_upload_settings:
         :return: str
         """
-        environment = payroll_upload_settings.customer_partner_settings.get("env", "TS")
+        environment = payroll_upload_settings.environment
         client_id = str(payroll_upload_settings.customer_partner_settings["client_id"])
         payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
 
@@ -111,7 +111,7 @@ class ReportPayrollContributionsAscensusUtil:
             raise RuntimeError(
                 "Environment and client_id must be present to upload Vanguard file"
             )
-        timestamp = datetime.datetime.now()
+        timestamp = datetime.now()
         format_timestamp = timestamp.strftime("%m%d%Y.%H%M%S")
         return "{}_{}_{}_{}.csv".format(
             environment, client_id, payroll_run_id, format_timestamp
