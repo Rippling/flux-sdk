@@ -31,11 +31,11 @@ class SQLQuery:
     def __post_init__(self):
         if not self.text:
             raise ValueError("text is required")
-        elif type(self.text) is not str:
+        elif not isinstance(self.text, str):
             raise TypeError("text must be a string")
 
         if self.args:
-            if type(self.args) is not dict:
+            if not isinstance(self.args, dict):
                 raise TypeError("args must be a dict")
 
 
@@ -52,11 +52,11 @@ class MongoQuery:
     def __post_init__(self):
         if not self.collection:
             raise ValueError("collection is required")
-        elif type(self.collection) is not str:
+        elif not isinstance(self.collection, str):
             raise TypeError("collection must be a string")
 
         if self.filter:
-            if type(self.filter) is not dict:
+            if not isinstance(self.filter, dict):
                 raise TypeError("filter must be a dict")
 
 

@@ -1,5 +1,5 @@
-from datetime import datetime
 import unittest
+from datetime import datetime
 
 from flux_sdk.etl.data_models.query import MongoQuery, SQLQuery
 
