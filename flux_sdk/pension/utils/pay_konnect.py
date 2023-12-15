@@ -244,10 +244,9 @@ class ReportPayrollContributionsPayKonnectUtil:
         :return: str
         """
 
-        plan_name = payroll_upload_settings.customer_partner_settings.get(
-            "plan_id", "Plan_Number"
-        )
-
+        plan_name = str(payroll_upload_settings.customer_partner_settings.get(
+            "plan_id"
+        ))
         transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
         report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime(
             "%H%M%S"
@@ -268,8 +267,8 @@ class ReportPayrollContributionsPayKonnectUtil:
         :return: File
         """
         customer_partner_settings = payroll_upload_settings.customer_partner_settings
-        plan_id: str = customer_partner_settings.get("plan_id")
-        plan_name: str = customer_partner_settings.get("plan_name")
+        plan_id = str(customer_partner_settings.get("plan_id"))
+        plan_name = str(customer_partner_settings.get("plan_name"))
 
         with contextlib.closing(StringIO()) as output:
             writer = csv.DictWriter(output, fieldnames=columns_180)
@@ -330,7 +329,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                     payroll_run_type: str = getattr(
                         payroll_upload_settings.payrun_info, "run_type", ""
                     )
-                    pay_frequency: str = getattr(
+                    pay_frequency: Optional[str] = getattr(
                         payroll_upload_settings.payrun_info, "pay_frequency", None
                     )
                     pay_frequency = (
@@ -403,7 +402,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         )
                     )
                     termination_date = ""
-                    if hasattr(employee, "termination_date"):
+                    if hasattr(employee, "termination_date") and employee.termination_date:
                         termination_date = employee.termination_date.strftime(
                             STANDARD_DATE_FORMAT
                         )
@@ -459,7 +458,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
                             employee.marital_status.name
                         )
-                        if hasattr(employee, "marital_status")
+                        if hasattr(employee, "marital_status") and employee.marital_status
                         else ""
                     )
                     salary = getattr(employee_payroll_record, "salary", Decimal(0))
