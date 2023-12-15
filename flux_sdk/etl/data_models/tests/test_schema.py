@@ -1,8 +1,6 @@
 from datetime import datetime
 import unittest
 
-from pydantic import ValidationError
-
 from flux_sdk.etl.data_models.schema import (
     CustomObjectReference,
     EmployeeLookup,
@@ -24,7 +22,7 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name=value,
                     category_name="some_category",
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field="name",
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -37,7 +35,7 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name=value,
                     category_name="some_category",
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field="name",
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -50,7 +48,7 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name="some_object",
                     category_name=value,
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field="name",
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -63,37 +61,33 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name="some_object",
                     category_name=value,
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field="name",
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
                     ]
                 )
 
-    def test_validate_primary_key_field_empty(self):
+    def test_validate_category_description_empty(self):
         for value in [None, ""]:
             with self.assertRaises(ValueError):
                 Schema(
                     name="some_object",
                     category_name="some_category",
-                    primary_key_field=value,
+                    category_description=value,
                     name_field="name",
-                    fields=[
-                        SchemaField(name="some_field", data_type=SchemaDataType.String),
-                    ]
+                    fields=[],
                 )
 
-    def test_validate_primary_key_field_wrong_type(self):
+    def test_validate_category_description_wrong_type(self):
         for value in [123, ("foo", "bar"), datetime.now()]:
             with self.assertRaises(TypeError):
                 Schema(
                     name="some_object",
                     category_name="some_category",
-                    primary_key_field=value,
+                    category_description=value,
                     name_field="name",
-                    fields=[
-                        SchemaField(name="some_field", data_type=SchemaDataType.String),
-                    ]
+                    fields=[],
                 )
 
     def test_validate_name_field_empty(self):
@@ -102,7 +96,7 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name="some_object",
                     category_name="some_category",
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field=value,
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -115,7 +109,7 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name="some_object",
                     category_name="some_category",
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field=value,
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -128,9 +122,23 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name="some_object",
                     category_name="some_category",
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field="name",
                     fields=value,
+                )
+
+    def test_validate_primary_key_field_wrong_type(self):
+        for value in [123, ("foo", "bar"), datetime.now()]:
+            with self.assertRaises(TypeError):
+                Schema(
+                    name="some_object",
+                    category_name="some_category",
+                    category_description="This is a description.",
+                    name_field="name",
+                    fields=[
+                        SchemaField(name="some_field", data_type=SchemaDataType.String),
+                    ],
+                    primary_key_field=value,
                 )
 
     def test_validate_description_wrong_type(self):
@@ -139,22 +147,10 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name="some_object",
                     category_name="some_category",
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field="name",
                     fields=[],
                     description=value,
-                )
-
-    def test_validate_category_description_wrong_type(self):
-        for value in [123, ("foo", "bar"), datetime.now()]:
-            with self.assertRaises(TypeError):
-                Schema(
-                    name="some_object",
-                    category_name="some_category",
-                    primary_key_field="id",
-                    name_field="name",
-                    fields=[],
-                    category_description=value,
                 )
 
     def test_validate_created_date_field_wrong_type(self):
@@ -163,7 +159,7 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name="some_object",
                     category_name="some_category",
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field="name",
                     fields=[],
                     created_date_field=value,
@@ -175,7 +171,7 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name="some_object",
                     category_name="some_category",
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field="name",
                     fields=[],
                     last_modified_date_field=value,
@@ -187,7 +183,7 @@ class TestSchema(unittest.TestCase):
                 Schema(
                     name="some_object",
                     category_name="some_category",
-                    primary_key_field="id",
+                    category_description="This is a description.",
                     name_field="name",
                     fields=[],
                     references=value,
@@ -197,7 +193,7 @@ class TestSchema(unittest.TestCase):
         Schema(
             name="some_object",
             category_name="some_category",
-            primary_key_field="id",
+            category_description="This is a description.",
             name_field="name",
             fields=[
                 SchemaField(name="some_field", data_type=SchemaDataType.String),
