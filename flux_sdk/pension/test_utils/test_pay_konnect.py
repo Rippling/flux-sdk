@@ -1,8 +1,7 @@
 import os
 import unittest
 from datetime import datetime
-
-import pytest
+from decimal import Decimal
 
 from flux_sdk.flux_core.data_models import (
     Address,
@@ -84,21 +83,19 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
 
         payrollRunContribution1 = PayrollRunContribution()
         payrollRunContribution1.deduction_type = ContributionType._401K
-        payrollRunContribution1.amount = 1000
+        payrollRunContribution1.amount = Decimal(1000)
 
         payrollRunContribution2 = PayrollRunContribution()
         payrollRunContribution2.deduction_type = ContributionType.LOAN
-        payrollRunContribution2.amount = 3000
+        payrollRunContribution2.amount = Decimal(3000)
 
         payroll_contributions = [payrollRunContribution1, payrollRunContribution2]
         employeePayrollRecord.payroll_contributions = payroll_contributions
         employeePayrollRecord.employee = employee
 
-        employeePayrollRecord.eligible_compensation = 10000
-        employeePayrollRecord.gross_pay = 10000
-        employeePayrollRecord.hours_worked = 2400
-        employeePayrollRecord.annual_salary = 100000
-        employeePayrollRecord.eligible_compensation = 10000
+        employeePayrollRecord.gross_pay = Decimal(10000)
+        employeePayrollRecord.hours_worked = Decimal(2400)
+        employeePayrollRecord.annual_salary = Decimal(100000)
 
         self.seed_loa(employeePayrollRecord)
 
@@ -113,7 +110,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             curr_obj = getattr(curr_obj, attribute, None)
         return curr_obj
 
-    def set_nested_attribute(self, obj, attribute, value):
+    def set_nested_attribute(self, obj, attribute, value) -> None:
         nested_list = attribute.split(".")
         curr_obj = obj
         for index, attribute in enumerate(nested_list):
@@ -123,7 +120,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                 setattr(curr_obj, attribute, value)
             curr_obj = getattr(curr_obj, attribute, None)
 
-    def test_format_contributions_for_payKonnect_vendor_failure(self):
+    def test_format_contributions_for_payKonnect_vendor_failure(self) -> None:
         required_employee_payroll_records_information = [
             "employee.ssn",
             "payroll_contributions",
@@ -162,8 +159,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                     original_attr_value,
                 )
 
-    @pytest.mark.skip("needs to be fixed by INS team")
-    def test_format_contributions_for_pay_konnect_vendor(self):
+    def test_format_contributions_for_pay_konnect_vendor(self) -> None:
         contributions_file: File = ReportPayrollContributionsPayKonnectUtil.format_contributions_for_pay_konnect_vendor(
             self.employee_payroll_records, self.payroll_upload_settings
         )
@@ -177,7 +173,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                 file_content.replace("\r\n", "\n"), contribution_file_contents
             )
 
-    def test_get_file_name(self):
+    def test_get_file_name(self) -> None:
         file_name = ReportPayrollContributionsPayKonnectUtil.get_file_name(
             self.payroll_upload_settings
         )
@@ -190,7 +186,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         )
         self.assertEqual(file_name, test_file_name)
 
-    def seed_loa(self, employeePayrollRecord):
+    def seed_loa(self, employeePayrollRecord) -> None:
         leave_info = LeaveInfo()
         leave_info.leave_type = LeaveType.MEDICAL
         leave_info.start_date = datetime(2021, 1, 1).date()
