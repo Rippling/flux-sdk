@@ -156,8 +156,9 @@ class Schema:
     # one will not be created.
     category_name: str
 
-    # This is the name of the field used for the primary key (aka: External ID).
-    primary_key_field: str
+    # When creating a new group/category, this will set a description that will appear in the Rippling Custom Object UI.
+    # If the category already exists, the description will be updated.
+    category_description: str
 
     # This is the name of the field used for the record name, which is displayed in the Rippling Custom Object UI. When
     # not provided,
@@ -166,12 +167,11 @@ class Schema:
     # These are the remaining data fields.
     fields: list[SchemaField]
 
+    # This is the name of the field used for the primary key (aka: External ID).
+    primary_key_field: Optional[str] = None
+
     # This is a more detailed explanation of the field which will appear in the Rippling Custom Object UI.
     description: Optional[str] = None
-
-    # When creating a new group/category, this will set a description that will appear in the Rippling Custom Object UI.
-    # If the category already exists, the description will be updated.
-    category_description: Optional[str] = None
 
     # This is the name of the field that reflects when the record was first created. When a field name is not provided,
     # Rippling will use the time that the record is first imported.
@@ -196,10 +196,10 @@ class Schema:
         elif type(self.category_name) is not str:
             raise TypeError("category_name must be a str")
 
-        if not self.primary_key_field:
-            raise ValueError("primary_key_field is required")
-        elif type(self.primary_key_field) is not str:
-            raise TypeError("primary_key_field must be a str")
+        if not self.category_description:
+            raise ValueError("category_description is required")
+        elif type(self.category_description) is not str:
+            raise TypeError("category_description must be a str")
 
         if not self.name_field:
             raise ValueError("name_field is required")
@@ -210,13 +210,13 @@ class Schema:
             if type(self.fields) is not list:
                 raise TypeError("fields must be a list")
 
+        if self.primary_key_field:
+            if type(self.primary_key_field) is not str:
+                raise TypeError("primary_key_field must be a str")
+
         if self.description:
             if type(self.description) is not str:
                 raise TypeError("description must be a str")
-
-        if self.category_description:
-            if type(self.category_description) is not str:
-                raise TypeError("category_description must be a str")
 
         if self.created_date_field:
             if type(self.created_date_field) is not str:
