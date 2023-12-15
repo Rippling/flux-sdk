@@ -51,6 +51,8 @@ class Pay:
     time_unit: PayTimeUnit
     value_per_unit: MonetaryValue
     value_effective_date: datetime
+    salary_or_equivalent: MonetaryValue
+    expected_commission: Optional[MonetaryValue]
 
 class EmploymentHours:
     type: EmploymentType
@@ -58,11 +60,22 @@ class EmploymentHours:
     hours_per_week: Optional[int]
     hours_effective_date: datetime
 
+class TerminationType(Enum):
+    VOLUNTARY = 0
+    INVOLUNTARY = 1
+    RETIREMENT = 2
+    DEATH = 3
+    ABANDONMENT = 4
+    OFFER_DECLINE = 5
+    RESCIND = 6
+    RENEGE = 7
+
 class Employment:
     hours: EmploymentHours
     pay: Pay
     is_rehire: bool
     termination_date: Optional[datetime]
+    termination_type: Optional[TerminationType]
     start_date: datetime
     original_hire_date: datetime
     w2_start_date: datetime
