@@ -1,7 +1,7 @@
+from dataclasses import dataclass
 from datetime import date, datetime, time
-from typing import Optional, Union
+from typing import Optional, Union, get_args
 
-from pydantic.dataclasses import dataclass
 
 # This represents the currently supported types for Record fields. Currently, we only support these primitive types and
 # do not allow for any complex/nested types.
@@ -38,3 +38,27 @@ class Record:
     # This flag can be used by the "process_records" hook to signal to Rippling that the object should not be imported.
     # If a Record is not found after this hook, that will be regarded as an error, so this flag should be used instead.
     drop: Optional[bool] = None
+
+    # Perform validation.
+    def __post_init__(self):
+        if not self.primary_key:
+            raise ValueError("primary_key is required")
+        elif type(self.primary_key) is not str:
+            raise TypeError("primary_key must be a string")
+
+        if not self.fields:
+            raise ValueError("fields is required")
+        elif type(self.fields) is not dict:
+            raise TypeError("fields must be a dict")
+
+        if self.references:
+            if type(self.references) is not dict:
+                raise TypeError("references must be a dict")
+
+        if self.checkpoint:
+            if not type(self.checkpoint) in get_args(Checkpoint):
+                raise TypeError("checkpoint must be a datetime")
+
+        if self.drop is not None:
+            if type(self.drop) is not bool:
+                raise TypeError("drop must be a bool")

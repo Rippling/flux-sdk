@@ -1,6 +1,5 @@
+from datetime import datetime
 import unittest
-
-from pydantic import ValidationError
 
 from flux_sdk.etl.data_models.query import MongoQuery, SQLQuery
 
@@ -10,16 +9,23 @@ class TestSQLQuery(unittest.TestCase):
         with self.assertRaises(TypeError):
             SQLQuery()  # intentionally empty
 
+    def test_validate_text_empty(self):
+        for value in [None, ""]:
+            with self.assertRaises(ValueError):
+                SQLQuery(text=value)
+
     def test_validate_text_wrong_type(self):
-        with self.assertRaises(ValidationError):
-            SQLQuery(
-                text=("foo", "bar"),  # intentionally wrong type
-            )
+        for value in [123, ("foo", "bar"), datetime.now()]:
+            with self.assertRaises(TypeError):
+                SQLQuery(text=value)
+
+    def test_validate_args_wrong_type(self):
+        for value in [123, "foo", ("foo", "bar"), datetime.now()]:
+            with self.assertRaises(TypeError):
+                SQLQuery(text="select column from table", args=value)
 
     def test_validate_success_minimal(self):
-        SQLQuery(
-            text="select column from table",
-        )
+        SQLQuery(text="select column from table")
 
     def test_validate_success_complete(self):
         SQLQuery(
@@ -33,16 +39,23 @@ class TestMongoQuery(unittest.TestCase):
         with self.assertRaises(TypeError):
             MongoQuery()  # intentionally empty
 
+    def test_validate_collection_empty(self):
+        for value in [None, ""]:
+            with self.assertRaises(ValueError):
+                MongoQuery(collection=value)
+
     def test_validate_collection_wrong_type(self):
-        with self.assertRaises(ValidationError):
-            MongoQuery(
-                collection=("foo", "bar"),  # intentionally wrong type
-            )
+        for value in [123, ("foo", "bar"), datetime.now()]:
+            with self.assertRaises(TypeError):
+                MongoQuery(collection=value)
+
+    def test_validate_filter_wrong_type(self):
+        for value in [123, ("foo", "bar"), datetime.now()]:
+            with self.assertRaises(TypeError):
+                MongoQuery(collection="some_collection", filter=value)
 
     def test_validate_success_minimal(self):
-        MongoQuery(
-            collection="some_collection",
-        )
+        MongoQuery(collection="some_collection")
 
     def test_validate_success_complete(self):
         MongoQuery(

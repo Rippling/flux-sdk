@@ -1,8 +1,6 @@
+from dataclasses import dataclass
 from enum import Enum
 from typing import Optional, Union
-
-# from dataclasses import dataclass
-from pydantic.dataclasses import dataclass
 
 
 # These are the data types supported by Rippling Custom Objects.
@@ -48,6 +46,39 @@ class SchemaField:
     # rejected with an error.
     enum_restricted: bool = False
 
+    # Perform validation.
+    def __post_init__(self):
+        if not self.name:
+            raise ValueError("name is required")
+        elif type(self.name) is not str:
+            raise TypeError("name must be a string")
+
+        if not self.data_type:
+            raise ValueError("data_type is required")
+        elif not isinstance(self.data_type, SchemaDataType):
+            raise TypeError("data_type must be a SchemaDataType")
+
+        if self.description:
+            if type(self.description) is not str:
+                raise TypeError("description must be a string")
+
+        if type(self.is_required) is not bool:
+            raise TypeError("is_required must be a bool")
+
+        if type(self.is_unique) is not bool:
+            raise TypeError("is_unique must be a bool")
+
+        if self.enum_values:
+            if type(self.enum_values) is not list:
+                raise TypeError("enum_values must be a list")
+
+        if type(self.enum_restricted) is not bool:
+            raise TypeError("enum_restricted must be a bool")
+
+        if self.data_type in [SchemaDataType.Enum, SchemaDataType.MultiEnum]:
+            if len(self.enum_values) == 0:
+                raise ValueError("enum_values must have at least 1 value")
+
 
 # This allows creating a reference to an existing Custom Object.
 @dataclass(kw_only=True)
@@ -60,6 +91,22 @@ class CustomObjectReference:
 
     # An optional explanation for this reference to be shown in the Rippling Custom Object UI.
     description: Optional[str] = None
+
+    # Perform validation.
+    def __post_init__(self):
+        if not self.object:
+            raise ValueError("object is required")
+        elif type(self.object) is not str:
+            raise TypeError("object must be a string")
+
+        if not self.lookup:
+            raise ValueError("lookup is required")
+        elif type(self.lookup) is not str:
+            raise TypeError("lookup must be a string")
+
+        if self.description:
+            if type(self.description) is not str:
+                raise TypeError("description must be a string")
 
 
 # These are the available lookup-fields for a Rippling Employee.
@@ -82,6 +129,17 @@ class EmployeeReference:
 
     # An optional explanation for this reference to be shown in the Rippling Custom Object UI.
     description: Optional[str] = None
+
+    # Perform validation.
+    def __post_init__(self):
+        if not self.lookup:
+            raise ValueError("lookup is required")
+        elif not isinstance(self.lookup, EmployeeLookup):
+            raise TypeError("lookup must be a EmployeeLookup")
+
+        if self.description:
+            if type(self.description) is not str:
+                raise TypeError("description must be a string")
 
 
 # This lists the available types that can be used for schema references.
@@ -126,4 +184,48 @@ class Schema:
     # These are the links to other objects. The keys are the field names that should be the origin for the link/edge.
     references: Optional[dict[str, Reference]] = None
 
+    # Perform validation.
+    def __post_init__(self):
+        if not self.name:
+            raise ValueError("name is required")
+        elif type(self.name) is not str:
+            raise TypeError("name must be a string")
 
+        if not self.category_name:
+            raise ValueError("category_name is required")
+        elif type(self.category_name) is not str:
+            raise TypeError("category_name must be a str")
+
+        if not self.primary_key_field:
+            raise ValueError("primary_key_field is required")
+        elif type(self.primary_key_field) is not str:
+            raise TypeError("primary_key_field must be a str")
+
+        if not self.name_field:
+            raise ValueError("name_field is required")
+        elif type(self.name_field) is not str:
+            raise TypeError("name_field must be a str")
+
+        if self.fields:
+            if type(self.fields) is not list:
+                raise TypeError("fields must be a list")
+
+        if self.description:
+            if type(self.description) is not str:
+                raise TypeError("description must be a str")
+
+        if self.category_description:
+            if type(self.category_description) is not str:
+                raise TypeError("category_description must be a str")
+
+        if self.created_date_field:
+            if type(self.created_date_field) is not str:
+                raise TypeError("created_date_field must be a str")
+
+        if self.last_modified_date_field:
+            if type(self.last_modified_date_field) is not str:
+                raise TypeError("last_modified_date_field must be a str")
+
+        if self.references:
+            if type(self.references) is not dict:
+                raise TypeError("references must be a dict")
