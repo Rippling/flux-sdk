@@ -401,11 +401,10 @@ class ReportPayrollContributionsPayKonnectUtil:
                             employee
                         )
                     )
-                    termination_date = ""
-                    if hasattr(employee, "termination_date") and employee.termination_date:
-                        termination_date = employee.termination_date.strftime(
+                    termination_date = getattr(employee, "termination_date", None)
+                    termination_date = termination_date.strftime(
                             STANDARD_DATE_FORMAT
-                        )
+                        ) if termination_date else ""
                     birth_day = employee.dob.strftime(STANDARD_DATE_FORMAT)
                     phone_number = (
                         employee.phone_number if employee.phone_number else ""
@@ -454,13 +453,10 @@ class ReportPayrollContributionsPayKonnectUtil:
                     gender = ReportPayrollContributionsPayKonnectUtil._get_gender(
                         employee.gender
                     )
-                    marital_status = (
-                        ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
-                            employee.marital_status.name
-                        )
-                        if hasattr(employee, "marital_status") and employee.marital_status
-                        else ""
-                    )
+                    marital_status = getattr(employee, "marital_status", None)
+                    marital_status = ReportPayrollContributionsPayKonnectUtil._convert_to_sentence_case(
+                            marital_status.name
+                        ) if marital_status else ""
                     salary = getattr(employee_payroll_record, "salary", Decimal(0))
                     annual_salary = getattr(
                         employee_payroll_record, "annual_salary", Decimal(0)
