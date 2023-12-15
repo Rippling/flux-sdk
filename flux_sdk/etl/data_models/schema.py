@@ -50,7 +50,7 @@ class SchemaField:
     def __post_init__(self):
         if not self.name:
             raise ValueError("name is required")
-        elif type(self.name) is not str:
+        elif not isinstance(self.name, str):
             raise TypeError("name must be a string")
 
         if not self.data_type:
@@ -59,20 +59,20 @@ class SchemaField:
             raise TypeError("data_type must be a SchemaDataType")
 
         if self.description:
-            if type(self.description) is not str:
+            if not isinstance(self.description, str):
                 raise TypeError("description must be a string")
 
-        if type(self.is_required) is not bool:
+        if not isinstance(self.is_required, bool):
             raise TypeError("is_required must be a bool")
 
-        if type(self.is_unique) is not bool:
+        if not isinstance(self.is_unique, bool):
             raise TypeError("is_unique must be a bool")
 
         if self.enum_values:
-            if type(self.enum_values) is not list:
+            if not isinstance(self.enum_values, list):
                 raise TypeError("enum_values must be a list")
 
-        if type(self.enum_restricted) is not bool:
+        if not isinstance(self.enum_restricted, bool):
             raise TypeError("enum_restricted must be a bool")
 
         if self.data_type in [SchemaDataType.Enum, SchemaDataType.MultiEnum]:
@@ -96,16 +96,16 @@ class CustomObjectReference:
     def __post_init__(self):
         if not self.object:
             raise ValueError("object is required")
-        elif type(self.object) is not str:
+        elif not isinstance(self.object, str):
             raise TypeError("object must be a string")
 
         if not self.lookup:
             raise ValueError("lookup is required")
-        elif type(self.lookup) is not str:
+        elif not isinstance(self.lookup, str):
             raise TypeError("lookup must be a string")
 
         if self.description:
-            if type(self.description) is not str:
+            if not isinstance(self.description, str):
                 raise TypeError("description must be a string")
 
 
@@ -138,7 +138,7 @@ class EmployeeReference:
             raise TypeError("lookup must be a EmployeeLookup")
 
         if self.description:
-            if type(self.description) is not str:
+            if not isinstance(self.description, str):
                 raise TypeError("description must be a string")
 
 
@@ -188,44 +188,44 @@ class Schema:
     def __post_init__(self):
         if not self.name:
             raise ValueError("name is required")
-        elif type(self.name) is not str:
+        elif not isinstance(self.name, str):
             raise TypeError("name must be a string")
 
         if not self.category_name:
             raise ValueError("category_name is required")
-        elif type(self.category_name) is not str:
+        elif not isinstance(self.category_name, str):
             raise TypeError("category_name must be a str")
 
         if not self.category_description:
             raise ValueError("category_description is required")
-        elif type(self.category_description) is not str:
+        elif not isinstance(self.category_description, str):
             raise TypeError("category_description must be a str")
 
         if not self.name_field:
             raise ValueError("name_field is required")
-        elif type(self.name_field) is not str:
+        elif not isinstance(self.name_field, str):
             raise TypeError("name_field must be a str")
 
         if self.fields:
-            if type(self.fields) is not list:
+            if not isinstance(self.fields, list):
                 raise TypeError("fields must be a list")
 
         if self.primary_key_field:
-            if type(self.primary_key_field) is not str:
+            if not isinstance(self.primary_key_field, str):
                 raise TypeError("primary_key_field must be a str")
 
         if self.description:
-            if type(self.description) is not str:
+            if not isinstance(self.description, str):
                 raise TypeError("description must be a str")
 
         if self.created_date_field:
-            if type(self.created_date_field) is not str:
+            if not isinstance(self.created_date_field, str):
                 raise TypeError("created_date_field must be a str")
 
         if self.last_modified_date_field:
-            if type(self.last_modified_date_field) is not str:
+            if not isinstance(self.last_modified_date_field, str):
                 raise TypeError("last_modified_date_field must be a str")
 
         if self.references:
-            if type(self.references) is not dict:
+            if not isinstance(self.references, dict):
                 raise TypeError("references must be a dict")
