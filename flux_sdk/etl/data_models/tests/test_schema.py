@@ -382,7 +382,7 @@ class TestEmployeeReference(unittest.TestCase):
 
     def test_validate_success_complete(self):
         EmployeeReference(
-            lookup=EmployeeLookup.BUSINESS_EMAIL,
+            lookup=EmployeeLookup.WORK_EMAIL,
             description="This is a description of the reference.",
         )
 
