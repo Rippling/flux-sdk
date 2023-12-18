@@ -126,7 +126,8 @@ class Schema:
     name: str
 
     # This is used to put this Custom Object into a group/category. If a category with this name already exists, a new
-    # one will not be created.
+    # one will not be created. If this value is changed, no categories will be deleted as they could be used by another
+    # object.
     category_name: str
 
     # When creating a new group/category, this will set a description that will appear in the Rippling Custom Object UI.
