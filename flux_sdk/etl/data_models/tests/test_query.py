@@ -54,6 +54,11 @@ class TestMongoQuery(unittest.TestCase):
             with self.assertRaises(TypeError):
                 MongoQuery(collection="some_collection", filter=value)
 
+    def test_validate_aggregate_wrong_type(self):
+        for value in [123, ("foo", "bar"), datetime.now()]:
+            with self.assertRaises(TypeError):
+                MongoQuery(collection="some_collection", aggregate=value)
+
     def test_validate_success_minimal(self):
         MongoQuery(collection="some_collection")
 
@@ -61,6 +66,9 @@ class TestMongoQuery(unittest.TestCase):
         MongoQuery(
             collection="some_collection",
             filter={"id": "record_1"},
+            aggregate=[
+                {"foo": "bar"},
+            ],
         )
 
 

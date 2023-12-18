@@ -45,8 +45,13 @@ class MongoQuery:
     # This indicates which collection the query will be executed in.
     collection: str
 
-    # This provides the filter criteria for a basic query.
+    # This provides the filter criteria for a basic query. Most connectors will use this to filter documents by values
+    # or other simpler query operators.
     filter: Optional[dict[str, Any]] = None
+
+    # This allows for projection in advanced queries. Some connectors may offload more expensive operations (eg: join,
+    # embed) to the database through this instead of using the basic filter.
+    aggregate: Optional[list[Any]] = None
 
     # Perform validation.
     def __post_init__(self):
@@ -58,6 +63,10 @@ class MongoQuery:
         if self.filter:
             if not isinstance(self.filter, dict):
                 raise TypeError("filter must be a dict")
+
+        if self.aggregate:
+            if not isinstance(self.aggregate, list):
+                raise TypeError("aggregate must be a list")
 
 
 # This is the list of types that can be used to represent a query.
