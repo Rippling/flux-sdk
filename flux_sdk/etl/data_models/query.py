@@ -3,6 +3,8 @@ from datetime import date, datetime, time
 from enum import Enum
 from typing import Any, Optional, Union
 
+from flux_sdk.flux_core.validation import raise_if_missing_or_incorrect_type, raise_if_incorrect_type
+
 
 # This enum can be used to communicate a connector type to app hooks.
 class Connector(Enum):
@@ -29,14 +31,8 @@ class SQLQuery:
 
     # Perform validation.
     def __post_init__(self):
-        if not self.text:
-            raise ValueError("text is required")
-        elif not isinstance(self.text, str):
-            raise TypeError("text must be a string")
-
-        if self.args:
-            if not isinstance(self.args, dict):
-                raise TypeError("args must be a dict")
+        raise_if_missing_or_incorrect_type(self, "text", str)
+        raise_if_incorrect_type(self, "args", dict)
 
 
 # This is returned by the "prepare_query" hook for MongoDB connectors.
@@ -55,18 +51,9 @@ class MongoQuery:
 
     # Perform validation.
     def __post_init__(self):
-        if not self.collection:
-            raise ValueError("collection is required")
-        elif not isinstance(self.collection, str):
-            raise TypeError("collection must be a string")
-
-        if self.filter:
-            if not isinstance(self.filter, dict):
-                raise TypeError("filter must be a dict")
-
-        if self.aggregate:
-            if not isinstance(self.aggregate, list):
-                raise TypeError("aggregate must be a list")
+        raise_if_missing_or_incorrect_type(self, "collection", str)
+        raise_if_incorrect_type(self, "filter", dict)
+        raise_if_incorrect_type(self, "aggregate", list)
 
 
 # This is the list of types that can be used to represent a query.

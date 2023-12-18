@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional, Union
 
+from flux_sdk.flux_core.validation import raise_if_missing_or_incorrect_type, raise_if_incorrect_type
+
 
 # These are the data types supported by Rippling Custom Objects.
 class SchemaDataType(Enum):
@@ -48,29 +50,16 @@ class SchemaField:
 
     # Perform validation.
     def __post_init__(self):
-        if not self.name:
-            raise ValueError("name is required")
-        elif not isinstance(self.name, str):
-            raise TypeError("name must be a string")
-
-        if not self.data_type:
-            raise ValueError("data_type is required")
-        elif not isinstance(self.data_type, SchemaDataType):
-            raise TypeError("data_type must be a SchemaDataType")
-
-        if self.description:
-            if not isinstance(self.description, str):
-                raise TypeError("description must be a string")
+        raise_if_missing_or_incorrect_type(self, "name", str)
+        raise_if_missing_or_incorrect_type(self, "data_type", SchemaDataType)
+        raise_if_incorrect_type(self, "description", str)
+        raise_if_incorrect_type(self, "enum_values", list)
 
         if not isinstance(self.is_required, bool):
             raise TypeError("is_required must be a bool")
 
         if not isinstance(self.is_unique, bool):
             raise TypeError("is_unique must be a bool")
-
-        if self.enum_values:
-            if not isinstance(self.enum_values, list):
-                raise TypeError("enum_values must be a list")
 
         if not isinstance(self.enum_restricted, bool):
             raise TypeError("enum_restricted must be a bool")
@@ -94,19 +83,9 @@ class CustomObjectReference:
 
     # Perform validation.
     def __post_init__(self):
-        if not self.object:
-            raise ValueError("object is required")
-        elif not isinstance(self.object, str):
-            raise TypeError("object must be a string")
-
-        if not self.lookup:
-            raise ValueError("lookup is required")
-        elif not isinstance(self.lookup, str):
-            raise TypeError("lookup must be a string")
-
-        if self.description:
-            if not isinstance(self.description, str):
-                raise TypeError("description must be a string")
+        raise_if_missing_or_incorrect_type(self, "object", str)
+        raise_if_missing_or_incorrect_type(self, "lookup", str)
+        raise_if_incorrect_type(self, "description", str)
 
 
 # These are the available lookup-fields for a Rippling Employee.
@@ -132,14 +111,8 @@ class EmployeeReference:
 
     # Perform validation.
     def __post_init__(self):
-        if not self.lookup:
-            raise ValueError("lookup is required")
-        elif not isinstance(self.lookup, EmployeeLookup):
-            raise TypeError("lookup must be a EmployeeLookup")
-
-        if self.description:
-            if not isinstance(self.description, str):
-                raise TypeError("description must be a string")
+        raise_if_missing_or_incorrect_type(self, "lookup", EmployeeLookup)
+        raise_if_incorrect_type(self, "description", str)
 
 
 # This lists the available types that can be used for schema references.
@@ -189,50 +162,14 @@ class Schema:
 
     # Perform validation.
     def __post_init__(self):
-        if not self.name:
-            raise ValueError("name is required")
-        elif not isinstance(self.name, str):
-            raise TypeError("name must be a string")
-
-        if not self.category_name:
-            raise ValueError("category_name is required")
-        elif not isinstance(self.category_name, str):
-            raise TypeError("category_name must be a str")
-
-        if not self.category_description:
-            raise ValueError("category_description is required")
-        elif not isinstance(self.category_description, str):
-            raise TypeError("category_description must be a str")
-
-        if not self.name_field:
-            raise ValueError("name_field is required")
-        elif not isinstance(self.name_field, str):
-            raise TypeError("name_field must be a str")
-
-        if self.fields:
-            if not isinstance(self.fields, list):
-                raise TypeError("fields must be a list")
-
-        if self.primary_key_field:
-            if not isinstance(self.primary_key_field, str):
-                raise TypeError("primary_key_field must be a str")
-
-        if self.description:
-            if not isinstance(self.description, str):
-                raise TypeError("description must be a str")
-
-        if self.created_date_field:
-            if not isinstance(self.created_date_field, str):
-                raise TypeError("created_date_field must be a str")
-
-        if self.last_modified_date_field:
-            if not isinstance(self.last_modified_date_field, str):
-                raise TypeError("last_modified_date_field must be a str")
-
-        if self.references:
-            if not isinstance(self.references, dict):
-                raise TypeError("references must be a dict")
-
-        if self.owner:
-            if not isinstance(self.owner, tuple):
-                raise TypeError("owner must be a tuple")
+        raise_if_missing_or_incorrect_type(self, "name", str)
+        raise_if_missing_or_incorrect_type(self, "category_name", str)
+        raise_if_missing_or_incorrect_type(self, "category_description", str)
+        raise_if_missing_or_incorrect_type(self, "name_field", str)
+        raise_if_incorrect_type(self, "fields", list)
+        raise_if_incorrect_type(self, "primary_key_field", str)
+        raise_if_incorrect_type(self, "description", str)
+        raise_if_incorrect_type(self, "created_date_field", str)
+        raise_if_incorrect_type(self, "last_modified_date_field", str)
+        raise_if_incorrect_type(self, "references", dict)
+        raise_if_incorrect_type(self, "owner", tuple)
