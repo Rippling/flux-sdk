@@ -189,6 +189,18 @@ class TestSchema(unittest.TestCase):
                     references=value,
                 )
 
+    def test_validate_owner_wrong_type(self):
+        for value in [123, "foo bar", datetime.now()]:
+            with self.assertRaises(TypeError):
+                Schema(
+                    name="some_object",
+                    category_name="some_category",
+                    category_description="This is a description.",
+                    name_field="name",
+                    fields=[],
+                    owner=value,
+                )
+
     def test_validate_success_minimal(self):
         Schema(
             name="some_object",
@@ -219,11 +231,14 @@ class TestSchema(unittest.TestCase):
                     is_unique=False,
                 ),
             ],
-            references={
-                "owner": EmployeeReference(
+            owner=(
+                "owner",
+                EmployeeReference(
                     lookup=EmployeeLookup.EMPLOYEE_ID,
                     description="This is a description of how some_object is related to Employee.",
-                ),
+                )
+            ),
+            references={
                 "another_object_id": CustomObjectReference(
                     object="another_object",
                     lookup="id",

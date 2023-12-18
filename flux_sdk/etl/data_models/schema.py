@@ -184,6 +184,9 @@ class Schema:
     # These are the links to other objects. The keys are the field names that should be the origin for the link/edge.
     references: Optional[dict[str, Reference]] = None
 
+    # This establishes the built-in link to Employee, if applicable.
+    owner: Optional[tuple[str, EmployeeReference]] = None
+
     # Perform validation.
     def __post_init__(self):
         if not self.name:
@@ -229,3 +232,7 @@ class Schema:
         if self.references:
             if not isinstance(self.references, dict):
                 raise TypeError("references must be a dict")
+
+        if self.owner:
+            if not isinstance(self.owner, tuple):
+                raise TypeError("owner must be a tuple")
