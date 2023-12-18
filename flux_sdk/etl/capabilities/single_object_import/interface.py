@@ -8,9 +8,8 @@ from flux_sdk.etl.data_models.schema import Schema
 
 class SingleObjectImport(ABC):
     """
-    This class represents the "single_object_import" capability. This is the first iteration of our Data Import
-    framework, but is limited in scope to only operating on a single object at a time. This is a stepping stone towards
-    a more robust system, so consider this experimental.
+    This class represents the "single_object_import" capability. This allows the import of a single object type from a
+    database source.
     """
 
     @staticmethod
@@ -52,10 +51,10 @@ class SingleObjectImport(ABC):
         (via drop).
 
         If the Record does not adhere to the provided schema, such as using an incorrect/incompatible type for a field,
-        the sync will fail. As such, this hook is the opportunity to massage any raw query results that may not be
+        the sync will fail. As such, this hook has the opportunity to massage any raw query results that may not be
         directly compatible.
 
         :param schema: The schema generated in the "get_schema" hook for this object.
-        :param records: This batch of records should be updated
-        :return: Query
+        :param records: The batch of records to be updated
+        :return: Records
         """
