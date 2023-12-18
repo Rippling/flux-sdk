@@ -114,11 +114,11 @@ class EmployeeLookup(Enum):
     # The Rippling Employee ID.
     EMPLOYEE_ID = "employee_id"
 
-    # The work/business email for a Rippling Employee.
-    BUSINESS_EMAIL = "business_email"
-
     # The personal email for a Rippling Employee.
     PERSONAL_EMAIL = "personal_email"
+
+    # The work/business email for a Rippling Employee.
+    WORK_EMAIL = "work_email"
 
 
 # This allows creating a reference to a Rippling employee.
