@@ -52,8 +52,8 @@ class MongoQuery:
     # Perform validation.
     def __post_init__(self):
         check_field(self, "collection", str, required=True)
-        check_field(self, "filter", dict)  # FIXME(dbarnes): include sub-types when Any is able to be supported
-        check_field(self, "aggregate", list)  # FIXME(dbarnes): include sub-types when Any is able to be supported
+        check_field(self, "filter", dict[str, Any])
+        check_field(self, "aggregate", list[Any])
 
 
 # This is the list of types that can be used to represent a query.

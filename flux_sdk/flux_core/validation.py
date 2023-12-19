@@ -26,10 +26,10 @@ def _check_type(value: Any, attr: str, desired_type: Type):
         if len(args) == 2:
             (key_type, value_type) = args
 
-            if not all(map(lambda k: isinstance(k, key_type), value.keys())):
+            if key_type != Any and not all(map(lambda k: isinstance(k, key_type), value.keys())):
                 raise TypeError(f"{attr} should be a dict with {key_type} keys")
 
-            if not all(map(lambda k: isinstance(k, value_type), value.values())):
+            if value_type != Any and not all(map(lambda k: isinstance(k, value_type), value.values())):
                 raise TypeError(f"{attr} should be a dict with {value_type} values")
 
     elif origin == list:
@@ -37,9 +37,9 @@ def _check_type(value: Any, attr: str, desired_type: Type):
             raise TypeError(f"{attr} should be a list")
 
         if len(args) == 1:
-            (value_type) = args
+            (value_type,) = args
 
-            if not all(map(lambda k: isinstance(k, value_type), value)):
+            if value_type != Any and not all(map(lambda k: isinstance(k, value_type), value)):
                 raise TypeError(f"{attr} should be a list with {value_type} values")
 
     elif origin == tuple:

@@ -1,7 +1,7 @@
 import unittest
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from flux_sdk.flux_core.validation import check_field
 
@@ -88,6 +88,22 @@ class TestCheckField(unittest.TestCase):
             with self.assertRaises(TypeError):
                 check_field(r, "references", dict[str, str])
                 check_field(r, "references", dict[str, str], required=True)
+
+    def test_dict_any(self):
+        @dataclass
+        class Record:
+            references: dict[Any, Any]
+
+        r = Record(references=None)
+
+        # optional
+        check_field(r, "references", dict[Any, Any])
+
+        # valid type
+        r.references = {"hello": "world", 123: True}
+        check_field(r, "references", dict[Any, Any])
+        check_field(r, "references", dict[Any, Any], required=True)
+
 
 
 if __name__ == '__main__':
