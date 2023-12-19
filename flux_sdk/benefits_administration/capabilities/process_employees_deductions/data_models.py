@@ -1,2 +1,3 @@
 class DeductionDetails:
     value: str
+    
