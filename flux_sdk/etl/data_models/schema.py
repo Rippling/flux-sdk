@@ -139,14 +139,14 @@ class Schema:
     If the category already exists, the description will be updated.
     """
 
+    primary_key_field: str
+    """This is the name of the field used for the primary key (aka: External ID)."""
+
     name_field: str
     """This is the name of the field used for the record name, which is displayed in the Rippling Custom Object UI."""
 
     fields: list[SchemaField]
     """These are the remaining data fields."""
-
-    primary_key_field: Optional[str] = None
-    """This is the name of the field used for the primary key (aka: External ID)."""
 
     description: Optional[str] = None
     """This is a more detailed explanation of the field which will appear in the Rippling Custom Object UI."""
@@ -176,9 +176,9 @@ class Schema:
         check_field(self, "name", str, required=True)
         check_field(self, "category_name", str, required=True)
         check_field(self, "category_description", str, required=True)
+        check_field(self, "primary_key_field", str, required=True)
         check_field(self, "name_field", str, required=True)
         check_field(self, "fields", list[SchemaField])
-        check_field(self, "primary_key_field", str)
         check_field(self, "description", str)
         check_field(self, "created_date_field", str)
         check_field(self, "last_modified_date_field", str)

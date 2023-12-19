@@ -23,6 +23,7 @@ class TestSchema(unittest.TestCase):
                     name=value,
                     category_name="some_category",
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field="name",
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -36,6 +37,7 @@ class TestSchema(unittest.TestCase):
                     name=value,
                     category_name="some_category",
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field="name",
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -49,6 +51,7 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name=value,
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field="name",
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -62,6 +65,7 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name=value,
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field="name",
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -75,6 +79,7 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name="some_category",
                     category_description=value,
+                    primary_key_field="id",
                     name_field="name",
                     fields=[],
                 )
@@ -86,8 +91,37 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name="some_category",
                     category_description=value,
+                    primary_key_field="id",
                     name_field="name",
                     fields=[],
+                )
+
+    def test_validate_primary_key_field_empty(self):
+        for value in [None, ""]:
+            with self.assertRaises(ValueError):
+                Schema(
+                    name="some_object",
+                    category_name="some_category",
+                    category_description="This is a description.",
+                    primary_key_field=value,
+                    name_field="name",
+                    fields=[
+                        SchemaField(name="some_field", data_type=SchemaDataType.String),
+                    ]
+                )
+
+    def test_validate_primary_key_field_wrong_type(self):
+        for value in [123, ("foo", "bar"), datetime.now()]:
+            with self.assertRaises(TypeError):
+                Schema(
+                    name="some_object",
+                    category_name="some_category",
+                    category_description="This is a description.",
+                    primary_key_field=value,
+                    name_field="name",
+                    fields=[
+                        SchemaField(name="some_field", data_type=SchemaDataType.String),
+                    ],
                 )
 
     def test_validate_name_field_empty(self):
@@ -97,6 +131,7 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name="some_category",
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field=value,
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -110,6 +145,7 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name="some_category",
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field=value,
                     fields=[
                         SchemaField(name="some_field", data_type=SchemaDataType.String),
@@ -123,22 +159,9 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name="some_category",
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field="name",
                     fields=value,
-                )
-
-    def test_validate_primary_key_field_wrong_type(self):
-        for value in [123, ("foo", "bar"), datetime.now()]:
-            with self.assertRaises(TypeError):
-                Schema(
-                    name="some_object",
-                    category_name="some_category",
-                    category_description="This is a description.",
-                    name_field="name",
-                    fields=[
-                        SchemaField(name="some_field", data_type=SchemaDataType.String),
-                    ],
-                    primary_key_field=value,
                 )
 
     def test_validate_description_wrong_type(self):
@@ -148,6 +171,7 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name="some_category",
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field="name",
                     fields=[],
                     description=value,
@@ -160,6 +184,7 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name="some_category",
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field="name",
                     fields=[],
                     created_date_field=value,
@@ -172,6 +197,7 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name="some_category",
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field="name",
                     fields=[],
                     last_modified_date_field=value,
@@ -184,6 +210,7 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name="some_category",
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field="name",
                     fields=[],
                     references=value,
@@ -196,6 +223,7 @@ class TestSchema(unittest.TestCase):
                     name="some_object",
                     category_name="some_category",
                     category_description="This is a description.",
+                    primary_key_field="id",
                     name_field="name",
                     fields=[],
                     owner=value,
@@ -206,6 +234,7 @@ class TestSchema(unittest.TestCase):
             name="some_object",
             category_name="some_category",
             category_description="This is a description.",
+            primary_key_field="id",
             name_field="name",
             fields=[
                 SchemaField(name="some_field", data_type=SchemaDataType.String),
