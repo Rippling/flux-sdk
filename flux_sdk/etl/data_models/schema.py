@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional, Union
 
-from flux_sdk.flux_core.validation import raise_if_missing_or_incorrect_type, raise_if_incorrect_type
+from flux_sdk.flux_core.validation import check_field
 
 
 # These are the data types supported by Rippling Custom Objects.
@@ -50,10 +50,10 @@ class SchemaField:
 
     # Perform validation.
     def __post_init__(self):
-        raise_if_missing_or_incorrect_type(self, "name", str)
-        raise_if_missing_or_incorrect_type(self, "data_type", SchemaDataType)
-        raise_if_incorrect_type(self, "description", str)
-        raise_if_incorrect_type(self, "enum_values", list)
+        check_field(self, "name", str, required=True)
+        check_field(self, "data_type", SchemaDataType, required=True)
+        check_field(self, "description", str)
+        check_field(self, "enum_values", list)
 
         if not isinstance(self.is_required, bool):
             raise TypeError("is_required must be a bool")
@@ -83,9 +83,9 @@ class CustomObjectReference:
 
     # Perform validation.
     def __post_init__(self):
-        raise_if_missing_or_incorrect_type(self, "object", str)
-        raise_if_missing_or_incorrect_type(self, "lookup", str)
-        raise_if_incorrect_type(self, "description", str)
+        check_field(self, "object", str, required=True)
+        check_field(self, "lookup", str, required=True)
+        check_field(self, "description", str)
 
 
 # These are the available lookup-fields for a Rippling Employee.
@@ -111,8 +111,8 @@ class EmployeeReference:
 
     # Perform validation.
     def __post_init__(self):
-        raise_if_missing_or_incorrect_type(self, "lookup", EmployeeLookup)
-        raise_if_incorrect_type(self, "description", str)
+        check_field(self, "lookup", EmployeeLookup, required=True)
+        check_field(self, "description", str)
 
 
 # This lists the available types that can be used for schema references.
@@ -163,14 +163,14 @@ class Schema:
 
     # Perform validation.
     def __post_init__(self):
-        raise_if_missing_or_incorrect_type(self, "name", str)
-        raise_if_missing_or_incorrect_type(self, "category_name", str)
-        raise_if_missing_or_incorrect_type(self, "category_description", str)
-        raise_if_missing_or_incorrect_type(self, "name_field", str)
-        raise_if_incorrect_type(self, "fields", list)
-        raise_if_incorrect_type(self, "primary_key_field", str)
-        raise_if_incorrect_type(self, "description", str)
-        raise_if_incorrect_type(self, "created_date_field", str)
-        raise_if_incorrect_type(self, "last_modified_date_field", str)
-        raise_if_incorrect_type(self, "references", dict)
-        raise_if_incorrect_type(self, "owner", tuple)
+        check_field(self, "name", str, required=True)
+        check_field(self, "category_name", str, required=True)
+        check_field(self, "category_description", str, required=True)
+        check_field(self, "name_field", str, required=True)
+        check_field(self, "fields", list[SchemaField])
+        check_field(self, "primary_key_field", str)
+        check_field(self, "description", str)
+        check_field(self, "created_date_field", str)
+        check_field(self, "last_modified_date_field", str)
+        check_field(self, "references", dict[str, Reference])
+        check_field(self, "owner", tuple[str, EmployeeReference])

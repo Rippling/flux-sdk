@@ -3,7 +3,7 @@ from datetime import date, datetime, time
 from enum import Enum
 from typing import Any, Optional, Union
 
-from flux_sdk.flux_core.validation import raise_if_missing_or_incorrect_type, raise_if_incorrect_type
+from flux_sdk.flux_core.validation import check_field
 
 
 # This enum can be used to communicate a connector type to app hooks.
@@ -31,8 +31,8 @@ class SQLQuery:
 
     # Perform validation.
     def __post_init__(self):
-        raise_if_missing_or_incorrect_type(self, "text", str)
-        raise_if_incorrect_type(self, "args", dict)
+        check_field(self, "text", str, required=True)
+        check_field(self, "args", dict[str, SQLQueryArg])
 
 
 # This is returned by the "prepare_query" hook for MongoDB connectors.
@@ -51,9 +51,9 @@ class MongoQuery:
 
     # Perform validation.
     def __post_init__(self):
-        raise_if_missing_or_incorrect_type(self, "collection", str)
-        raise_if_incorrect_type(self, "filter", dict)
-        raise_if_incorrect_type(self, "aggregate", list)
+        check_field(self, "collection", str, required=True)
+        check_field(self, "filter", dict)  # FIXME(dbarnes): include sub-types when Any is able to be supported
+        check_field(self, "aggregate", list)  # FIXME(dbarnes): include sub-types when Any is able to be supported
 
 
 # This is the list of types that can be used to represent a query.

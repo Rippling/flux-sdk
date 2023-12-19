@@ -1,9 +1,8 @@
 from dataclasses import dataclass
 from datetime import date, datetime, time
-from typing import Optional, Union, get_args
+from typing import Optional, Union
 
-from flux_sdk.flux_core.validation import raise_if_missing_or_incorrect_type, raise_if_incorrect_type
-
+from flux_sdk.flux_core.validation import check_field
 
 # This represents the currently supported types for Record fields. Currently, we only support these primitive types and
 # do not allow for any complex/nested types.
@@ -49,14 +48,8 @@ class Record:
 
     # Perform validation.
     def __post_init__(self):
-        raise_if_missing_or_incorrect_type(self, "primary_key", str)
-        raise_if_missing_or_incorrect_type(self, "fields", dict)
-        raise_if_incorrect_type(self, "references", dict)
-
-        if self.checkpoint:
-            if type(self.checkpoint) not in get_args(Checkpoint):
-                raise TypeError("checkpoint must be a datetime, int or str")
-
-        if self.drop is not None:
-            if not isinstance(self.drop, bool):
-                raise TypeError("drop must be a bool")
+        check_field(self, "primary_key", str, required=True)
+        check_field(self, "fields", dict[str, Field], required=True)
+        check_field(self, "references", dict[str, str])
+        check_field(self, "checkpoint", Checkpoint)
+        check_field(self, "drop", bool)
