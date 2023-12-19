@@ -9,7 +9,6 @@ from typing import Optional, Union
 from flux_sdk.flux_core.data_models import (
     ContributionType,
     Employee,
-    EmployeeState,
     File,
 )
 from flux_sdk.pension.capabilities.report_payroll_contributions.data_models import (
@@ -65,16 +64,6 @@ class ReportPayrollContributionsAscensusUtil:
     This class embodies the functionality to "report payroll contributions" for vendors utilizing
     the Ascensus formatted file.
     Developers are required to implement the format_contributions_for_ascensus_vendor method in their code.
-    To obtain the Plan_Number and Plan_Name from the admin during installation, include the following code in
-    spoke/config/manifest/variable in your app's manifest file:
-    "variables": [
-            {
-              "name": "client_id",
-              "type": "TEXT",
-              "title": "Plan ID",
-              "required": true,
-            }
-        ],
     For further details regarding their implementation details, check their documentation.
     """
 
@@ -118,6 +107,90 @@ class ReportPayrollContributionsAscensusUtil:
         )
 
     @staticmethod
+    def get_fein_settings(ein: str, customer_update_settings: dict) -> dict:
+        fein_peps = customer_update_settings.get("fein_settings", [])
+        for fein_info in fein_peps:
+            if fein_info["fein"] == ein:
+                return fein_info
+        return {}
+
+    @staticmethod
+    def get_total_compensation(
+        employee_payroll_record: EmployeePayrollRecord, customer_update_settings: dict
+    ) -> Decimal:
+        compensation: Decimal = employee_payroll_record.gross_pay
+        exclude_severance = customer_update_settings.get("exclude_severance", False)
+        exclude_bonus = customer_update_settings.get("exclude_bonus", False)
+        exclude_imputed_income = customer_update_settings.get(
+            "exclude_imputed_income", False
+        )
+
+        if exclude_severance is True:
+            compensation -= employee_payroll_record.severance
+
+        if exclude_bonus is True:
+            compensation -= employee_payroll_record.bonus
+
+        if exclude_imputed_income is True:
+            compensation -= employee_payroll_record.imputed_pay
+        return round(compensation, 2)
+
+    @staticmethod
+    def get_index_of_current_payroll_run(payroll_upload_settings: PayrollUploadSettings) -> int:
+        current_month_payroll_runs = getattr(payroll_upload_settings, 'current_month_payruns', [])
+        current_payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
+        sorted_payroll_run_ids = sorted([payroll_run.payroll_run_id for payroll_run in current_month_payroll_runs])
+        return sorted_payroll_run_ids.index(current_payroll_run_id)+1
+
+    @staticmethod
+    def get_site_code(
+        fein_settings: dict,
+        payroll_update_settings: PayrollUploadSettings,
+        no_of_salaried_roles: int,
+        no_of_hourly_roles: int,
+    ) -> str:
+        customer_partner_settings = payroll_update_settings.customer_partner_settings
+        preference_type = customer_partner_settings.get("type", "FREQUENCY")
+        pay_frequency = pay_type = None
+        if preference_type == "FREQUENCY":
+            pay_frequency = getattr(
+                payroll_update_settings.payrun_info, "pay_frequency", None
+            )
+        else:
+            pay_type = (
+                "SALARIED" if no_of_salaried_roles >= no_of_hourly_roles else "HOURLY"
+            )
+
+        if pay_frequency is None and pay_type is None:
+            return fein_settings.get("site_code", "A")
+
+        fein_site_code = None
+        if "site_code" in fein_settings and fein_settings["site_code"] is not None:
+            fein_site_code = fein_settings["site_code"]
+        fein_site_code_mapping = {}
+        if (
+            "site_code_mapping" in fein_settings
+            and fein_settings["site_code_mapping"] is not None
+        ):
+            fein_site_code_mapping = fein_settings["site_code_mapping"]
+
+        site_code_mapping = customer_partner_settings.get("site_code_mapping", {})
+        site_code = customer_partner_settings.get("site_code", "A")
+
+        if pay_frequency in fein_site_code_mapping:
+            return fein_site_code_mapping[pay_frequency]
+        if pay_type in fein_site_code_mapping:
+            return fein_site_code_mapping[pay_type]
+        if fein_site_code is not None:
+            return fein_site_code
+
+        if pay_frequency in site_code_mapping:
+            return site_code_mapping[pay_frequency]
+        if pay_type in site_code_mapping:
+            return site_code_mapping[pay_type]
+        return site_code
+
+    @staticmethod
     def format_contributions_for_ascensus_vendor(
         employee_payroll_records: list[EmployeePayrollRecord],
         payroll_upload_settings: PayrollUploadSettings,
@@ -130,6 +203,7 @@ class ReportPayrollContributionsAscensusUtil:
         :param payroll_upload_settings:
         :return: File
         """
+        no_of_hourly_roles = no_of_salaried_roles = 0
         with contextlib.closing(StringIO()) as output:
             writer = csv.DictWriter(output, fieldnames=COLUMNS_180)
             writer.writeheader()
@@ -145,6 +219,10 @@ class ReportPayrollContributionsAscensusUtil:
                 payroll_contribution_map = {
                     pc.deduction_type.name: pc for pc in payroll_contributions
                 }
+                if employee.is_salaried:
+                    no_of_salaried_roles = no_of_salaried_roles + 1
+                elif employee.is_hourly:
+                    no_of_hourly_roles = no_of_hourly_roles + 1
 
                 try:
                     employee_first_name = employee.first_name
@@ -161,26 +239,15 @@ class ReportPayrollContributionsAscensusUtil:
                         STANDARD_DATE_FORMAT
                     )
                     current_date_of_term = getattr(employee, "termination_date", None)
-                    if (
-                        current_date_of_term
-                        and employee.status == EmployeeState.TERMINATED
-                    ):
-                        current_date_of_term = current_date_of_term.strftime(
-                            STANDARD_DATE_FORMAT
-                        )
-                    else:
-                        current_date_of_term = ""
+                    current_date_of_term = (
+                        current_date_of_term.strftime(STANDARD_DATE_FORMAT)
+                        if current_date_of_term
+                        else ""
+                    )
+
                     prior_hire_date = employee.original_hire_date.strftime(
                         STANDARD_DATE_FORMAT
                     )
-                    prior_term_date = ""
-                    if (
-                        hasattr(employee, "termination_date")
-                        and employee.termination_date
-                    ):
-                        prior_term_date = employee.termination_date.strftime(
-                            STANDARD_DATE_FORMAT
-                        )
 
                     payroll_employee_contribution_401k: Decimal = ReportPayrollContributionsAscensusUtil.\
                         _get_amount_from_payroll_contribution(
@@ -201,14 +268,22 @@ class ReportPayrollContributionsAscensusUtil:
                         payroll_contribution_map.get(ContributionType.ROTH.name, None)
                     )
 
-                    gross_pay = getattr(
-                        employee_payroll_record, "gross_pay", Decimal(0)
-                    )
                     annual_salary = getattr(
                         employee_payroll_record, "annual_salary", Decimal(0)
                     )
+                    total_compensation = (
+                        ReportPayrollContributionsAscensusUtil.get_total_compensation(
+                            employee_payroll_record,
+                            payroll_upload_settings.customer_partner_settings,
+                        )
+                    )
                     hours_worked = getattr(
                         employee_payroll_record, "hours_worked", Decimal(0)
+                    )
+                    company_contribution_column = (
+                        payroll_upload_settings.customer_partner_settings[
+                            "company_contribution_column"
+                        ]
                     )
 
                     mapping_from_column_name_to_value = {
@@ -217,14 +292,11 @@ class ReportPayrollContributionsAscensusUtil:
                         "FIRST NAME": employee_first_name,
                         "MI": "",
                         "DIVISIONAL CODE": "",
-                        "TOTAL COMPENSATION": gross_pay,
+                        "TOTAL COMPENSATION": total_compensation,
                         "EMPLOYEE 401(K)": payroll_employee_contribution_401k,
                         "ROTH 401(K)": payroll_employee_roth_401k,
                         "LOAN PAYMENT AMOUNT": payroll_employee_loan_repayment,
-                        "MATCH": payroll_company_match_contribution,
-                        "PROFIT SHARING": "",
-                        "SAFE HARBOR MATCH": "",
-                        "SAFE HARBOR NEC": "",
+                        company_contribution_column: payroll_company_match_contribution,
                         "CLIENT SPECIFIC": "",
                         "HOURS": hours_worked,
                         "ADDRESS 1": address_line_1,
@@ -237,7 +309,7 @@ class ReportPayrollContributionsAscensusUtil:
                         "EMPLOYEE ELIGIBILITY DATE": "",
                         "CURRENT DATE OF TERM": current_date_of_term,
                         "PRIOR DATE OF HIRE": prior_hire_date,
-                        "PRIOR DATE OF TERM": prior_term_date,
+                        "PRIOR DATE OF TERM": "",
                         "ESTIMATED ANNUAL COMPENSATION": annual_salary,
                         "EMPLOYMENT STATUS": "",
                         "HCE CODE": "",
@@ -262,7 +334,30 @@ class ReportPayrollContributionsAscensusUtil:
             file.name = ReportPayrollContributionsAscensusUtil.get_file_name(
                 payroll_upload_settings
             )
+            client_id = str(
+                payroll_upload_settings.customer_partner_settings["client_id"]
+            )
+            check_date = getattr(payroll_upload_settings.payrun_info, "check_date", None)
+            if check_date:
+                check_date = check_date.strftime(
+                    STANDARD_DATE_FORMAT
+                )
+            fien_settings = ReportPayrollContributionsAscensusUtil.get_fein_settings(
+                payroll_upload_settings.ein,
+                payroll_upload_settings.customer_partner_settings,
+            )
+            site_code = ReportPayrollContributionsAscensusUtil.get_site_code(
+                fien_settings,
+                payroll_upload_settings,
+                no_of_salaried_roles,
+                no_of_hourly_roles,
+            )
+            index_of_current_payroll_run = ReportPayrollContributionsAscensusUtil.get_index_of_current_payroll_run(
+                payroll_upload_settings
+            )
+            header = "{},{},{},{}\n".format(client_id, check_date, site_code, index_of_current_payroll_run)
+
             file.content = ReportPayrollContributionsAscensusUtil.to_bytes(
-                output.getvalue()
+                header + output.getvalue()
             )
             return file
