@@ -249,8 +249,8 @@ class ReportPayrollContributionsPayKonnectUtil:
         ))
         transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
         report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime(
-            "%H%M%S"
-        )
+            "%H%M%S.%f"
+        )[:-3]
         return "{}_{}_{}.csv".format(plan_name, transmission_date, report_time)
 
     @staticmethod
@@ -269,6 +269,8 @@ class ReportPayrollContributionsPayKonnectUtil:
         customer_partner_settings = payroll_upload_settings.customer_partner_settings
         plan_id = str(customer_partner_settings.get("plan_id"))
         plan_name = str(customer_partner_settings.get("plan_name"))
+        division = str(customer_partner_settings.get("division"))
+        pay_group = str(customer_partner_settings.get("pay_group"))
 
         with contextlib.closing(StringIO()) as output:
             writer = csv.DictWriter(output, fieldnames=columns_180)
@@ -467,7 +469,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "Plan_Name": plan_name,
                         "EIN": ein,
                         "Company_ID": company_id,
-                        "Division": "",                # Todo: Waiting on clarifications from PayKonnect(Not a blocker)
+                        "Division": division,
                         "Payroll_Date": payroll_date,
                         "Payroll_Start_Date": payroll_start_date,
                         "Ending_Payroll_date": payroll_end_date,
@@ -496,7 +498,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "Hire_Date": hire_date,
                         "Termination_Date": termination_date,
                         "ReHire_Date": rehire_date,
-                        "Pay_Group": "",
+                        "Pay_Group": pay_group,
                         "Employee_Category": employee_category,
                         "Employee_Pay_Type": pay_type,
                         "Employee_WorkStatus_Code": employee_work_status_code,
