@@ -40,15 +40,30 @@ class SQLQuery:
 
 @dataclass(kw_only=True)
 class MongoQuery:
-    """This is returned by the "prepare_query" hook for MongoDB connectors."""
+    """
+    This is returned by the "prepare_query" hook for MongoDB connectors. The inclusion of filter, projection and
+    aggregate support a variety of query patterns:
+
+     - find: filter
+     - find: filter + projection
+     - find: projection
+     - aggregate: pipeline
+
+    By opting for none of these optional parameters, the entire collection will be retrieved.
+    """
 
     collection: str
     """This indicates which collection the query will be executed in."""
 
     filter: Optional[dict[str, Any]] = None
     """
-    This provides the filter criteria for a basic query. Most connectors will use this to filter documents by values or
-    other simpler query operators.
+    This provides the filter criteria for a basic find operation. Most connectors will use this to filter documents by
+    values or other simpler query operators.
+    """
+
+    projection: Optional[dict[str, Any]] = None
+    """
+    This provides the projection criteria for a basic find operation. Use this to include/exclude fields at query-time.
     """
 
     aggregate: Optional[list[Any]] = None
@@ -61,6 +76,7 @@ class MongoQuery:
         """Perform validation."""
         check_field(self, "collection", str, required=True)
         check_field(self, "filter", dict[str, Any])
+        check_field(self, "projection", dict[str, Any])
         check_field(self, "aggregate", list[Any])
 
 

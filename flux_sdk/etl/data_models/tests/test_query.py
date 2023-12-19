@@ -54,6 +54,11 @@ class TestMongoQuery(unittest.TestCase):
             with self.assertRaises(TypeError):
                 MongoQuery(collection="some_collection", filter=value)
 
+    def test_validate_projection_wrong_type(self):
+        for value in [123, ("foo", "bar"), datetime.now()]:
+            with self.assertRaises(TypeError):
+                MongoQuery(collection="some_collection", projection=value)
+
     def test_validate_aggregate_wrong_type(self):
         for value in [123, ("foo", "bar"), datetime.now()]:
             with self.assertRaises(TypeError):
