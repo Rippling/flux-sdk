@@ -4,7 +4,7 @@ from typing import Optional
 from flux_sdk.flux_core.data_models import Employee
 
 
-class EmployeeEligibilityRecord:    # temp comment
+class EmployeeEligibilityRecord:
     employee: Employee
     dependent_first_name: Optional[str]
     dependent_last_name: Optional[str]
