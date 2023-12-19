@@ -4,7 +4,6 @@ from typing import Optional, Union
 
 from flux_sdk.flux_core.validation import check_field
 
-
 Field = Union[str, int, float, bool, date, time, datetime, None]
 """
 This represents the currently supported types for Record fields. Currently, we only support these primitive types and do
