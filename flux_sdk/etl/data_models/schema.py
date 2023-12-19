@@ -5,8 +5,8 @@ from typing import Optional, Union
 from flux_sdk.flux_core.validation import check_field
 
 
-# These are the data types supported by Rippling Custom Objects.
 class SchemaDataType(Enum):
+    """These are the data types supported by Rippling Custom Objects."""
     Bool = "bool"
     Currency = "currency"
     Date = "date"
@@ -23,146 +23,156 @@ class SchemaDataType(Enum):
     Url = "url"
 
 
-# A field usually corresponds to a column in a database, it is one datum within a Record.
 @dataclass(kw_only=True)
 class SchemaField:
-    # This maps to the field name in the Rippling Custom Object.
+    """A field usually corresponds to a column in a database, it is one datum within a Record."""
+
     name: str
+    """This maps to the field name in the Rippling Custom Object."""
 
-    # This indicates the data type used in the Rippling Custom Object.
     data_type: SchemaDataType
+    """This indicates the data type used in the Rippling Custom Object."""
 
-    # This is a longer explanation of the field that will appear in the Rippling Custom Object UI.
     description: Optional[str] = None
+    """This is a longer explanation of the field that will appear in the Rippling Custom Object UI."""
 
-    # When enabled, this value will be required to be not empty by Rippling Custom Object.
     is_required: bool = False
+    """When enabled, this value will be required to be not empty by Rippling Custom Object."""
 
-    # When enabled, this value will be enforced as unique by Rippling Custom Object.
     is_unique: bool = False
+    """When enabled, this value will be enforced as unique by Rippling Custom Object."""
 
-    # When using an Enum data type, this indicates the possible values.
     enum_values: Optional[list[str]] = None
+    """When using an Enum data type, this indicates the possible values."""
 
-    # When using an Enum data type, this indicates if *only* enum_values are accepted, meaning anything else will be
-    # rejected with an error.
     enum_restricted: bool = False
+    """
+    When using an Enum data type, this indicates if *only* enum_values are accepted, meaning anything else will be
+    rejected with an error.
+    """
 
-    # Perform validation.
     def __post_init__(self):
+        """Perform validation."""
         check_field(self, "name", str, required=True)
         check_field(self, "data_type", SchemaDataType, required=True)
         check_field(self, "description", str)
         check_field(self, "enum_values", list)
-
-        if not isinstance(self.is_required, bool):
-            raise TypeError("is_required must be a bool")
-
-        if not isinstance(self.is_unique, bool):
-            raise TypeError("is_unique must be a bool")
-
-        if not isinstance(self.enum_restricted, bool):
-            raise TypeError("enum_restricted must be a bool")
+        check_field(self, "is_required", bool)
+        check_field(self, "is_unique", bool)
+        check_field(self, "enum_restricted", bool)
 
         if self.data_type in [SchemaDataType.Enum, SchemaDataType.MultiEnum]:
             if len(self.enum_values) == 0:
                 raise ValueError("enum_values must have at least 1 value")
 
 
-# This allows creating a reference to an existing Custom Object.
 @dataclass(kw_only=True)
 class CustomObjectReference:
-    # The name of the Custom Object to link to.
+    """This allows creating a reference to an existing Custom Object."""
+
     object: str
+    """The name of the Custom Object to link to."""
 
-    # The name of the field on the Custom Object to use for the link.
     lookup: str
+    """The name of the field on the Custom Object to use for the link."""
 
-    # An optional explanation for this reference to be shown in the Rippling Custom Object UI.
     description: Optional[str] = None
+    """An optional explanation for this reference to be shown in the Rippling Custom Object UI."""
 
-    # Perform validation.
     def __post_init__(self):
+        """Perform validation."""
         check_field(self, "object", str, required=True)
         check_field(self, "lookup", str, required=True)
         check_field(self, "description", str)
 
 
-# These are the available lookup-fields for a Rippling Employee.
 class EmployeeLookup(Enum):
-    # The Rippling Employee ID.
+    """These are the available lookup-fields for a Rippling Employee."""
+
     EMPLOYEE_ID = "employee_id"
+    """The Rippling Employee ID."""
 
-    # The personal email for a Rippling Employee.
     PERSONAL_EMAIL = "personal_email"
+    """The personal email for a Rippling Employee."""
 
-    # The work/business email for a Rippling Employee.
     WORK_EMAIL = "work_email"
+    """The work/business email for a Rippling Employee."""
 
 
-# This allows creating a reference to a Rippling employee.
 @dataclass(kw_only=True)
 class EmployeeReference:
-    # The name of the field on the Employee object to use for the link.
+    """This allows creating a reference to a Rippling employee."""
+
     lookup: EmployeeLookup
+    """The name of the field on the Employee object to use for the link."""
 
-    # An optional explanation for this reference to be shown in the Rippling Custom Object UI.
     description: Optional[str] = None
+    """An optional explanation for this reference to be shown in the Rippling Custom Object UI."""
 
-    # Perform validation.
     def __post_init__(self):
+        """Perform validation."""
         check_field(self, "lookup", EmployeeLookup, required=True)
         check_field(self, "description", str)
 
 
-# This lists the available types that can be used for schema references.
 Reference = Union[CustomObjectReference, EmployeeReference]
+"""This lists the available types that can be used for schema references."""
 
 
-# A schema describes the shape of an object being imported and is used by Rippling to define the Custom Object.
 @dataclass(kw_only=True)
 class Schema:
-    # This is the name of the Custom Object.
+    """A schema describes the shape of an object being imported and is used by Rippling to define the Custom Object."""
+
     name: str
+    """This is the name of the Custom Object."""
 
-    # This is used to put this Custom Object into a group/category. If a category with this name already exists, a new
-    # one will not be created. If this value is changed, no categories will be deleted as they could be used by another
-    # object.
     category_name: str
+    """
+    This is used to put this Custom Object into a group/category. If a category with this name already exists, a new one
+    will not be created. If this value is changed, no categories will be deleted as they could be used by another
+    object.
+    """
 
-    # When creating a new group/category, this will set a description that will appear in the Rippling Custom Object UI.
-    # If the category already exists, the description will be updated.
     category_description: str
+    """
+    When creating a new group/category, this will set a description that will appear in the Rippling Custom Object UI.
+    If the category already exists, the description will be updated.
+    """
 
-    # This is the name of the field used for the record name, which is displayed in the Rippling Custom Object UI. When
-    # not provided,
     name_field: str
+    """This is the name of the field used for the record name, which is displayed in the Rippling Custom Object UI."""
 
-    # These are the remaining data fields.
     fields: list[SchemaField]
+    """These are the remaining data fields."""
 
-    # This is the name of the field used for the primary key (aka: External ID).
     primary_key_field: Optional[str] = None
+    """This is the name of the field used for the primary key (aka: External ID)."""
 
-    # This is a more detailed explanation of the field which will appear in the Rippling Custom Object UI.
     description: Optional[str] = None
+    """This is a more detailed explanation of the field which will appear in the Rippling Custom Object UI."""
 
-    # This is the name of the field that reflects when the record was first created. When a field name is not provided,
-    # Rippling will use the time that the record is first imported.
     created_date_field: Optional[str] = None
+    """
+    This is the name of the field that reflects when the record was first created. When a field name is not provided,
+    Rippling will use the time that the record is first imported.
+    """
 
-    # This is the name of the field that reflects when the record was last updated. When a field name is not provided,
-    # Rippling will use the time that the record was last updated.
     last_modified_date_field: Optional[str] = None
+    """
+    This is the name of the field that reflects when the record was last updated. When a field name is not provided,
+    Rippling will use the time that the record was last updated.
+    """
 
-    # These are the links to other objects. The keys are the field names that should be the origin for the link/edge.
     references: Optional[dict[str, Reference]] = None
+    """
+    These are the links to other objects. The keys are the field names that should be the origin for the link/edge.
+    """
 
-    # This establishes the built-in link to Employee, if applicable.
     owner: Optional[tuple[str, EmployeeReference]] = None
+    """This establishes the built-in link to Employee, if applicable."""
 
-    # Perform validation.
     def __post_init__(self):
+        """Perform validation."""
         check_field(self, "name", str, required=True)
         check_field(self, "category_name", str, required=True)
         check_field(self, "category_description", str, required=True)

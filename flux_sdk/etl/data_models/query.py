@@ -6,55 +6,63 @@ from typing import Any, Optional, Union
 from flux_sdk.flux_core.validation import check_field
 
 
-# This enum can be used to communicate a connector type to app hooks.
 class Connector(Enum):
+    """This enum can be used to communicate a connector type to app hooks."""
     SQL = "sql"
     MONGODB = "mongodb"
 
 
-# This is the reduced list of acceptable types that can be used as SQL arguments.
 SQLQueryArg = Union[str, bool, int, float, datetime, date, time]
+"""This is the reduced list of acceptable types that can be used as SQL arguments."""
 
 
-# This is returned by the "prepare_query" hook for SQL connectors.
 @dataclass(kw_only=True)
 class SQLQuery:
-    # This is the raw text of the query to be executed.
+    """This is returned by the "prepare_query" hook for SQL connectors."""
+
     text: str
+    """This is the raw text of the query to be executed."""
 
-    # This is used to add safe interpolation of values into the query, rather than requiring it to be constructed by the
-    # hook. In the sql_query, each "@var" will be replaced with the corresponding "var" from this dict. The query text
-    # must use only alphanumeric characters and underscores in variable names in order to be properly detected.
-    #
-    # This is where a variable like "checkpoint" could be added to have it interpolated safely and cleanly.
     args: Optional[dict[str, SQLQueryArg]] = None
+    """
+    This is used to add safe interpolation of values into the query, rather than requiring it to be constructed by the
+    hook. In the sql_query, each "@var" will be replaced with the corresponding "var" from this dict. The query text
+    must use only alphanumeric characters and underscores in variable names in order to be properly detected.
 
-    # Perform validation.
+    This is where a variable like "checkpoint" could be added to have it interpolated safely and cleanly.
+    """
+
     def __post_init__(self):
+        """Perform validation."""
         check_field(self, "text", str, required=True)
         check_field(self, "args", dict[str, SQLQueryArg])
 
 
-# This is returned by the "prepare_query" hook for MongoDB connectors.
 @dataclass(kw_only=True)
 class MongoQuery:
-    # This indicates which collection the query will be executed in.
+    """This is returned by the "prepare_query" hook for MongoDB connectors."""
+
     collection: str
+    """This indicates which collection the query will be executed in."""
 
-    # This provides the filter criteria for a basic query. Most connectors will use this to filter documents by values
-    # or other simpler query operators.
     filter: Optional[dict[str, Any]] = None
+    """
+    This provides the filter criteria for a basic query. Most connectors will use this to filter documents by values or
+    other simpler query operators.
+    """
 
-    # This allows for projection in advanced queries. Some connectors may offload more expensive operations (eg: join,
-    # embed) to the database through this instead of using the basic filter.
     aggregate: Optional[list[Any]] = None
+    """
+    This allows for projection in advanced queries. Some connectors may offload more expensive operations (eg: join,
+    embed) to the database through this instead of using the basic filter.
+    """
 
-    # Perform validation.
     def __post_init__(self):
+        """Perform validation."""
         check_field(self, "collection", str, required=True)
         check_field(self, "filter", dict[str, Any])
         check_field(self, "aggregate", list[Any])
 
 
-# This is the list of types that can be used to represent a query.
 Query = Union[SQLQuery, MongoQuery]
+"""This is the list of types that can be used to represent a query."""
