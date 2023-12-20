@@ -1,2 +1,11 @@
 class DeductionDetails:
-    value: str
+    companyId: str
+    employeeId: str
+    deductionCode: str
+    effectiveFrom: datetime
+    endDate: datetime
+    totalContribution: Optional[Decimal]
+    employeeContribution: Optional[Decimal]
+    domesticPartnerPostTax: Optional[Decimal]
+    imputedIncome: Optional[Decimal]
+    companyContribution: Optional[Decimal]
