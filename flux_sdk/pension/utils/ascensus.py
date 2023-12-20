@@ -3,6 +3,7 @@ import csv
 import logging
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
+from enum import Enum
 from io import StringIO
 from typing import Optional, Union
 
@@ -59,6 +60,17 @@ STANDARD_DATE_FORMAT = "%m/%d/%Y"
 TWO_PLACES = Decimal(".01")
 
 
+class AscensusSettingsKeys(Enum):
+    CLIENT_ID = "client_id"
+    COMPANY_CONTRIBUTION_COLUMN = "company_contribution_column"
+    FREQUENCY_OR_PAY_TYPE = "frequency_or_pay_type"
+    EXCLUDE_SEVERANCE = "EXCLUDE_SEVERANCE"
+    EXCLUDE_IMPUTED_INCOME = "EXCLUDE_IMPUTED_INCOME"
+    EXCLUDE_BONUS = "EXCLUDE_BONUS"
+    SITE_CODE_MAPPING = "site_code_mapping"
+    FEIN_SETTINGS = "feins"
+
+
 class ReportPayrollContributionsAscensusUtil:
     """
     This class embodies the functionality to "report payroll contributions" for vendors utilizing
@@ -68,7 +80,7 @@ class ReportPayrollContributionsAscensusUtil:
     """
 
     @staticmethod
-    def _get_formatted_ssn(ssn: str) -> str:
+    def get_formatted_ssn(ssn: str) -> str:
         return ssn[:3] + "-" + ssn[3:5] + "-" + ssn[5:9]
 
     @staticmethod
@@ -77,7 +89,7 @@ class ReportPayrollContributionsAscensusUtil:
         return data
 
     @staticmethod
-    def _get_amount_from_payroll_contribution(
+    def get_amount_from_payroll_contribution(
         payroll_contribution: Optional[PayrollRunContribution],
     ):
         if payroll_contribution is None:
@@ -93,7 +105,11 @@ class ReportPayrollContributionsAscensusUtil:
         :return: str
         """
         environment = payroll_upload_settings.environment
-        client_id = str(payroll_upload_settings.customer_partner_settings["client_id"])
+        client_id = str(
+            payroll_upload_settings.customer_partner_settings[
+                AscensusSettingsKeys.CLIENT_ID.value
+            ]
+        )
         payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
 
         if not environment or not client_id:
@@ -108,21 +124,23 @@ class ReportPayrollContributionsAscensusUtil:
 
     @staticmethod
     def get_fein_settings(ein: str, customer_update_settings: dict) -> dict:
-        fein_peps = customer_update_settings.get("fein_settings", [])
-        for fein_info in fein_peps:
-            if fein_info["fein"] == ein:
-                return fein_info
-        return {}
+        fein_peps = customer_update_settings.get("feins", {})
+        fein_settings = fein_peps.get(ein, {})
+        return fein_settings
 
     @staticmethod
     def get_total_compensation(
         employee_payroll_record: EmployeePayrollRecord, customer_update_settings: dict
     ) -> Decimal:
-        compensation: Decimal = employee_payroll_record.gross_pay
-        exclude_severance = customer_update_settings.get("exclude_severance", False)
-        exclude_bonus = customer_update_settings.get("exclude_bonus", False)
+        compensation: Decimal = getattr(employee_payroll_record,"gross_pay", Decimal(0))
+        exclude_severance = customer_update_settings.get(
+            AscensusSettingsKeys.EXCLUDE_SEVERANCE.value, False
+        )
+        exclude_bonus = customer_update_settings.get(
+            AscensusSettingsKeys.EXCLUDE_BONUS.value, False
+        )
         exclude_imputed_income = customer_update_settings.get(
-            "exclude_imputed_income", False
+            AscensusSettingsKeys.EXCLUDE_IMPUTED_INCOME.value, False
         )
 
         if exclude_severance is True:
@@ -136,11 +154,70 @@ class ReportPayrollContributionsAscensusUtil:
         return round(compensation, 2)
 
     @staticmethod
-    def get_index_of_current_payroll_run(payroll_upload_settings: PayrollUploadSettings) -> int:
-        current_month_payroll_runs = getattr(payroll_upload_settings, 'current_month_payruns', [])
+    def get_index_of_current_payroll_run(
+        payroll_upload_settings: PayrollUploadSettings,
+    ) -> int:
+        current_month_payroll_runs = getattr(
+            payroll_upload_settings, "current_month_payruns", []
+        )
         current_payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
-        sorted_payroll_run_ids = sorted([payroll_run.payroll_run_id for payroll_run in current_month_payroll_runs])
-        return sorted_payroll_run_ids.index(current_payroll_run_id)+1
+        sorted_payroll_run_ids = sorted(
+            [payroll_run.payroll_run_id for payroll_run in current_month_payroll_runs]
+        )
+        return sorted_payroll_run_ids.index(current_payroll_run_id)
+
+    @staticmethod
+    def _get_fein_site_code(
+        pay_frequency: Optional[str], pay_type: Optional[str], fein_settings: dict
+    ) -> str:
+        fein_site_code_frequency_mapping_key = (
+            f"fein_site_code_mapping_for_{pay_frequency.lower()}"
+            if pay_frequency
+            else None
+        )
+        fein_site_code_pay_type_mapping_key = (
+            f"fein_site_code_mapping_for_{pay_type.lower()}" if pay_type else None
+        )
+        if fein_site_code_frequency_mapping_key in fein_settings:
+            return fein_settings[fein_site_code_frequency_mapping_key]
+        if fein_site_code_pay_type_mapping_key in fein_settings:
+            return fein_settings[fein_site_code_pay_type_mapping_key]
+
+        return fein_settings.get("fein_site_code", None)
+
+    @staticmethod
+    def _get_default_site_code(
+        preference_type: str,
+        pay_frequency: Optional[str],
+        pay_type: Optional[str],
+        customer_partner_settings: dict,
+    ) -> str:
+        site_code_frequency_mapping_key = (
+            f"site_code_mapping_for_{pay_frequency.lower()}" if pay_frequency else None
+        )
+        site_code_pay_type_mapping_key = (
+            f"site_code_mapping_for_{pay_type.lower()}" if pay_type else None
+        )
+        if site_code_frequency_mapping_key in customer_partner_settings:
+            return customer_partner_settings[site_code_frequency_mapping_key]
+        if site_code_pay_type_mapping_key in customer_partner_settings:
+            return customer_partner_settings[site_code_pay_type_mapping_key]
+
+        site_code = customer_partner_settings.get(
+            f"site_code_{preference_type.lower()}", "A"
+        )
+        return site_code
+
+    @staticmethod
+    def _get_preference_type_site_code(
+        preference_type: str, fein_settings: dict, customer_partner_settings: dict
+    ) -> str:
+        fein_site_code = fein_settings.get("fein_site_code", None)
+        if fein_site_code:
+            return fein_site_code
+        return customer_partner_settings.get(
+            f"site_code_{preference_type.lower()}", "A"
+        )
 
     @staticmethod
     def get_site_code(
@@ -149,8 +226,25 @@ class ReportPayrollContributionsAscensusUtil:
         no_of_salaried_roles: int,
         no_of_hourly_roles: int,
     ) -> str:
+        """
+        This method is used to get the site code for the given payroll run
+        1. It tries to get the site code from the fein settings for preferred payroll frequency type
+        2. If the site code is not present in the fein settings for preferred payroll frequency type
+            then it tries to get the default fein site code from the fein_settings
+        3. If the site code is not present in the fein settings then it tries to get the site code
+            from the customer_partner_settings for preferred payroll frequency type
+        4. If the site code is not present in the customer_partner_settings for preferred payroll
+            frequency type then it tries to get the default site code from the customer_partner_settings
+        :param fein_settings:
+        :param payroll_update_settings:
+        :param no_of_salaried_roles:
+        :param no_of_hourly_roles:
+        :return:
+        """
         customer_partner_settings = payroll_update_settings.customer_partner_settings
-        preference_type = customer_partner_settings.get("type", "FREQUENCY")
+        preference_type = customer_partner_settings.get(
+            AscensusSettingsKeys.FREQUENCY_OR_PAY_TYPE.value, "FREQUENCY"
+        )
         pay_frequency = pay_type = None
         if preference_type == "FREQUENCY":
             pay_frequency = getattr(
@@ -162,33 +256,27 @@ class ReportPayrollContributionsAscensusUtil:
             )
 
         if pay_frequency is None and pay_type is None:
-            return fein_settings.get("site_code", "A")
+            return (
+                ReportPayrollContributionsAscensusUtil._get_preference_type_site_code(
+                    preference_type, fein_settings, customer_partner_settings
+                )
+            )
 
-        fein_site_code = None
-        if "site_code" in fein_settings and fein_settings["site_code"] is not None:
-            fein_site_code = fein_settings["site_code"]
-        fein_site_code_mapping = {}
-        if (
-            "site_code_mapping" in fein_settings
-            and fein_settings["site_code_mapping"] is not None
-        ):
-            fein_site_code_mapping = fein_settings["site_code_mapping"]
+        fein_site_code_mapping_key = (
+            f"fein_site_code_mapping_for_{preference_type.lower()}"
+        )
+        if fein_site_code_mapping_key in fein_settings:
+            return fein_settings[fein_site_code_mapping_key]
 
-        site_code_mapping = customer_partner_settings.get("site_code_mapping", {})
-        site_code = customer_partner_settings.get("site_code", "A")
-
-        if pay_frequency in fein_site_code_mapping:
-            return fein_site_code_mapping[pay_frequency]
-        if pay_type in fein_site_code_mapping:
-            return fein_site_code_mapping[pay_type]
-        if fein_site_code is not None:
+        fein_site_code = ReportPayrollContributionsAscensusUtil._get_fein_site_code(
+            pay_frequency, pay_type, fein_settings
+        )
+        if fein_site_code:
             return fein_site_code
 
-        if pay_frequency in site_code_mapping:
-            return site_code_mapping[pay_frequency]
-        if pay_type in site_code_mapping:
-            return site_code_mapping[pay_type]
-        return site_code
+        return ReportPayrollContributionsAscensusUtil._get_default_site_code(
+            preference_type, pay_frequency, pay_type, customer_partner_settings
+        )
 
     @staticmethod
     def format_contributions_for_ascensus_vendor(
@@ -207,10 +295,9 @@ class ReportPayrollContributionsAscensusUtil:
         with contextlib.closing(StringIO()) as output:
             writer = csv.DictWriter(output, fieldnames=COLUMNS_180)
             writer.writeheader()
-
             for employee_payroll_record in employee_payroll_records:
                 employee: Employee = employee_payroll_record.employee
-                ssn = ReportPayrollContributionsAscensusUtil._get_formatted_ssn(
+                ssn = ReportPayrollContributionsAscensusUtil.get_formatted_ssn(
                     employee.ssn
                 )
                 payroll_contributions: list[
@@ -250,21 +337,21 @@ class ReportPayrollContributionsAscensusUtil:
                     )
 
                     payroll_employee_contribution_401k: Decimal = ReportPayrollContributionsAscensusUtil.\
-                        _get_amount_from_payroll_contribution(
+                        get_amount_from_payroll_contribution(
                         payroll_contribution_map.get(ContributionType._401K.name, None)
                     )
                     payroll_company_match_contribution: Decimal = ReportPayrollContributionsAscensusUtil.\
-                        _get_amount_from_payroll_contribution(
+                        get_amount_from_payroll_contribution(
                         payroll_contribution_map.get(
                             ContributionType.COMPANY_MATCH.name, None
                         )
                     )
                     payroll_employee_loan_repayment: Decimal = ReportPayrollContributionsAscensusUtil.\
-                        _get_amount_from_payroll_contribution(
+                        get_amount_from_payroll_contribution(
                         payroll_contribution_map.get(ContributionType.LOAN.name, None)
                     )
                     payroll_employee_roth_401k: Decimal = ReportPayrollContributionsAscensusUtil.\
-                        _get_amount_from_payroll_contribution(
+                        get_amount_from_payroll_contribution(
                         payroll_contribution_map.get(ContributionType.ROTH.name, None)
                     )
 
@@ -282,7 +369,7 @@ class ReportPayrollContributionsAscensusUtil:
                     )
                     company_contribution_column = (
                         payroll_upload_settings.customer_partner_settings[
-                            "company_contribution_column"
+                            AscensusSettingsKeys.COMPANY_CONTRIBUTION_COLUMN.value
                         ]
                     )
 
@@ -335,27 +422,33 @@ class ReportPayrollContributionsAscensusUtil:
                 payroll_upload_settings
             )
             client_id = str(
-                payroll_upload_settings.customer_partner_settings["client_id"]
+                payroll_upload_settings.customer_partner_settings[
+                    AscensusSettingsKeys.CLIENT_ID.value
+                ]
             )
-            check_date = getattr(payroll_upload_settings.payrun_info, "check_date", None)
+            check_date = getattr(
+                payroll_upload_settings.payrun_info, "check_date", None
+            )
             if check_date:
-                check_date = check_date.strftime(
-                    STANDARD_DATE_FORMAT
-                )
-            fien_settings = ReportPayrollContributionsAscensusUtil.get_fein_settings(
+                check_date = check_date.strftime(STANDARD_DATE_FORMAT)
+            fein_settings = ReportPayrollContributionsAscensusUtil.get_fein_settings(
                 payroll_upload_settings.ein,
                 payroll_upload_settings.customer_partner_settings,
             )
             site_code = ReportPayrollContributionsAscensusUtil.get_site_code(
-                fien_settings,
+                fein_settings,
                 payroll_upload_settings,
                 no_of_salaried_roles,
                 no_of_hourly_roles,
             )
-            index_of_current_payroll_run = ReportPayrollContributionsAscensusUtil.get_index_of_current_payroll_run(
-                payroll_upload_settings
+            index_of_current_payroll_run = (
+                ReportPayrollContributionsAscensusUtil.get_index_of_current_payroll_run(
+                    payroll_upload_settings
+                )
             )
-            header = "{},{},{},{}\n".format(client_id, check_date, site_code, index_of_current_payroll_run)
+            header = "{},{},{},{}\n".format(
+                client_id, check_date, site_code, index_of_current_payroll_run
+            )
 
             file.content = ReportPayrollContributionsAscensusUtil.to_bytes(
                 header + output.getvalue()

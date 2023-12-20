@@ -31,23 +31,29 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
         self.payrunInfo.payroll_run_id = "54321"
         self.payrunInfo.original_pay_date = datetime(2021, 1, 1)
         self.payrunInfo.check_date = datetime(2021, 7, 1)
+        self.payrunInfo.pay_frequency = "WEEKLY"
         self.dummyPayRunInfo = PayrunInfo()
-        self.dummyPayRunInfo.payroll_run_id = "54321"
-        self.payrunInfo.current_month_payruns = [self.dummyPayRunInfo]
+        self.dummyPayRunInfo.payroll_run_id = "12345"
         self.customer_partner_settings: dict = {
             "client_id": "HISS00",
-            "site_code": "A",
+            "site_code_frequency": "E",
             "company_contribution_column": "MATCH",
-            "exclude_severance": False,
-            "exclude_imputed_income": False,
-            "exclude_bonus": False,
-            "type": "FREQUENCY",
-            "site_code_mapping": {'WEEKLY': 'A'},
-            "feins": [],
+            "EXCLUDE_SEVERANCE": False,
+            "EXCLUDE_IMPUTED_INCOME": False,
+            "EXCLUDE_BONUS": True,
+            "frequency_or_pay_type": "FREQUENCY",
+            "site_code_mapping_for_weekly": "C",
+            "feins": {
+                "123456789": {
+                    "fein_site_code": "B",
+                    "fein_site_code_mapping_for_weekly": "D",
+                }
+            },
         }
         self.payroll_upload_settings.customer_partner_settings = (
             self.customer_partner_settings
         )
+        self.payroll_upload_settings.current_month_payruns = [self.payrunInfo, self.dummyPayRunInfo]
         self.payroll_upload_settings.payrun_info = self.payrunInfo
         self.payroll_upload_settings.company_legal_name = "RIPPLING TEST"
         self.payroll_upload_settings.company_name = "RIPPLING"
@@ -93,6 +99,7 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
         employeePayrollRecord.employee = employee
 
         employeePayrollRecord.gross_pay = Decimal(10000)
+        employeePayrollRecord.bonus = Decimal(1000)
         employeePayrollRecord.hours_worked = Decimal(2400)
         employeePayrollRecord.annual_salary = Decimal(100000)
 
