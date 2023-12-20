@@ -89,6 +89,10 @@ class PayrollUploadSettings:
     """
     company_name: str
     """
+    current_month_payruns: This field denotes the current month payruns for the company
+    """
+    current_month_payruns: Optional[list[PayrunInfo]]
+    """
     company_id: This field denotes the Company ID
     """
     company_id: str
@@ -220,3 +224,15 @@ class EmployeePayrollRecord:
     ytd_leave_infos: This field indicates the value of the leave info for the employee ytd
     """
     ytd_leave_infos: list[LeaveInfo]
+    """
+    severance: This field indicates the value of the total severance for the employee for this payroll run
+    """
+    severance: Optional[Decimal]
+    """
+    bonus: This field indicates the value of the total bonus for the employee for this payroll run
+    """
+    bonus: Optional[Decimal]
+    """
+    imputed_pay: This field indicates the value of the total imputed pay for the employee for this payroll run
+    """
+    imputed_pay: Optional[Decimal]
