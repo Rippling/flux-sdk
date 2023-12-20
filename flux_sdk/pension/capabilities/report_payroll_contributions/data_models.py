@@ -97,6 +97,7 @@ class PayrollUploadSettings:
     """
     company_id: str
 
+
 class PayrollRunContribution:
     """
     This contains payroll contribution amount corresponding to a particular deduction type for the employee.
