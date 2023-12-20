@@ -72,6 +72,7 @@ class Employee:
     not present please reach out to apps@rippling.com to add support for that attribute.
     """
     ssn: str
+    role_id: str
     first_name: str
     middle_name: str
     last_name: str
