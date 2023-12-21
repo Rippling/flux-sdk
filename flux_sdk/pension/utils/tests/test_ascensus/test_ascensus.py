@@ -34,6 +34,7 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
         self.payrunInfo.pay_frequency = "WEEKLY"
         self.dummyPayRunInfo = PayrunInfo()
         self.dummyPayRunInfo.payroll_run_id = "12345"
+        self.dummyPayRunInfo.check_date = datetime(2021, 7, 1)
         self.customer_partner_settings: dict = {
             "client_id": "HISS00",
             "site_code_frequency": "E",
@@ -49,6 +50,7 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
                     "fein_site_code_mapping_for_weekly": "D",
                 }
             },
+            "env": "TS",
         }
         self.payroll_upload_settings.customer_partner_settings = (
             self.customer_partner_settings

@@ -80,7 +80,7 @@ class ReportPayrollContributionsAscensusUtil:
 
     @staticmethod
     def get_formatted_ssn(ssn: str) -> str:
-        return ssn[:3] + "-" + ssn[3:5] + "-" + ssn[5:9]
+        return ssn[:3] + "-" + ssn[3:5] + "-" + ssn[5:]
 
     @staticmethod
     def to_bytes(content: str | bytes) -> bytes:
@@ -102,9 +102,10 @@ class ReportPayrollContributionsAscensusUtil:
         :param payroll_upload_settings:
         :return: str
         """
-        environment = payroll_upload_settings.environment
+        customer_partner_settings = payroll_upload_settings.customer_partner_settings
+        environment = customer_partner_settings.get("env", "TS")
         client_id = str(
-            payroll_upload_settings.customer_partner_settings[
+            customer_partner_settings[
                 AscensusSettingsKeys.CLIENT_ID.value
             ]
         )
@@ -160,9 +161,11 @@ class ReportPayrollContributionsAscensusUtil:
         current_month_payroll_runs = getattr(
             payroll_upload_settings, "current_month_payruns", []
         )
+        check_date = getattr(payroll_upload_settings.payrun_info,  "check_date", None)
         current_payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
         sorted_payroll_run_ids = sorted(
-            [payroll_run.payroll_run_id for payroll_run in current_month_payroll_runs]
+            [payroll_run.payroll_run_id for payroll_run in current_month_payroll_runs
+             if payroll_run.check_date == check_date]
         )
         return sorted_payroll_run_ids.index(current_payroll_run_id)
 
@@ -178,9 +181,9 @@ class ReportPayrollContributionsAscensusUtil:
         fein_site_code_pay_type_mapping_key = (
             f"fein_site_code_mapping_for_{pay_type.lower()}" if pay_type else None
         )
-        if fein_site_code_frequency_mapping_key in fein_settings:
+        if fein_site_code_frequency_mapping_key and fein_site_code_frequency_mapping_key in fein_settings:
             return fein_settings[fein_site_code_frequency_mapping_key]
-        if fein_site_code_pay_type_mapping_key in fein_settings:
+        if fein_site_code_pay_type_mapping_key and fein_site_code_pay_type_mapping_key in fein_settings:
             return fein_settings[fein_site_code_pay_type_mapping_key]
 
         return fein_settings.get("fein_site_code", None)
@@ -198,9 +201,9 @@ class ReportPayrollContributionsAscensusUtil:
         site_code_pay_type_mapping_key = (
             f"site_code_mapping_for_{pay_type.lower()}" if pay_type else None
         )
-        if site_code_frequency_mapping_key in customer_partner_settings:
+        if site_code_frequency_mapping_key and site_code_frequency_mapping_key in customer_partner_settings:
             return customer_partner_settings[site_code_frequency_mapping_key]
-        if site_code_pay_type_mapping_key in customer_partner_settings:
+        if site_code_pay_type_mapping_key and site_code_pay_type_mapping_key in customer_partner_settings:
             return customer_partner_settings[site_code_pay_type_mapping_key]
 
         site_code = customer_partner_settings.get(
@@ -261,12 +264,6 @@ class ReportPayrollContributionsAscensusUtil:
                     preference_type, fein_settings, customer_partner_settings
                 )
             )
-
-        fein_site_code_mapping_key = (
-            f"fein_site_code_mapping_for_{preference_type.lower()}"
-        )
-        if fein_site_code_mapping_key in fein_settings:
-            return fein_settings[fein_site_code_mapping_key]
 
         fein_site_code = ReportPayrollContributionsAscensusUtil._get_fein_site_code(
             fein_settings, pay_frequency, pay_type
