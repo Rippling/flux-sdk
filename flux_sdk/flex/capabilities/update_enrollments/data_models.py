@@ -3,6 +3,8 @@ from decimal import Decimal
 from enum import Enum
 from typing import Optional
 
+from flux_sdk.flex.data_models.flex_models import FSAPlanType
+
 
 class BenefitType(Enum):
     FSA = 0
@@ -69,3 +71,4 @@ class EmployeeEnrollment:
     division: str
     has_dependent: bool
     hsa_family_type: Optional[HSAFamilyType]
+    fsa_plan_type: Optional[FSAPlanType]
