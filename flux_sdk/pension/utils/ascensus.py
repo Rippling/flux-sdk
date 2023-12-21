@@ -231,13 +231,10 @@ class ReportPayrollContributionsAscensusUtil:
     ) -> str:
         """
         This method is used to get the site code for the given payroll run
-        1. It tries to get the site code from the fein settings for preferred payroll frequency type
-        2. If the site code is not present in the fein settings for preferred payroll frequency type
-            then it tries to get the default fein site code from the fein_settings
-        3. If the site code is not present in the fein settings then it tries to get the site code
-            from the customer_partner_settings for preferred payroll frequency type
-        4. If the site code is not present in the customer_partner_settings for preferred payroll
-            frequency type then it tries to get the default site code from the customer_partner_settings
+        If pay_type and pay_frequency is None tries to fetch site_code from fein_settings
+            and fallbacks to default site code if site code not in fein setting not present
+        Else tries to fetch it from fein settings for preferable pay/frequency else default fien site code
+        Else tries to fetch it from customer_partner_settings for preferable pay/frequency else default site code
         :param fein_settings:
         :param payroll_update_settings:
         :param no_of_salaried_roles:
