@@ -77,6 +77,10 @@ class PayrollUploadSettings:
     """
     company_legal_name: str
     """
+    company_id: This field denotes the Company ID
+    """
+    company_id: str
+    """
     payrun_info: This object contains the details of the Payroll run
     """
     payrun_info: PayrunInfo
