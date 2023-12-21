@@ -5,7 +5,6 @@ from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 from enum import Enum
 from io import StringIO
-from typing import Optional, Union
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
@@ -84,13 +83,12 @@ class ReportPayrollContributionsAscensusUtil:
         return ssn[:3] + "-" + ssn[3:5] + "-" + ssn[5:9]
 
     @staticmethod
-    def to_bytes(content: Union[str, bytes]) -> bytes:
-        data = content.encode() if isinstance(content, str) else content
-        return data
+    def to_bytes(content: str | bytes) -> bytes:
+        return content.encode() if isinstance(content, str) else content
 
     @staticmethod
     def get_amount_from_payroll_contribution(
-        payroll_contribution: Optional[PayrollRunContribution],
+        payroll_contribution: PayrollRunContribution | None,
     ):
         if payroll_contribution is None:
             return Decimal("0.00")
@@ -113,14 +111,15 @@ class ReportPayrollContributionsAscensusUtil:
         payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
 
         if not environment or not client_id:
+            missing_attrs: list[str] = []
+            missing_attrs.extend("Environment") if not environment else ""
+            missing_attrs.extend("Client ID") if not client_id else ""
             raise RuntimeError(
-                "Environment and client_id must be present to upload Vanguard file"
+                f"{', '.join(missing_attrs)} must be present to upload file"
             )
         timestamp = datetime.now()
         format_timestamp = timestamp.strftime("%m%d%Y.%H%M%S")
-        return "{}_{}_{}_{}.csv".format(
-            environment, client_id, payroll_run_id, format_timestamp
-        )
+        return f"{environment}_{client_id}_{payroll_run_id}_{format_timestamp}.csv"
 
     @staticmethod
     def get_fein_settings(ein: str, customer_update_settings: dict) -> dict:
@@ -144,13 +143,14 @@ class ReportPayrollContributionsAscensusUtil:
         )
 
         if exclude_severance is True:
-            compensation -= employee_payroll_record.severance
+            compensation -= getattr(employee_payroll_record, 'severance', Decimal(0))
 
         if exclude_bonus is True:
-            compensation -= employee_payroll_record.bonus
+            compensation -= getattr(employee_payroll_record, 'bonus', Decimal(0))
 
         if exclude_imputed_income is True:
-            compensation -= employee_payroll_record.imputed_pay
+            compensation -= getattr(employee_payroll_record, 'imputed_pay', Decimal(0))
+
         return round(compensation, 2)
 
     @staticmethod
@@ -168,8 +168,8 @@ class ReportPayrollContributionsAscensusUtil:
 
     @staticmethod
     def _get_fein_site_code(
-        pay_frequency: Optional[str], pay_type: Optional[str], fein_settings: dict
-    ) -> str:
+        fein_settings: dict, pay_frequency: str | None, pay_type: str | None
+    ) -> str | None:
         fein_site_code_frequency_mapping_key = (
             f"fein_site_code_mapping_for_{pay_frequency.lower()}"
             if pay_frequency
@@ -188,9 +188,9 @@ class ReportPayrollContributionsAscensusUtil:
     @staticmethod
     def _get_default_site_code(
         preference_type: str,
-        pay_frequency: Optional[str],
-        pay_type: Optional[str],
         customer_partner_settings: dict,
+        pay_frequency: str | None,
+        pay_type: str | None,
     ) -> str:
         site_code_frequency_mapping_key = (
             f"site_code_mapping_for_{pay_frequency.lower()}" if pay_frequency else None
@@ -269,13 +269,13 @@ class ReportPayrollContributionsAscensusUtil:
             return fein_settings[fein_site_code_mapping_key]
 
         fein_site_code = ReportPayrollContributionsAscensusUtil._get_fein_site_code(
-            pay_frequency, pay_type, fein_settings
+            fein_settings, pay_frequency, pay_type
         )
         if fein_site_code:
             return fein_site_code
 
         return ReportPayrollContributionsAscensusUtil._get_default_site_code(
-            preference_type, pay_frequency, pay_type, customer_partner_settings
+            preference_type, customer_partner_settings, pay_frequency, pay_type
         )
 
     @staticmethod
