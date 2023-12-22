@@ -1,6 +1,6 @@
 import os
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from flux_sdk.flux_core.data_models import (
@@ -41,6 +41,8 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.customer_partner_settings: dict = {
             "plan_id": "HISS001",
             "plan_name": "Hiss",
+            "division": "Division",
+            "pay_group": "pay group"
         }
         self.payroll_upload_settings.customer_partner_settings = (
             self.customer_partner_settings
@@ -74,6 +76,9 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employee.gender = Gender.FEMALE
         employee.is_full_time = True
         employee.is_contractor = False
+        employee.employement_type = "Hourly"
+        employee.department = "department"
+        employee.termination_reason = "terminated"
         employee.phone_number = "1234543212"
         employee.personal_email = "test@email.com"
         employee.is_salaried = True
@@ -178,13 +183,10 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             self.payroll_upload_settings
         )
         transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
-        report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime(
-            "%H%M%S.%f"
-        )[:-3]
-        test_file_name = "{}_{}_{}.csv".format(
-            "HISS001", transmission_date, report_time
-        )
-        self.assertEqual(file_name, test_file_name)
+        self.assertEqual(file_name.split('_')[0], "HISS001")
+        self.assertEqual(file_name.split('_')[1], transmission_date)
+        report_time_without_extension = file_name.split('_')[2].split('.')[0]
+        self.assertTrue(report_time_without_extension.isdigit())
 
     def seed_loa(self, employeePayrollRecord) -> None:
         leave_info = LeaveInfo()

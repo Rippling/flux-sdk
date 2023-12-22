@@ -235,7 +235,7 @@ class ReportPayrollContributionsPayKonnectUtil:
 
         plan_name = str(payroll_upload_settings.customer_partner_settings.get("plan_id"))
         transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
-        report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime("%H%M%S.%f")[:-3]
+        report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime("%H%M%S%f")[:-3]
         return "{}_{}_{}.csv".format(plan_name, transmission_date, report_time)
 
     @staticmethod
