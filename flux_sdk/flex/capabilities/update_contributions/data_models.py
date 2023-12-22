@@ -3,6 +3,7 @@ from decimal import Decimal
 from enum import Enum
 from typing import Optional
 
+from flux_sdk.flex.data_models.flex_models import FSAPlanType
 from flux_sdk.flux_core.data_models import Employee
 
 
@@ -24,3 +25,4 @@ class EmployeeContribution:
     contribution_amount: Decimal
     tax_year: Optional[str]
     employee: Optional[Employee]
+    fsa_plan_type: Optional[FSAPlanType]
