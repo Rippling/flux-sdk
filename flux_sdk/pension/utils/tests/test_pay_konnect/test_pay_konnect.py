@@ -22,6 +22,7 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
 )
 from flux_sdk.pension.utils.pay_konnect import ReportPayrollContributionsPayKonnectUtil
 
+
 class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
     """
     Tests for functions for the UpdatePayrollContributions capability.
@@ -178,8 +179,8 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         )
         transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
         report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime(
-            "%H%M%S"
-        )
+            "%H%M%S.%f"
+        )[:-3]
         test_file_name = "{}_{}_{}.csv".format(
             "HISS001", transmission_date, report_time
         )
