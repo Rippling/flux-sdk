@@ -21,11 +21,6 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
     PayrunInfo,
 )
 from flux_sdk.pension.utils.pay_konnect import ReportPayrollContributionsPayKonnectUtil
-from functools import partial
-from freezegun import freeze_time as frz_time
-from pytz import timezone
-
-freeze_time = partial(frz_time, tz=timezone("US/Pacific"))
 
 class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
     """
@@ -178,19 +173,17 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             )
 
     def test_get_file_name(self) -> None:
-        time = ReportPayrollContributionsPayKonnectUtil._pst_now()
-        with freeze_time(time):
-            file_name = ReportPayrollContributionsPayKonnectUtil.get_file_name(
-                self.payroll_upload_settings
-            )
-            transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
-            report_time = time.strftime(
-                "%H%M%S.%f"
-            )[:-3]
-            test_file_name = "{}_{}_{}.csv".format(
-                "HISS001", transmission_date, report_time
-            )
-            self.assertEqual(file_name, test_file_name)
+        file_name = ReportPayrollContributionsPayKonnectUtil.get_file_name(
+            self.payroll_upload_settings
+        )
+        transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
+        report_time = ReportPayrollContributionsPayKonnectUtil._pst_now().strftime(
+            "%H%M%S"
+        )
+        test_file_name = "{}_{}_{}.csv".format(
+            "HISS001", transmission_date, report_time
+        )
+        self.assertEqual(file_name, test_file_name)
 
     def seed_loa(self, employeePayrollRecord) -> None:
         leave_info = LeaveInfo()
