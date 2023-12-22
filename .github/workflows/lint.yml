@@ -14,5 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: pip install mypy
-      - run: mypy ./flux_sdk
+
+      - name: Install poetry
+        run: pip install poetry
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - run: poetry install
+
+      - name: mypy
+        run: poetry run mypy ./flux_sdk

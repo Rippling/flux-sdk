@@ -72,6 +72,7 @@ class Employee:
     not present please reach out to apps@rippling.com to add support for that attribute.
     """
     ssn: str
+    role_id: str
     first_name: str
     middle_name: str
     last_name: str
@@ -99,6 +100,9 @@ class Employee:
     is_rehire: bool
     is_international_employee: bool
     marital_status: Optional[MaritalStatus]
+    employement_type: Optional[str] # The employment type of the employee.
+    department: Optional[str]   # The department of the employee.
+    termination_reason: Optional[str]   # The termination reason of the employee if the employee is terminated.
 
 
 class ContributionType(Enum):
