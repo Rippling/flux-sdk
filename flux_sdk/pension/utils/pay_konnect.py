@@ -345,7 +345,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                         employee_year_to_date_hours_worked = eoy_info.year_to_date_hours
                         employee_year_to_date_gross_pay = eoy_info.year_to_date_gross_pay
                         ytd_employee_401k = eoy_info.year_to_date_pretax_deferral
-                        ytd_plan_compensation = eoy_info.year_to_date_plan_compensation
+                        ytd_plan_compensation = eoy_info.year_to_date_gross_pay
                     if rehire_date == hire_date:
                         rehire_date = ""
                     employee_work_status_code = (
@@ -357,7 +357,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                     employee_status = ReportPayrollContributionsPayKonnectUtil._get_employee_status(
                         employee.status, ytd_leave_infos
                     )
-                    employee_type = getattr(employee, "employement_type", "")
+                    employee_type = getattr(employee, "employment_type", "")
                     employee_department = getattr(employee, "department", "")
                     gender = ReportPayrollContributionsPayKonnectUtil._get_gender(employee.gender)
                     marital_status = getattr(employee, "marital_status", None)

@@ -1,6 +1,6 @@
 import os
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime
 from decimal import Decimal
 
 from flux_sdk.flux_core.data_models import (
@@ -76,7 +76,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employee.gender = Gender.FEMALE
         employee.is_full_time = True
         employee.is_contractor = False
-        employee.employement_type = "Hourly"
+        employee.employment_type = "Hourly"
         employee.department = "department"
         employee.termination_reason = "terminated"
         employee.phone_number = "1234543212"
