@@ -100,7 +100,7 @@ class Employee:
     is_rehire: bool
     is_international_employee: bool
     marital_status: Optional[MaritalStatus]
-    employement_type: Optional[str] # The employment type of the employee.
+    employment_type: Optional[str] # The employment type of the employee.
     department: Optional[str]   # The department of the employee.
     termination_reason: Optional[str]   # The termination reason of the employee if the employee is terminated.
 
