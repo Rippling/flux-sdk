@@ -447,6 +447,9 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "LOAN_Ref_Number": 1,
                         "LOAN_Amount": employee_loan_repayment,
                     }
+                    for key, value in mapping_from_column_name_to_value.items():
+                        if value != "":
+                            mapping_from_column_name_to_value[key] = f"\"{value}\""
                     writer.writerow(mapping_from_column_name_to_value)
                 except Exception as e:
                     logger.exception(
