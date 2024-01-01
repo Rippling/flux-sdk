@@ -23,6 +23,7 @@ class EmployeeContribution:
     contribution_date: date
     contribution_type: str
     contribution_amount: Decimal
+    yearly_contribution_amount: Decimal
     tax_year: Optional[str]
     employee: Optional[Employee]
     fsa_plan_type: Optional[FSAPlanType]

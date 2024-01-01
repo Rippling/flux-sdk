@@ -65,6 +65,8 @@ class EmployeeEnrollment:
     enrollment_expiration_date: date
     employee_total_election_amount: Decimal
     employer_yearly_contribution_amount: Decimal
+    employee_per_pay_period_deduction_amount: Decimal
+    employer_per_pay_period_contribution_amount: Decimal
     election_amount_indicator: Optional[str]
     hdhp_coverage_level: Optional[str]
     plan_year_start_date: str
