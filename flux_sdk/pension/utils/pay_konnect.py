@@ -449,7 +449,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                     }
                     for key, value in mapping_from_column_name_to_value.items():
                         if value != "":
-                            mapping_from_column_name_to_value[key] = f"\"{value}\""
+                            mapping_from_column_name_to_value[key] = f"\'{value}\'"
                     writer.writerow(mapping_from_column_name_to_value)
                 except Exception as e:
                     logger.exception(
