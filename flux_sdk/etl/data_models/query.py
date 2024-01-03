@@ -66,7 +66,7 @@ class MongoQuery:
     This provides the projection criteria for a basic find operation. Use this to include/exclude fields at query-time.
     """
 
-    aggregate: Optional[list[Any]] = None
+    aggregate: Optional[list[dict[str, Any]]] = None
     """
     This allows for projection in advanced queries. Some connectors may offload more expensive operations (eg: join,
     embed) to the database through this instead of using the basic filter.
@@ -77,7 +77,7 @@ class MongoQuery:
         check_field(self, "collection", str, required=True)
         check_field(self, "filter", dict[str, Any])
         check_field(self, "projection", dict[str, Any])
-        check_field(self, "aggregate", list[Any])
+        check_field(self, "aggregate", list[dict[str, Any]])
 
 
 Query = Union[SQLQuery, MongoQuery]

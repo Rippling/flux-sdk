@@ -38,9 +38,8 @@ def _check_type(value: Any, attr: str, desired_type: Type):
 
         if len(args) == 1:
             (value_type,) = args
-
-            if value_type != Any and not all(map(lambda k: isinstance(k, value_type), value)):
-                raise TypeError(f"{attr} should be a list with {value_type} values")
+            for v in value:
+                _check_type(v, attr, value_type)
 
     elif origin == tuple:
         if type(value) != origin:
