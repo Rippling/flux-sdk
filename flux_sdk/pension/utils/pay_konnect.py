@@ -270,7 +270,7 @@ class ReportPayrollContributionsPayKonnectUtil:
         pay_group = str(customer_partner_settings.get("pay_group"))
 
         with contextlib.closing(StringIO()) as output:
-            writer = csv.DictWriter(output, fieldnames=columns_180)
+            writer = csv.DictWriter(output, fieldnames=columns_180, quoting=csv.QUOTE_ALL)
             writer.writeheader()
 
             for employee_payroll_record in employee_payroll_records:
@@ -494,9 +494,6 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "LOAN_Ref_Number": 1,
                         "LOAN_Amount": employee_loan_repayment,
                     }
-                    for key, value in mapping_from_column_name_to_value.items():
-                        if value != "":
-                            mapping_from_column_name_to_value[key] = f"\'{value}\'"
                     writer.writerow(mapping_from_column_name_to_value)
                 except Exception as e:
                     logger.exception(
