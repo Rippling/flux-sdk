@@ -92,6 +92,18 @@ columns_180 = [
     "CONT_YTD_401K",
     "CONT_Contribution_%_401K",
     "CONT_Contribution_$_401K",
+    "CONT_ROTH_401K",
+    "CONT_YTD_ROTH_401K",
+    "CONT_Contribution_%_ROTH_401K",
+    "CONT_Contribution_$_ROTH_401K",
+    "CONT_401K_CATCHUP",
+    "CONT_YTD_401K_CATCHUP",
+    "CONT_Contribution_%_401K_CATCHUP",
+    "CONT_Contribution_$_401K_CATCHUP",
+    "CONT_ROTH_401K_CATCHUP",
+    "CONT_YTD_ROTH_401K_CATCHUP",
+    "CONT_Contribution_%_ROTH_401K_CATCHUP",
+    "CONT_Contribution_$_ROTH_401K_CATCHUP",
     "CONT_Company_Match",
     "CONT_YTD_Company_Match",
     "CONT_Contribution_%_Company_Match",
@@ -258,7 +270,7 @@ class ReportPayrollContributionsPayKonnectUtil:
         pay_group = str(customer_partner_settings.get("pay_group"))
 
         with contextlib.closing(StringIO()) as output:
-            writer = csv.DictWriter(output, fieldnames=columns_180)
+            writer = csv.DictWriter(output, fieldnames=columns_180, quoting=csv.QUOTE_ALL)
             writer.writeheader()
 
             for employee_payroll_record in employee_payroll_records:
@@ -298,6 +310,21 @@ class ReportPayrollContributionsPayKonnectUtil:
                     )
                     employee_401k: Decimal = (
                         payroll_employee_contribution_401k.amount if payroll_employee_contribution_401k else Decimal(0)
+                    )
+                    employee_catchup: Decimal = (
+                        payroll_contribution_map[ContributionType._401K_CATCHUP.name].amount
+                        if payroll_contribution_map.get(ContributionType._401K_CATCHUP.name, None)
+                        else Decimal(0)
+                    )
+                    employee_roth: Decimal = (
+                        payroll_contribution_map[ContributionType.ROTH.name].amount
+                        if payroll_contribution_map.get(ContributionType.ROTH.name, None)
+                        else Decimal(0)
+                    )
+                    employee_roth_catchup: Decimal = (
+                        payroll_contribution_map[ContributionType.ROTH_401K_CATCHUP.name].amount
+                        if payroll_contribution_map.get(ContributionType.ROTH_401K_CATCHUP.name, None)
+                        else Decimal(0)
                     )
                     company_match_contribution = (
                         payroll_company_match_contribution.amount if payroll_company_match_contribution else Decimal(0)
@@ -340,11 +367,19 @@ class ReportPayrollContributionsPayKonnectUtil:
                     employee_year_to_date_hours_worked = Decimal(0)
                     employee_year_to_date_gross_pay = Decimal(0)
                     ytd_employee_401k = Decimal(0)
+                    ytd_employee_roth = Decimal(0)
+                    ytd_employee_catchup = Decimal(0)
+                    ytd_employee_roth_catchup = Decimal(0)
+                    ytd_company_match_contribution = Decimal(0)
                     ytd_plan_compensation = Decimal(0)
                     if eoy_info:
                         employee_year_to_date_hours_worked = eoy_info.year_to_date_hours
                         employee_year_to_date_gross_pay = eoy_info.year_to_date_gross_pay
                         ytd_employee_401k = eoy_info.year_to_date_pretax_deferral
+                        ytd_employee_roth = eoy_info.year_to_date_roth_deferral
+                        ytd_employee_catchup = eoy_info.year_to_date_pretax_catchup
+                        ytd_employee_roth_catchup = eoy_info.year_to_date_roth_catchup
+                        ytd_company_match_contribution = eoy_info.year_to_date_employer_match
                         ytd_plan_compensation = eoy_info.year_to_date_gross_pay
                     if rehire_date == hire_date:
                         rehire_date = ""
@@ -440,16 +475,25 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "CONT_YTD_401K": ytd_employee_401k,
                         "CONT_Contribution_%_401K": "",
                         "CONT_Contribution_$_401K": "",
+                        "CONT_ROTH_401K": employee_roth,
+                        "CONT_YTD_ROTH_401K": ytd_employee_roth,
+                        "CONT_Contribution_%_ROTH_401K":"",
+                        "CONT_Contribution_$_ROTH_401K":"",
+                        "CONT_401K_CATCHUP": employee_catchup,
+                        "CONT_YTD_401K_CATCHUP": ytd_employee_catchup,
+                        "CONT_Contribution_%_401K_CATCHUP":"",
+                        "CONT_Contribution_$_401K_CATCHUP":"",
+                        "CONT_ROTH_401K_CATCHUP": employee_roth_catchup,
+                        "CONT_YTD_ROTH_401K_CATCHUP": ytd_employee_roth_catchup,
+                        "CONT_Contribution_%_ROTH_401K_CATCHUP":"",
+                        "CONT_Contribution_$_ROTH_401K_CATCHUP":"",
                         "CONT_Company_Match": company_match_contribution,
-                        "CONT_YTD_Company_Match": "",
+                        "CONT_YTD_Company_Match": ytd_company_match_contribution,
                         "CONT_Contribution_%_Company_Match": "",
                         "CONT_Contribution_$_Company_Match": "",
                         "LOAN_Ref_Number": 1,
                         "LOAN_Amount": employee_loan_repayment,
                     }
-                    for key, value in mapping_from_column_name_to_value.items():
-                        if value != "":
-                            mapping_from_column_name_to_value[key] = f"\'{value}\'"
                     writer.writerow(mapping_from_column_name_to_value)
                 except Exception as e:
                     logger.exception(
