@@ -291,7 +291,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                     payroll_employee_loan_repayment: Optional[PayrollRunContribution] = payroll_contribution_map.get(
                         ContributionType.LOAN.name, None
                     )
-                    payroll_date_absolute = getattr(payroll_upload_settings.payrun_info, "original_pay_date", None)
+                    payroll_date_absolute = getattr(payroll_upload_settings.payrun_info, "check_date", None)
                     payroll_date = payroll_date_absolute.strftime(STANDARD_DATE_FORMAT) if payroll_date_absolute else ""
                     payroll_start_date = getattr(
                         payroll_upload_settings.payrun_info,
