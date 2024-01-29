@@ -32,7 +32,6 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.payroll_upload_settings: PayrollUploadSettings = PayrollUploadSettings()
         self.payrunInfo = PayrunInfo()
         self.payrunInfo.payroll_run_id = "54321"
-        self.payrunInfo.original_pay_date = datetime(2021, 1, 1)
         self.payrunInfo.pay_period_start_date = datetime(2021, 1, 1)
         self.payrunInfo.pay_period_end_date = datetime(2021, 2, 1)
         self.payrunInfo.check_date = datetime(2021, 1, 1)

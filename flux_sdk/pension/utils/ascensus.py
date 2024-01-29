@@ -34,6 +34,8 @@ COLUMNS_180 = [
     "SAFE HARBOR MATCH",
     "SAFE HARBOR NEC",
     "CLIENT SPECIFIC",
+    "CLIENT SPECIFIC",
+    "CLIENT SPECIFIC",
     "HOURS",
     "ADDRESS 1",
     "ADDRESS 2",
@@ -326,10 +328,6 @@ class ReportPayrollContributionsAscensusUtil:
                         else ""
                     )
 
-                    prior_hire_date = employee.original_hire_date.strftime(
-                        STANDARD_DATE_FORMAT
-                    )
-
                     payroll_employee_contribution_401k: Decimal = ReportPayrollContributionsAscensusUtil.\
                         get_amount_from_payroll_contribution(
                         payroll_contribution_map.get(ContributionType._401K.name, None)
@@ -389,7 +387,7 @@ class ReportPayrollContributionsAscensusUtil:
                         "CURRENT DATE OF HIRE": current_date_of_hire,
                         "EMPLOYEE ELIGIBILITY DATE": "",
                         "CURRENT DATE OF TERM": current_date_of_term,
-                        "PRIOR DATE OF HIRE": prior_hire_date,
+                        "PRIOR DATE OF HIRE": "",
                         "PRIOR DATE OF TERM": "",
                         "ESTIMATED ANNUAL COMPENSATION": annual_salary,
                         "EMPLOYMENT STATUS": "",
