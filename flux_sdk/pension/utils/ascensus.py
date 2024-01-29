@@ -391,7 +391,7 @@ class ReportPayrollContributionsAscensusUtil:
                         "CURRENT DATE OF HIRE": current_date_of_hire,
                         "EMPLOYEE ELIGIBILITY DATE": "",
                         "CURRENT DATE OF TERM": current_date_of_term,
-                        "PRIOR DATE OF HIRE": prior_hire_date if current_date_of_hire != prior_hire_date else "",
+                        "PRIOR DATE OF HIRE": "",
                         "PRIOR DATE OF TERM": "",
                         "ESTIMATED ANNUAL COMPENSATION": annual_salary,
                         "EMPLOYMENT STATUS": "",
