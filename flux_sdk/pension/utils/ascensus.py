@@ -328,10 +328,6 @@ class ReportPayrollContributionsAscensusUtil:
                         else ""
                     )
 
-                    prior_hire_date = employee.original_hire_date.strftime(
-                        STANDARD_DATE_FORMAT
-                    )
-
                     payroll_employee_contribution_401k: Decimal = ReportPayrollContributionsAscensusUtil.\
                         get_amount_from_payroll_contribution(
                         payroll_contribution_map.get(ContributionType._401K.name, None)
