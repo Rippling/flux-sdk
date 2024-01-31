@@ -14,11 +14,18 @@ class ProcessEmployeesDeductions(ABC):
 
     @staticmethod
     @abstractmethod
-    def process_employees_deductions_into_rippling(deductions_file: File) -> list[DeductionDetails]:
+    def get_file_name(company_name: str) -> str:
         """
-        This method receives the file which contains the deductions relevant to the companies employees.
-        The developer is supposed to implement the following methods to process this data in accordance with their requirements
+        This method returns the file name of deductions sent by Bswfit
+        """
 
+
+    @staticmethod
+    @abstractmethod
+    def format_and_fetch_deduction_info(uri: str, stream: IOBase) -> list[DeductionDetails]:
+        """
+        This method receives the file which contains the deductions relevant to the companies employees and returns the
+        deductions details for each employee
         :param File:
         :return:
         """
