@@ -4,8 +4,8 @@ import logging
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 from enum import Enum
-from io import StringIO, IOBase
-from typing import Union, Optional
+from io import IOBase, StringIO
+from typing import Optional, Union
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
@@ -135,9 +135,7 @@ class ReportPayrollContributionsAscensusUtil:
             missing_attrs: list[str] = []
             missing_attrs.extend("Environment") if not environment else ""
             missing_attrs.extend("Client ID") if not client_id else ""
-            raise RuntimeError(
-                f"{', '.join(missing_attrs)} must be present to upload file"
-            )
+            raise RuntimeError(f"{', '.join(missing_attrs)} must be present to upload file")
         timestamp = datetime.now()
         format_timestamp = timestamp.strftime("%m%d%Y.%H%M%S")
         return f"{environment}_{client_id}_{payroll_run_id}_{format_timestamp}.csv"
@@ -152,18 +150,10 @@ class ReportPayrollContributionsAscensusUtil:
     def get_total_compensation(
         employee_payroll_record: EmployeePayrollRecord, customer_update_settings: dict
     ) -> Decimal:
-        compensation: Decimal = getattr(
-            employee_payroll_record, "gross_pay", Decimal(0)
-        )
-        exclude_severance = customer_update_settings.get(
-            AscensusSettingsKeys.EXCLUDE_SEVERANCE.value, False
-        )
-        exclude_bonus = customer_update_settings.get(
-            AscensusSettingsKeys.EXCLUDE_BONUS.value, False
-        )
-        exclude_imputed_income = customer_update_settings.get(
-            AscensusSettingsKeys.EXCLUDE_IMPUTED_INCOME.value, False
-        )
+        compensation: Decimal = getattr(employee_payroll_record, "gross_pay", Decimal(0))
+        exclude_severance = customer_update_settings.get(AscensusSettingsKeys.EXCLUDE_SEVERANCE.value, False)
+        exclude_bonus = customer_update_settings.get(AscensusSettingsKeys.EXCLUDE_BONUS.value, False)
+        exclude_imputed_income = customer_update_settings.get(AscensusSettingsKeys.EXCLUDE_IMPUTED_INCOME.value, False)
 
         if exclude_severance is True:
             compensation -= getattr(employee_payroll_record, "severance", Decimal(0))
@@ -180,9 +170,7 @@ class ReportPayrollContributionsAscensusUtil:
     def get_index_of_current_payroll_run(
         payroll_upload_settings: PayrollUploadSettings,
     ) -> int:
-        current_month_payroll_runs = getattr(
-            payroll_upload_settings, "current_month_payruns", []
-        )
+        current_month_payroll_runs = getattr(payroll_upload_settings, "current_month_payruns", [])
         check_date = getattr(payroll_upload_settings.payrun_info, "check_date", None)
         current_payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
         sorted_payroll_run_ids = sorted(
@@ -195,26 +183,14 @@ class ReportPayrollContributionsAscensusUtil:
         return sorted_payroll_run_ids.index(current_payroll_run_id)
 
     @staticmethod
-    def _get_fein_site_code(
-        fein_settings: dict, pay_frequency: str | None, pay_type: str | None
-    ) -> str | None:
+    def _get_fein_site_code(fein_settings: dict, pay_frequency: str | None, pay_type: str | None) -> str | None:
         fein_site_code_frequency_mapping_key = (
-            f"fein_site_code_mapping_for_{pay_frequency.lower()}"
-            if pay_frequency
-            else None
+            f"fein_site_code_mapping_for_{pay_frequency.lower()}" if pay_frequency else None
         )
-        fein_site_code_pay_type_mapping_key = (
-            f"fein_site_code_mapping_for_{pay_type.lower()}" if pay_type else None
-        )
-        if (
-            fein_site_code_frequency_mapping_key
-            and fein_site_code_frequency_mapping_key in fein_settings
-        ):
+        fein_site_code_pay_type_mapping_key = f"fein_site_code_mapping_for_{pay_type.lower()}" if pay_type else None
+        if fein_site_code_frequency_mapping_key and fein_site_code_frequency_mapping_key in fein_settings:
             return fein_settings[fein_site_code_frequency_mapping_key]
-        if (
-            fein_site_code_pay_type_mapping_key
-            and fein_site_code_pay_type_mapping_key in fein_settings
-        ):
+        if fein_site_code_pay_type_mapping_key and fein_site_code_pay_type_mapping_key in fein_settings:
             return fein_settings[fein_site_code_pay_type_mapping_key]
 
         return fein_settings.get("fein_site_code", None)
@@ -226,26 +202,14 @@ class ReportPayrollContributionsAscensusUtil:
         pay_frequency: str | None,
         pay_type: str | None,
     ) -> str:
-        site_code_frequency_mapping_key = (
-            f"site_code_mapping_for_{pay_frequency.lower()}" if pay_frequency else None
-        )
-        site_code_pay_type_mapping_key = (
-            f"site_code_mapping_for_{pay_type.lower()}" if pay_type else None
-        )
-        if (
-            site_code_frequency_mapping_key
-            and site_code_frequency_mapping_key in customer_partner_settings
-        ):
+        site_code_frequency_mapping_key = f"site_code_mapping_for_{pay_frequency.lower()}" if pay_frequency else None
+        site_code_pay_type_mapping_key = f"site_code_mapping_for_{pay_type.lower()}" if pay_type else None
+        if site_code_frequency_mapping_key and site_code_frequency_mapping_key in customer_partner_settings:
             return customer_partner_settings[site_code_frequency_mapping_key]
-        if (
-            site_code_pay_type_mapping_key
-            and site_code_pay_type_mapping_key in customer_partner_settings
-        ):
+        if site_code_pay_type_mapping_key and site_code_pay_type_mapping_key in customer_partner_settings:
             return customer_partner_settings[site_code_pay_type_mapping_key]
 
-        site_code = customer_partner_settings.get(
-            f"site_code_{preference_type.lower()}", "A"
-        )
+        site_code = customer_partner_settings.get(f"site_code_{preference_type.lower()}", "A")
         return site_code
 
     @staticmethod
@@ -255,9 +219,7 @@ class ReportPayrollContributionsAscensusUtil:
         fein_site_code = fein_settings.get("fein_site_code", None)
         if fein_site_code:
             return fein_site_code
-        return customer_partner_settings.get(
-            f"site_code_{preference_type.lower()}", "A"
-        )
+        return customer_partner_settings.get(f"site_code_{preference_type.lower()}", "A")
 
     @staticmethod
     def get_site_code(
@@ -279,24 +241,16 @@ class ReportPayrollContributionsAscensusUtil:
         :return:
         """
         customer_partner_settings = payroll_update_settings.customer_partner_settings
-        preference_type = customer_partner_settings.get(
-            AscensusSettingsKeys.FREQUENCY_OR_PAY_TYPE.value, "FREQUENCY"
-        )
+        preference_type = customer_partner_settings.get(AscensusSettingsKeys.FREQUENCY_OR_PAY_TYPE.value, "FREQUENCY")
         pay_frequency = pay_type = None
         if preference_type == "FREQUENCY":
-            pay_frequency = getattr(
-                payroll_update_settings.payrun_info, "pay_frequency", None
-            )
+            pay_frequency = getattr(payroll_update_settings.payrun_info, "pay_frequency", None)
         else:
-            pay_type = (
-                "SALARIED" if no_of_salaried_roles >= no_of_hourly_roles else "HOURLY"
-            )
+            pay_type = "SALARIED" if no_of_salaried_roles >= no_of_hourly_roles else "HOURLY"
 
         if pay_frequency is None and pay_type is None:
-            return (
-                ReportPayrollContributionsAscensusUtil._get_preference_type_site_code(
-                    preference_type, fein_settings, customer_partner_settings
-                )
+            return ReportPayrollContributionsAscensusUtil._get_preference_type_site_code(
+                preference_type, fein_settings, customer_partner_settings
             )
 
         fein_site_code = ReportPayrollContributionsAscensusUtil._get_fein_site_code(
@@ -328,15 +282,9 @@ class ReportPayrollContributionsAscensusUtil:
             writer.writeheader()
             for employee_payroll_record in employee_payroll_records:
                 employee: Employee = employee_payroll_record.employee
-                ssn = ReportPayrollContributionsAscensusUtil.get_formatted_ssn(
-                    employee.ssn
-                )
-                payroll_contributions: list[
-                    PayrollRunContribution
-                ] = employee_payroll_record.payroll_contributions
-                payroll_contribution_map = {
-                    pc.deduction_type.name: pc for pc in payroll_contributions
-                }
+                ssn = ReportPayrollContributionsAscensusUtil.get_formatted_ssn(employee.ssn)
+                payroll_contributions: list[PayrollRunContribution] = employee_payroll_record.payroll_contributions
+                payroll_contribution_map = {pc.deduction_type.name: pc for pc in payroll_contributions}
                 if employee.is_salaried:
                     no_of_salaried_roles = no_of_salaried_roles + 1
                 elif employee.is_hourly:
@@ -353,48 +301,42 @@ class ReportPayrollContributionsAscensusUtil:
                     work_email = employee.business_email
                     employee_dob = employee.dob.strftime(STANDARD_DATE_FORMAT)
 
-                    current_date_of_hire = employee.start_date.strftime(
-                        STANDARD_DATE_FORMAT
-                    )
+                    current_date_of_hire = employee.start_date.strftime(STANDARD_DATE_FORMAT)
                     current_date_of_term = getattr(employee, "termination_date", None)
                     current_date_of_term = (
-                        current_date_of_term.strftime(STANDARD_DATE_FORMAT)
-                        if current_date_of_term
-                        else ""
+                        current_date_of_term.strftime(STANDARD_DATE_FORMAT) if current_date_of_term else ""
                     )
 
-                    payroll_employee_contribution_401k: Decimal = ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
-                        payroll_contribution_map.get(ContributionType._401K.name, None)
-                    )
-                    payroll_company_match_contribution: Decimal = ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
-                        payroll_contribution_map.get(
-                            ContributionType.COMPANY_MATCH.name, None
+                    payroll_employee_contribution_401k: Decimal = (
+                        ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
+                            payroll_contribution_map.get(ContributionType._401K.name, None)
                         )
                     )
-                    payroll_employee_loan_repayment: Decimal = ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
-                        payroll_contribution_map.get(ContributionType.LOAN.name, None)
+                    payroll_company_match_contribution: Decimal = (
+                        ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
+                            payroll_contribution_map.get(ContributionType.COMPANY_MATCH.name, None)
+                        )
                     )
-                    payroll_employee_roth_401k: Decimal = ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
-                        payroll_contribution_map.get(ContributionType.ROTH.name, None)
+                    payroll_employee_loan_repayment: Decimal = (
+                        ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
+                            payroll_contribution_map.get(ContributionType.LOAN.name, None)
+                        )
+                    )
+                    payroll_employee_roth_401k: Decimal = (
+                        ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
+                            payroll_contribution_map.get(ContributionType.ROTH.name, None)
+                        )
                     )
 
-                    annual_salary = getattr(
-                        employee_payroll_record, "annual_salary", Decimal(0)
+                    annual_salary = getattr(employee_payroll_record, "annual_salary", Decimal(0))
+                    total_compensation = ReportPayrollContributionsAscensusUtil.get_total_compensation(
+                        employee_payroll_record,
+                        payroll_upload_settings.customer_partner_settings,
                     )
-                    total_compensation = (
-                        ReportPayrollContributionsAscensusUtil.get_total_compensation(
-                            employee_payroll_record,
-                            payroll_upload_settings.customer_partner_settings,
-                        )
-                    )
-                    hours_worked = getattr(
-                        employee_payroll_record, "hours_worked", Decimal(0)
-                    )
-                    company_contribution_column = (
-                        payroll_upload_settings.customer_partner_settings[
-                            AscensusSettingsKeys.COMPANY_CONTRIBUTION_COLUMN.value
-                        ]
-                    )
+                    hours_worked = getattr(employee_payroll_record, "hours_worked", Decimal(0))
+                    company_contribution_column = payroll_upload_settings.customer_partner_settings[
+                        AscensusSettingsKeys.COMPANY_CONTRIBUTION_COLUMN.value
+                    ]
 
                     mapping_from_column_name_to_value = {
                         "SOCIAL SECURITY": ssn,
@@ -436,22 +378,12 @@ class ReportPayrollContributionsAscensusUtil:
                         )
                     )
                     raise Exception(
-                        "[ReportPayrollContribution] Not able to write the row for employee: {}".format(
-                            ssn
-                        )
+                        "[ReportPayrollContribution] Not able to write the row for employee: {}".format(ssn)
                     )
             file = File()
-            file.name = ReportPayrollContributionsAscensusUtil.get_file_name(
-                payroll_upload_settings
-            )
-            client_id = str(
-                payroll_upload_settings.customer_partner_settings[
-                    AscensusSettingsKeys.CLIENT_ID.value
-                ]
-            )
-            check_date = getattr(
-                payroll_upload_settings.payrun_info, "check_date", None
-            )
+            file.name = ReportPayrollContributionsAscensusUtil.get_file_name(payroll_upload_settings)
+            client_id = str(payroll_upload_settings.customer_partner_settings[AscensusSettingsKeys.CLIENT_ID.value])
+            check_date = getattr(payroll_upload_settings.payrun_info, "check_date", None)
             if check_date:
                 check_date = check_date.strftime(STANDARD_DATE_FORMAT)
             fein_settings = ReportPayrollContributionsAscensusUtil.get_fein_settings(
@@ -464,18 +396,12 @@ class ReportPayrollContributionsAscensusUtil:
                 no_of_salaried_roles,
                 no_of_hourly_roles,
             )
-            index_of_current_payroll_run = (
-                ReportPayrollContributionsAscensusUtil.get_index_of_current_payroll_run(
-                    payroll_upload_settings
-                )
+            index_of_current_payroll_run = ReportPayrollContributionsAscensusUtil.get_index_of_current_payroll_run(
+                payroll_upload_settings
             )
-            header = "{},{},{},{}\n".format(
-                client_id, check_date, site_code, index_of_current_payroll_run
-            )
+            header = "{},{},{},{}\n".format(client_id, check_date, site_code, index_of_current_payroll_run)
 
-            file.content = ReportPayrollContributionsAscensusUtil.to_bytes(
-                header + output.getvalue()
-            )
+            file.content = ReportPayrollContributionsAscensusUtil.to_bytes(header + output.getvalue())
             return file
 
 
@@ -508,13 +434,11 @@ class UpdateDeductionElectionsAscensusUtil:
         try:
             Decimal(value)
             return True
-        except:
+        except Exception:
             return False
 
     @staticmethod
-    def get_deduction_type(
-        employee_ded_type, given_ded_type
-    ) -> Optional[DeductionType]:
+    def get_deduction_type(employee_ded_type, given_ded_type) -> Optional[DeductionType]:
         ded_match_map = {
             "4ROTH": DeductionType.ROTH_401K,
             "4ROTC": DeductionType.ROTH_401K,
@@ -530,20 +454,14 @@ class UpdateDeductionElectionsAscensusUtil:
     @staticmethod
     def _parse_deduction_rows(row, result):
         ssn = row["EmployeeSSN"]
-        deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(
-            row["ContributionCode"]
-        )
+        deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(row["ContributionCode"])
         eligibility_date = (
-            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y").date()
-            if row["EmployeeEligibilityDate"]
-            else ""
+            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y").date() if row["EmployeeEligibilityDate"] else ""
         )
 
         if (
             UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["DeferralAmount"])
-            and UpdateDeductionElectionsAscensusUtil._is_valid_amount(
-                row["DeferralPercent"]
-            )
+            and UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["DeferralPercent"])
             and deduction_type
         ):
             result.append(
@@ -563,17 +481,7 @@ class UpdateDeductionElectionsAscensusUtil:
     @staticmethod
     def _parse_loan_rows(row, ssn_to_loan_sum_map):
         ssn = row["EmployeeSSN"]
-        deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(
-            row["ContributionCode"]
-        )
-        eligibility_date = (
-            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y").date()
-            if row["EmployeeEligibilityDate"]
-            else ""
-        )
-        if UpdateDeductionElectionsAscensusUtil._is_valid_amount(
-            row["LoanPaymentAmount"]
-        ):
+        if UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["LoanPaymentAmount"]):
             loan_value = Decimal(row["LoanPaymentAmount"])
             if ssn in ssn_to_loan_sum_map:
                 ssn_to_loan_sum_map[ssn] += loan_value
@@ -583,9 +491,7 @@ class UpdateDeductionElectionsAscensusUtil:
         return ssn_to_loan_sum_map
 
     @staticmethod
-    def parse_deductions_for_ascensus(
-        uri: str, stream: IOBase
-    ) -> list[EmployeeDeductionSetting]:
+    def parse_deductions_for_ascensus(uri: str, stream: IOBase) -> list[EmployeeDeductionSetting]:
         """
         This method receives a stream from which the developer is expected to return a list of EmployeeDeductionSetting
         for each employee identifier (SSN).
@@ -596,14 +502,12 @@ class UpdateDeductionElectionsAscensusUtil:
         result: list[EmployeeDeductionSetting] = []
 
         try:
-            reader = csv.DictReader(StringIO(stream))
+            reader = csv.DictReader(stream)
         except Exception as e:
-            logger.error(
-                f"[UpdateDeductionElectionsImpl.parse_deductions] Parse deductions failed due to message {e}"
-            )
+            logger.error(f"[UpdateDeductionElectionsImpl.parse_deductions] Parse deductions failed due to message {e}")
             return result
 
-        ssn_to_loan_sum_map = {}
+        ssn_to_loan_sum_map: dict[str, Decimal] = {}
 
         for row in reader:
             try:
@@ -611,20 +515,14 @@ class UpdateDeductionElectionsAscensusUtil:
                 record_type = row["RecordType"]
 
                 if record_type == "D":
-                    UpdateDeductionElectionsAscensusUtil._parse_deduction_rows(
-                        row, result
-                    )
+                    UpdateDeductionElectionsAscensusUtil._parse_deduction_rows(row, result)
                 elif record_type == "L":
-                    UpdateDeductionElectionsAscensusUtil._parse_loan_rows(
-                        row, ssn_to_loan_sum_map
-                    )
+                    UpdateDeductionElectionsAscensusUtil._parse_loan_rows(row, ssn_to_loan_sum_map)
                 else:
                     logger.error(f"Unknown transaction type in row: {row}")
 
             except Exception as e:
-                logger.error(
-                    f"[UpdateDeductionElectionsImpl.parse_deductions] Parse row failed due to error {e}"
-                )
+                logger.error(f"[UpdateDeductionElectionsImpl.parse_deductions] Parse row failed due to error {e}")
 
         for ssn in ssn_to_loan_sum_map:
             loan_sum = ssn_to_loan_sum_map[ssn]
