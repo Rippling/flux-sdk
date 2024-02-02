@@ -4,10 +4,12 @@ import logging
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 from enum import Enum
-from io import StringIO
+from io import StringIO, IOBase
+from typing import Union, Optional
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
+    DeductionType,
     Employee,
     File,
 )
@@ -15,6 +17,9 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
     EmployeePayrollRecord,
     PayrollRunContribution,
     PayrollUploadSettings,
+)
+from flux_sdk.pension.capabilities.update_deduction_elections.data_models import (
+    EmployeeDeductionSetting,
 )
 
 logger = logging.getLogger(__name__)
@@ -55,6 +60,23 @@ COLUMNS_180 = [
     "ENROLLMENT ELIGIBILITY",
     "UNION STATUS CODE",
     "EMPLOYEE WORK EMAIL",
+]
+
+COLUMNS_360 = [
+    "RecordType",
+    "PlanId",
+    "EmployeeLastName",
+    "EmployeeFirstName",
+    "EmployeeMiddleInitial",
+    "EmployeeSSN",
+    "EffectiveDate",
+    "ContributionCode",
+    "DeferralPercent",
+    "DeferralAmount",
+    "EmployeeEligibilityDate",
+    "LoanNumber",
+    "LoanPaymentAmount",
+    "TotalLoanAmount",
 ]
 
 STANDARD_DATE_FORMAT = "%m/%d/%Y"
@@ -106,11 +128,7 @@ class ReportPayrollContributionsAscensusUtil:
         """
         customer_partner_settings = payroll_upload_settings.customer_partner_settings
         environment = customer_partner_settings.get("env", "TS")
-        client_id = str(
-            customer_partner_settings[
-                AscensusSettingsKeys.CLIENT_ID.value
-            ]
-        )
+        client_id = str(customer_partner_settings[AscensusSettingsKeys.CLIENT_ID.value])
         payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
 
         if not environment or not client_id:
@@ -134,7 +152,9 @@ class ReportPayrollContributionsAscensusUtil:
     def get_total_compensation(
         employee_payroll_record: EmployeePayrollRecord, customer_update_settings: dict
     ) -> Decimal:
-        compensation: Decimal = getattr(employee_payroll_record,"gross_pay", Decimal(0))
+        compensation: Decimal = getattr(
+            employee_payroll_record, "gross_pay", Decimal(0)
+        )
         exclude_severance = customer_update_settings.get(
             AscensusSettingsKeys.EXCLUDE_SEVERANCE.value, False
         )
@@ -146,13 +166,13 @@ class ReportPayrollContributionsAscensusUtil:
         )
 
         if exclude_severance is True:
-            compensation -= getattr(employee_payroll_record, 'severance', Decimal(0))
+            compensation -= getattr(employee_payroll_record, "severance", Decimal(0))
 
         if exclude_bonus is True:
-            compensation -= getattr(employee_payroll_record, 'bonus', Decimal(0))
+            compensation -= getattr(employee_payroll_record, "bonus", Decimal(0))
 
         if exclude_imputed_income is True:
-            compensation -= getattr(employee_payroll_record, 'imputed_pay', Decimal(0))
+            compensation -= getattr(employee_payroll_record, "imputed_pay", Decimal(0))
 
         return round(compensation, 2)
 
@@ -163,11 +183,14 @@ class ReportPayrollContributionsAscensusUtil:
         current_month_payroll_runs = getattr(
             payroll_upload_settings, "current_month_payruns", []
         )
-        check_date = getattr(payroll_upload_settings.payrun_info,  "check_date", None)
+        check_date = getattr(payroll_upload_settings.payrun_info, "check_date", None)
         current_payroll_run_id = payroll_upload_settings.payrun_info.payroll_run_id
         sorted_payroll_run_ids = sorted(
-            [payroll_run.payroll_run_id for payroll_run in current_month_payroll_runs
-             if payroll_run.check_date == check_date]
+            [
+                payroll_run.payroll_run_id
+                for payroll_run in current_month_payroll_runs
+                if payroll_run.check_date == check_date
+            ]
         )
         return sorted_payroll_run_ids.index(current_payroll_run_id)
 
@@ -183,9 +206,15 @@ class ReportPayrollContributionsAscensusUtil:
         fein_site_code_pay_type_mapping_key = (
             f"fein_site_code_mapping_for_{pay_type.lower()}" if pay_type else None
         )
-        if fein_site_code_frequency_mapping_key and fein_site_code_frequency_mapping_key in fein_settings:
+        if (
+            fein_site_code_frequency_mapping_key
+            and fein_site_code_frequency_mapping_key in fein_settings
+        ):
             return fein_settings[fein_site_code_frequency_mapping_key]
-        if fein_site_code_pay_type_mapping_key and fein_site_code_pay_type_mapping_key in fein_settings:
+        if (
+            fein_site_code_pay_type_mapping_key
+            and fein_site_code_pay_type_mapping_key in fein_settings
+        ):
             return fein_settings[fein_site_code_pay_type_mapping_key]
 
         return fein_settings.get("fein_site_code", None)
@@ -203,9 +232,15 @@ class ReportPayrollContributionsAscensusUtil:
         site_code_pay_type_mapping_key = (
             f"site_code_mapping_for_{pay_type.lower()}" if pay_type else None
         )
-        if site_code_frequency_mapping_key and site_code_frequency_mapping_key in customer_partner_settings:
+        if (
+            site_code_frequency_mapping_key
+            and site_code_frequency_mapping_key in customer_partner_settings
+        ):
             return customer_partner_settings[site_code_frequency_mapping_key]
-        if site_code_pay_type_mapping_key and site_code_pay_type_mapping_key in customer_partner_settings:
+        if (
+            site_code_pay_type_mapping_key
+            and site_code_pay_type_mapping_key in customer_partner_settings
+        ):
             return customer_partner_settings[site_code_pay_type_mapping_key]
 
         site_code = customer_partner_settings.get(
@@ -328,22 +363,18 @@ class ReportPayrollContributionsAscensusUtil:
                         else ""
                     )
 
-                    payroll_employee_contribution_401k: Decimal = ReportPayrollContributionsAscensusUtil.\
-                        get_amount_from_payroll_contribution(
+                    payroll_employee_contribution_401k: Decimal = ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
                         payroll_contribution_map.get(ContributionType._401K.name, None)
                     )
-                    payroll_company_match_contribution: Decimal = ReportPayrollContributionsAscensusUtil.\
-                        get_amount_from_payroll_contribution(
+                    payroll_company_match_contribution: Decimal = ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
                         payroll_contribution_map.get(
                             ContributionType.COMPANY_MATCH.name, None
                         )
                     )
-                    payroll_employee_loan_repayment: Decimal = ReportPayrollContributionsAscensusUtil.\
-                        get_amount_from_payroll_contribution(
+                    payroll_employee_loan_repayment: Decimal = ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
                         payroll_contribution_map.get(ContributionType.LOAN.name, None)
                     )
-                    payroll_employee_roth_401k: Decimal = ReportPayrollContributionsAscensusUtil.\
-                        get_amount_from_payroll_contribution(
+                    payroll_employee_roth_401k: Decimal = ReportPayrollContributionsAscensusUtil.get_amount_from_payroll_contribution(
                         payroll_contribution_map.get(ContributionType.ROTH.name, None)
                     )
 
@@ -446,3 +477,165 @@ class ReportPayrollContributionsAscensusUtil:
                 header + output.getvalue()
             )
             return file
+
+
+class UpdateDeductionElectionsAscensusUtil:
+    """
+    This class represents the "update deduction elections" capability for vendors utilizing
+    the Ascensus. The developer is supposed to implement
+    parse_deductions_for_ascensus method in their implementation. For further details regarding their
+    implementation details, check their documentation.
+    """
+
+    @staticmethod
+    def _create_eds_for_value(
+        deduction_type: DeductionType,
+        value: Union[str, Decimal],
+        percentage: bool,
+        ssn: str,
+        effective_date: datetime,
+    ):
+        eds = EmployeeDeductionSetting()
+        eds.ssn = ssn
+        eds.effective_date = effective_date
+        eds.deduction_type = deduction_type
+        eds.value = Decimal(value)
+        eds.is_percentage = percentage
+        return eds
+
+    @staticmethod
+    def _is_valid_amount(value):
+        try:
+            Decimal(value)
+            return True
+        except:
+            return False
+
+    @staticmethod
+    def get_deduction_type(
+        employee_ded_type, given_ded_type
+    ) -> Optional[DeductionType]:
+        ded_match_map = {
+            "4ROTH": DeductionType.ROTH_401K,
+            "4ROTC": DeductionType.ROTH_401K,
+            "401K": DeductionType._401K,
+            "401KC": DeductionType._401K,
+            "401L": DeductionType._401K_LOAN_PAYMENT,
+            "403B": DeductionType._403B,
+            "401A": DeductionType.AFTER_TAX_401K,
+            "401O": DeductionType._401K,
+        }
+        return ded_match_map.get(given_ded_type, None)
+
+    @staticmethod
+    def _parse_deduction_rows(row, result):
+        ssn = row["EmployeeSSN"]
+        deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(
+            row["ContributionCode"]
+        )
+        eligibility_date = (
+            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y").date()
+            if row["EmployeeEligibilityDate"]
+            else ""
+        )
+
+        if (
+            UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["DeferralAmount"])
+            and UpdateDeductionElectionsAscensusUtil._is_valid_amount(
+                row["DeferralPercent"]
+            )
+            and deduction_type
+        ):
+            result.append(
+                UpdateDeductionElectionsAscensusUtil._create_eds_for_value(
+                    deduction_type=deduction_type,
+                    value=row["DeferralAmount"]
+                    if row["DeferralAmount"] > row["DeferralPercent"]
+                    else row["DeferralPercent"],
+                    percentage=row["DeferralPercent"] > row["DeferralAmount"],
+                    ssn=ssn,
+                    effective_date=eligibility_date,
+                )
+            )
+
+        return result
+
+    @staticmethod
+    def _parse_loan_rows(row, ssn_to_loan_sum_map):
+        ssn = row["EmployeeSSN"]
+        deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(
+            row["ContributionCode"]
+        )
+        eligibility_date = (
+            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y").date()
+            if row["EmployeeEligibilityDate"]
+            else ""
+        )
+        if UpdateDeductionElectionsAscensusUtil._is_valid_amount(
+            row["LoanPaymentAmount"]
+        ):
+            loan_value = Decimal(row["LoanPaymentAmount"])
+            if ssn in ssn_to_loan_sum_map:
+                ssn_to_loan_sum_map[ssn] += loan_value
+            else:
+                ssn_to_loan_sum_map[ssn] = loan_value
+
+        return ssn_to_loan_sum_map
+
+    @staticmethod
+    def parse_deductions_for_ascensus(
+        uri: str, stream: IOBase
+    ) -> list[EmployeeDeductionSetting]:
+        """
+        This method receives a stream from which the developer is expected to return a list of EmployeeDeductionSetting
+        for each employee identifier (SSN).
+        :param uri: Contains the path of file
+        :param stream: Contains the stream
+        :return: list[EmployeeDeductionSetting]
+        """
+        result: list[EmployeeDeductionSetting] = []
+
+        try:
+            reader = csv.DictReader(StringIO(stream))
+        except Exception as e:
+            logger.error(
+                f"[UpdateDeductionElectionsImpl.parse_deductions] Parse deductions failed due to message {e}"
+            )
+            return result
+
+        ssn_to_loan_sum_map = {}
+
+        for row in reader:
+            try:
+                ssn = row["EmployeeSSN"]
+                record_type = row["RecordType"]
+
+                if record_type == "D":
+                    UpdateDeductionElectionsAscensusUtil._parse_deduction_rows(
+                        row, result
+                    )
+                elif record_type == "L":
+                    UpdateDeductionElectionsAscensusUtil._parse_loan_rows(
+                        row, ssn_to_loan_sum_map
+                    )
+                else:
+                    logger.error(f"Unknown transaction type in row: {row}")
+
+            except Exception as e:
+                logger.error(
+                    f"[UpdateDeductionElectionsImpl.parse_deductions] Parse row failed due to error {e}"
+                )
+
+        for ssn in ssn_to_loan_sum_map:
+            loan_sum = ssn_to_loan_sum_map[ssn]
+            result.append(
+                UpdateDeductionElectionsAscensusUtil._create_eds_for_value(
+                    deduction_type=DeductionType._401K_LOAN_PAYMENT,
+                    value=Decimal(loan_sum),
+                    percentage=False,
+                    ssn=ssn,
+                    effective_date=datetime.now(),
+                )
+            )
+
+        return result
