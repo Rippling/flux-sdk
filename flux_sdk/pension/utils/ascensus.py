@@ -425,7 +425,7 @@ class UpdateDeductionElectionsAscensusUtil:
         eds.ssn = ssn
         eds.effective_date = effective_date
         eds.deduction_type = deduction_type
-        eds.value = Decimal(value)
+        eds.value = Decimal(value) #type: ignore
         eds.is_percentage = percentage
         return eds
 
@@ -502,7 +502,7 @@ class UpdateDeductionElectionsAscensusUtil:
         result: list[EmployeeDeductionSetting] = []
 
         try:
-            reader = csv.DictReader(stream)
+            reader = csv.DictReader(stream) #type: ignore
         except Exception as e:
             logger.error(f"[UpdateDeductionElectionsImpl.parse_deductions] Parse deductions failed due to message {e}")
             return result
