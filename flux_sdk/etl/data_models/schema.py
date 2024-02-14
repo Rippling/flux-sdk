@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Union
+from typing import NewType, Optional, Union
 
 from flux_sdk.flux_core.validation import check_field
 
@@ -115,7 +115,7 @@ class EmployeeReference:
         check_field(self, "description", str)
 
 
-Reference = Union[CustomObjectReference, EmployeeReference]
+Reference = NewType("Reference", Union[CustomObjectReference, EmployeeReference])
 """This lists the available types that can be used for schema references."""
 
 

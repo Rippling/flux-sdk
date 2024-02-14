@@ -1,16 +1,16 @@
 from dataclasses import dataclass
 from datetime import date, datetime, time
-from typing import Optional, Union
+from typing import NewType, Optional, Union
 
 from flux_sdk.flux_core.validation import check_field
 
-Field = Union[str, int, float, bool, date, time, datetime, None]
+Field = NewType("Field", Union[str, int, float, bool, date, time, datetime, None])
 """
 This represents the currently supported types for Record fields. Currently, we only support these primitive types and do
 not allow for any complex/nested types.
 """
 
-Checkpoint = Union[datetime, int, str]
+Checkpoint = NewType("Checkpoint", Union[datetime, int, str])
 """
 Checkpoints can be represented as either timestamp (datetime), sequence number (int) or an opaque token (str). Values
 are compared assuming an increasing sort order, so the largest value in a sync will be treated as the high-water mark

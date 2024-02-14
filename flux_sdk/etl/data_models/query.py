@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import date, datetime, time
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any, NewType, Optional, Union
 
 from flux_sdk.flux_core.validation import check_field
 
@@ -12,7 +12,7 @@ class Connector(Enum):
     MONGODB = "mongodb"
 
 
-SQLQueryArg = Union[str, bool, int, float, datetime, date, time]
+SQLQueryArg = NewType("SQLQueryArg", Union[str, bool, int, float, datetime, date, time])
 """This is the reduced list of acceptable types that can be used as SQL arguments."""
 
 
@@ -80,5 +80,5 @@ class MongoQuery:
         check_field(self, "aggregate", list[dict[str, Any]])
 
 
-Query = Union[SQLQuery, MongoQuery]
+Query = NewType("Query", Union[SQLQuery, MongoQuery])
 """This is the list of types that can be used to represent a query."""

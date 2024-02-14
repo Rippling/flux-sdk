@@ -1,3 +1,4 @@
+import typing
 from typing import Any, Type, Union, get_args, get_origin
 
 
@@ -12,8 +13,9 @@ def check_field(obj: Any, attr: str, desired_type: Type, required: bool = False)
 
 
 def _check_type(value: Any, attr: str, desired_type: Type):
-    origin = get_origin(desired_type)
+    desired_type = _unalias_type(desired_type)
     args = get_args(desired_type)
+    origin = get_origin(desired_type)
 
     if origin == Union and len(args) > 0:
         if type(value) not in args:
@@ -25,11 +27,12 @@ def _check_type(value: Any, attr: str, desired_type: Type):
 
         if len(args) == 2:
             (key_type, value_type) = args
+            value_type = _unalias_type(value_type)
 
-            if key_type != Any and not all(map(lambda k: isinstance(k, key_type), value.keys())):
+            if key_type != Any and not all(map(lambda k: _isinstance_or_alias(k, key_type), value.keys())):
                 raise TypeError(f"{attr} should be a dict with {key_type} keys")
 
-            if value_type != Any and not all(map(lambda k: isinstance(k, value_type), value.values())):
+            if value_type != Any and not all(map(lambda k: _isinstance_or_alias(k, value_type), value.values())):
                 raise TypeError(f"{attr} should be a dict with {value_type} values")
 
     elif origin == list:
@@ -38,6 +41,7 @@ def _check_type(value: Any, attr: str, desired_type: Type):
 
         if len(args) == 1:
             (value_type,) = args
+            value_type = _unalias_type(value_type)
             for v in value:
                 _check_type(v, attr, value_type)
 
@@ -47,8 +51,17 @@ def _check_type(value: Any, attr: str, desired_type: Type):
 
         for i, v in enumerate(value):
             value_type = args[i]
-            if not isinstance(v, value_type):
+            value_type = _unalias_type(value_type)
+            if not _isinstance_or_alias(v, value_type):
                 raise TypeError(f"{attr} should be a tuple with {value_type} as element {i}")
 
-    elif not isinstance(value, desired_type):
+    elif not _isinstance_or_alias(value, desired_type):
         raise TypeError(f"{attr} should be a {desired_type}")
+
+def _unalias_type(typ: type) -> type:
+    if type(typ) is not typing.NewType:
+        return typ
+    return typ.__supertype__
+
+def _isinstance_or_alias(value: Any, desired_type: type) -> bool:
+    return isinstance(value, _unalias_type(desired_type))
