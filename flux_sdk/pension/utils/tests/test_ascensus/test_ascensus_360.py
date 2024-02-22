@@ -39,7 +39,6 @@ class TestUpdateDeductionElections(unittest.TestCase):
             "", io.StringIO(sample_deferral_file)
         )
         ssn1 = "523546780"
-        ssn2 = "523546781"
 
         count = 0
         for ed in result:
