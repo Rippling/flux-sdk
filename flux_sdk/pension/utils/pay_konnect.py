@@ -266,8 +266,8 @@ class ReportPayrollContributionsPayKonnectUtil:
         customer_partner_settings = payroll_upload_settings.customer_partner_settings
         plan_id = str(customer_partner_settings.get("plan_id"))
         plan_name = str(customer_partner_settings.get("plan_name"))
-        division = str(customer_partner_settings.get("division"))
-        pay_group = str(customer_partner_settings.get("pay_group"))
+        division = customer_partner_settings.get("division", "")
+        pay_group = customer_partner_settings.get("pay_group", "")
 
         with contextlib.closing(StringIO()) as output:
             writer = csv.DictWriter(output, fieldnames=columns_180, quoting=csv.QUOTE_ALL)
