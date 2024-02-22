@@ -4,8 +4,8 @@ from decimal import Decimal
 from typing import List
 
 from flux_sdk.pension.capabilities.update_deduction_elections.data_models import EmployeeDeductionSetting
-
 from flux_sdk.pension.utils.ascensus import UpdateDeductionElectionsAscensusUtil
+
 
 class TestUpdateDeductionElections(unittest.TestCase):
     """
@@ -16,8 +16,6 @@ class TestUpdateDeductionElections(unittest.TestCase):
         ssn1 = "523546780"
         ssn2 = "523546781"
 
-        new_sample_deduction_file = (
-        )
         sample_deferral_file = (
             "RecordType,PlanId,EmployeeLastName,EmployeeFirstName,EmployeeMiddleInitial,EmployeeSSN,EffectiveDate,ContributionCode,DeferralPercent,DeferralAmount,EmployeeEligibilityDate,LoanNumber,LoanPaymentAmount,TotalLoanAmount\n"
             "D,222222-00000,DOE,JOHN,,{},03312019,401K,10.00,0.00,5102022,,,,\n"
