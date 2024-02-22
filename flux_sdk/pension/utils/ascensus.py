@@ -438,7 +438,7 @@ class UpdateDeductionElectionsAscensusUtil:
             return False
 
     @staticmethod
-    def get_deduction_type(employee_ded_type, given_ded_type) -> Optional[DeductionType]:
+    def get_deduction_type(given_ded_type) -> Optional[DeductionType]:
         ded_match_map = {
             "4ROTH": DeductionType.ROTH_401K,
             "4ROTC": DeductionType.ROTH_401K,
