@@ -46,10 +46,11 @@ class Record:
 
     checkpoint: Optional[Checkpoint] = None
     """
-    This is used by the "process_records" hook to signal to Rippling the checkpoint that can be observed and recorded
-    after the sync is complete. Rippling will keep track of the *highest* value seen from all records. That value will
-    be passed to the "prepare_query" hook and can be used to adjust the query to only retrieve the records that have
-    changed since the last sync.
+    This is populated by the "process_records" hook to signal to Rippling the checkpoint that can be observed and
+    recorded after the sync is complete. Rippling will keep track of the *highest* value seen from all records. That
+    value will be passed to the "prepare_query" hook and can be used to adjust the query to only retrieve the records
+    that have changed since the last sync. When the checkpoint is used in the filtering, you should also sort the
+    records by the checkpoint, otherwise there will be records missed between syncs.
 
     This must be used to enable incremental sync, otherwise a full sync will happen each time.
     """
