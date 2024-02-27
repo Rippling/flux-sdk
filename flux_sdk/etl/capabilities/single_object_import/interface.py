@@ -38,8 +38,8 @@ class SingleObjectImport(ABC):
 
         :param connector: This indicates what type of connector is configured, which may change the returned Query.
         :param schema: The schema generated in the "get_schema" hook for this object.
-        :param checkpoint: If included, this is an incremental sync and should adjust the Query accordingly to sort by
-        the checkpoint.
+        :param checkpoint: If included, this is an incremental sync and the implementation should adjust the Query
+        accordingly to sort by the checkpoint.
         :return: Query
         """
 
@@ -47,9 +47,9 @@ class SingleObjectImport(ABC):
     @abstractmethod
     def process_records(schema: Schema, records: list[Record]) -> list[Record]:
         """
-        Use this hook to post-process the Records extracted via the query performed from "prepare_query". This hook is
-        required in order to implement incremental sync (by signaling Rippling the checkpoint) or to dynamically drop
-        records from the sync (via drop).
+        Use this hook to post-process the Records extracted via the query performed from "prepare_query". Implementing
+        this method is required in order to implement incremental sync (by returning the checkpoint to Rippling) or to
+        dynamically drop or to dynamically drop records from the sync (by setting drop to True).
 
         If the Record does not adhere to the provided schema, such as using an incorrect/incompatible type for a field,
         the sync will fail. As such, this hook has the opportunity to massage any raw query results that may not be
