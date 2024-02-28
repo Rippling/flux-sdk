@@ -171,7 +171,7 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
         )
         file_content = contributions_file.content.decode()
         with open(
-            os.path.join(os.path.dirname(__file__), "contributions.csv")
+            os.path.join(os.path.dirname(__file__), "contributions_180.csv")
         ) as contribution_file:
             contribution_file_contents = contribution_file.read()
             self.assertEqual(
