@@ -5,7 +5,7 @@ from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 from enum import Enum
 from io import IOBase, StringIO
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
@@ -420,7 +420,7 @@ class UpdateDeductionElectionsAscensusUtil:
         percentage: bool,
         ssn: str,
         effective_date: datetime,
-    ):
+    ) -> EmployeeDeductionSetting:
         eds = EmployeeDeductionSetting()
         eds.ssn = ssn
         eds.effective_date = effective_date
@@ -430,7 +430,7 @@ class UpdateDeductionElectionsAscensusUtil:
         return eds
 
     @staticmethod
-    def _is_valid_amount(value):
+    def _is_valid_amount(value) -> bool:
         try:
             Decimal(value)
             return True
@@ -452,11 +452,11 @@ class UpdateDeductionElectionsAscensusUtil:
         return ded_match_map.get(given_ded_type, None)
 
     @staticmethod
-    def _parse_deduction_rows(row, result):
+    def _parse_deduction_rows(row: dict[Any, Any], result: list[EmployeeDeductionSetting]) -> list[EmployeeDeductionSetting]:
         ssn = row["EmployeeSSN"]
         deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(row["ContributionCode"])
         eligibility_date = (
-            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y").date() if row["EmployeeEligibilityDate"] else ""
+            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y") if row["EmployeeEligibilityDate"] else ""
         )
 
         if (
