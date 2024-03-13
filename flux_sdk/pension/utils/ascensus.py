@@ -483,7 +483,7 @@ class UpdateDeductionElectionsAscensusUtil:
         return result
 
     @staticmethod
-    def _parse_loan_rows(row, ssn_to_loan_sum_map):
+    def _parse_loan_rows(row: dict[Any, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> dict[str, Decimal]:
         ssn = row["EmployeeSSN"]
         if UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["LoanPaymentAmount"]):
             loan_value = Decimal(row["LoanPaymentAmount"])
