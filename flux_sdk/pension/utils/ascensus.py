@@ -456,7 +456,7 @@ class UpdateDeductionElectionsAscensusUtil:
         ssn = row["EmployeeSSN"]
         deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(row["ContributionCode"])
         eligibility_date = (
-            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y") if row["EmployeeEligibilityDate"] else ""
+            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y") if row["EmployeeEligibilityDate"] else datetime.now()
         )
 
         if (
