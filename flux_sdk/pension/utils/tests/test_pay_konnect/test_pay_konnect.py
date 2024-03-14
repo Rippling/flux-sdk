@@ -1,6 +1,6 @@
 import os
 import unittest
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
 
 from flux_sdk.flux_core.data_models import (
