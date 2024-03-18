@@ -529,7 +529,7 @@ class ReportPayrollContributionsPayKonnectUtil:
             file.content = ReportPayrollContributionsPayKonnectUtil.to_bytes(output.getvalue())
             return file
 
-class UpdateDeductionElectionsAscensusUtil:
+class UpdateDeductionElectionsPayKonnectUtil:
     """
     This class represents the "update deduction elections" capability for vendors utilizing
     the Ascensus. The developer is supposed to implement
@@ -538,11 +538,27 @@ class UpdateDeductionElectionsAscensusUtil:
     """
 
     @staticmethod
+    def get_deduction_type(given_ded_type) -> Optional[DeductionType]:
+        # Need to update based on PayKonnects response.
+        # https://rippling.atlassian.net/browse/BENPNP-5
+        ded_match_map = {
+            "4ROTH": DeductionType.ROTH_401K,
+            "4ROTC": DeductionType.ROTH_401K,
+            "401K": DeductionType._401K,
+            "401KC": DeductionType._401K,
+            "401L": DeductionType._401K_LOAN_PAYMENT,
+            "403B": DeductionType._403B,
+            "401A": DeductionType.AFTER_TAX_401K,
+            "401O": DeductionType._401K,
+        }
+        return ded_match_map.get(given_ded_type, None)
+    
+    @staticmethod
     def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> dict[str, Decimal]:
         ssn = row["SSN"]
         # For now, I have assumed that loans are always amount based. asked the same to paykonnect.
         # will update this according to response.
-        if UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["Value"]):
+        if UpdateDeductionElectionsPayKonnectUtil._is_valid_amount(row["Value"]):
             loan_value = Decimal(row["Value"])
             if ssn in ssn_to_loan_sum_map:
                 ssn_to_loan_sum_map[ssn] += loan_value
@@ -557,7 +573,7 @@ class UpdateDeductionElectionsAscensusUtil:
             value: Union[str, Decimal],
             percentage: bool,
             ssn: str,
-            effective_date: datetime,
+            effective_date: datetime.datetime,
     ) -> EmployeeDeductionSetting:
         eds = EmployeeDeductionSetting()
         eds.ssn = ssn
@@ -580,19 +596,19 @@ class UpdateDeductionElectionsAscensusUtil:
             row: dict[str, Any], result: list[EmployeeDeductionSetting]
     ) -> list[EmployeeDeductionSetting]:
         ssn = row["SSN"]
-        deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(row["Code"])
+        deduction_type = UpdateDeductionElectionsPayKonnectUtil.get_deduction_type(row["Code"])
         eligibility_date = (
-            datetime.strptime(row["Eligibility Date"], "%m%d%Y")
+            datetime.datetime.strptime(row["Eligibility Date"], "%m%d%Y")
             if row["Eligibility Date"]
-            else datetime.now()
+            else datetime.datetime.now()
         )
 
         if (
-                UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["Value"])
+                UpdateDeductionElectionsPayKonnectUtil._is_valid_amount(row["Value"])
                 and deduction_type
         ):
             result.append(
-                UpdateDeductionElectionsAscensusUtil._create_eds_for_value(
+                UpdateDeductionElectionsPayKonnectUtil._create_eds_for_value(
                     deduction_type=deduction_type,
                     value=row["Value"],
                     percentage=True if row["Value Type"] == "Percent" else False,
@@ -628,9 +644,9 @@ class UpdateDeductionElectionsAscensusUtil:
                 record_type = row["Record Type"]
 
                 if record_type == "D":
-                    UpdateDeductionElectionsAscensusUtil._parse_deduction_rows(row, result)
+                    UpdateDeductionElectionsPayKonnectUtil._parse_deduction_rows(row, result)
                 elif record_type == "L":
-                    UpdateDeductionElectionsAscensusUtil._parse_loan_rows(row, ssn_to_loan_sum_map)
+                    UpdateDeductionElectionsPayKonnectUtil._parse_loan_rows(row, ssn_to_loan_sum_map)
                 else:
                     logger.error(f"Unknown transaction type in row: {row}")
 
@@ -640,12 +656,12 @@ class UpdateDeductionElectionsAscensusUtil:
         for ssn in ssn_to_loan_sum_map:
             loan_sum = ssn_to_loan_sum_map[ssn]
             result.append(
-                UpdateDeductionElectionsAscensusUtil._create_eds_for_value(
+                UpdateDeductionElectionsPayKonnectUtil._create_eds_for_value(
                     deduction_type=DeductionType._401K_LOAN_PAYMENT,
                     value=Decimal(loan_sum),
                     percentage=False,
                     ssn=ssn,
-                    effective_date=datetime.now(),
+                    effective_date=datetime.datetime.now(),
                 )
             )
 
