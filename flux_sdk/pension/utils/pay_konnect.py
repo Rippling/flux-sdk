@@ -3,8 +3,8 @@ import csv
 import datetime
 import logging
 from decimal import Decimal
-from io import StringIO, IOBase
-from typing import Optional, Union, Any
+from io import IOBase, StringIO
+from typing import Any, Optional, Union
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,

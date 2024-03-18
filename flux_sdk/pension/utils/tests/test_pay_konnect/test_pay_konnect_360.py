@@ -17,7 +17,8 @@ class TestUpdateDeductionElections(unittest.TestCase):
         ssn2 = "523546781"
 
         sample_deferral_file = (
-            "Record Type,Plan Number,SSN,Effective Date,Eligibility Date,Transaction Date,Transaction Type,Code,Value Type,Value,Loan Reference Number,Loan Goal\n"
+            "Record Type,Plan Number,SSN,Effective Date,Eligibility Date,"
+            "Transaction Date,Transaction Type,Code,Value Type,Value,Loan Reference Number,Loan Goal\n"
             "D,222222-00000,{},,03312019,,,401K,Amount,1.0,123,\n"
             "D,222222-00000,{},,03312019,,,4ROTH,Percent,12.0,123,\n"
             "D,222222-00000,{},,03312019,,,401K,Amount,15.00,123,\n"
@@ -33,14 +34,16 @@ class TestUpdateDeductionElections(unittest.TestCase):
     def test_parse_deductions(self):
         sample_deferral_file = self.get_file_data_for_test_update_deduction("3/6/2023")
 
-        result: List[EmployeeDeductionSetting] = UpdateDeductionElectionsPayKonnectUtil.parse_deductions_for_pay_konnect(
+        result: List[
+            EmployeeDeductionSetting
+        ] = UpdateDeductionElectionsPayKonnectUtil.parse_deductions_for_pay_konnect(
             "", io.StringIO(sample_deferral_file)
         )
         ssn1 = "523546780"
 
         count = 0
         for ed in result:
-            count = count+1
+            count = count + 1
             if ed.ssn == ssn1:
                 if ed.deduction_type == "_401K":
                     self.assertEqual(ed.value, Decimal("1.00"))
