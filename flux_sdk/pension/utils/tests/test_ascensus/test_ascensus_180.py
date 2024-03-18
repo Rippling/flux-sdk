@@ -1,6 +1,6 @@
 import os
 import unittest
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 
 from flux_sdk.flux_core.data_models import (
@@ -81,7 +81,7 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
         employee.dob = datetime(1990, 1, 1)
         employee.start_date = datetime(2020, 1, 1)
         employee.original_hire_date = datetime(2020, 1, 1)
-        employee.termination_date = datetime(2020, 6, 1)
+        employee.termination_date = date(2020, 6, 1)
         employee.start_date = datetime(2021, 1, 1)
         employee.status = EmployeeState.ACTIVE
         employee.is_international_employee = False

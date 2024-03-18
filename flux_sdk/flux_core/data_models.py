@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from enum import Enum
 from typing import Optional
 
@@ -84,7 +84,7 @@ class Employee:
     business_email: str
     personal_email: str
     gender: Gender
-    termination_date: Optional[datetime]
+    termination_date: Optional[date]
     w2_start_date: datetime
     address: Address
     status: EmployeeState
