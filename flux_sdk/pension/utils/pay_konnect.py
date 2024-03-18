@@ -3,11 +3,12 @@ import csv
 import datetime
 import logging
 from decimal import Decimal
-from io import StringIO
-from typing import Optional, Union
+from io import StringIO, IOBase
+from typing import Optional, Union, Any
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
+    DeductionType,
     Employee,
     EmployeeState,
     File,
@@ -18,6 +19,9 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
     LeaveInfo,
     PayrollRunContribution,
     PayrollUploadSettings,
+)
+from flux_sdk.pension.capabilities.update_deduction_elections.data_models import (
+    EmployeeDeductionSetting,
 )
 
 logger = logging.getLogger(__name__)
@@ -110,6 +114,21 @@ columns_180 = [
     "CONT_Contribution_$_Company_Match",
     "LOAN_Ref_Number",
     "LOAN_Amount",
+]
+
+columns_360 = [
+    "Record Type",
+    "Plan Number",
+    "SSN",
+    "Effective Date",
+    "Eligibility Date",
+    "Transaction Date",
+    "Transaction Type",
+    "Code",
+    "Value Type",
+    "Value",
+    "Loan Reference Number",
+    "Loan Goal",
 ]
 
 STANDARD_DATE_FORMAT = "%m/%d/%Y"
@@ -509,3 +528,126 @@ class ReportPayrollContributionsPayKonnectUtil:
             file.name = ReportPayrollContributionsPayKonnectUtil.get_file_name(payroll_upload_settings)
             file.content = ReportPayrollContributionsPayKonnectUtil.to_bytes(output.getvalue())
             return file
+
+class UpdateDeductionElectionsAscensusUtil:
+    """
+    This class represents the "update deduction elections" capability for vendors utilizing
+    the Ascensus. The developer is supposed to implement
+    parse_deductions_for_ascensus method in their implementation. For further details regarding their
+    implementation details, check their documentation.
+    """
+
+    @staticmethod
+    def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> dict[str, Decimal]:
+        ssn = row["SSN"]
+        # For now, I have assumed that loans are always amount based. asked the same to paykonnect.
+        # will update this according to response.
+        if UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["Value"]):
+            loan_value = Decimal(row["Value"])
+            if ssn in ssn_to_loan_sum_map:
+                ssn_to_loan_sum_map[ssn] += loan_value
+            else:
+                ssn_to_loan_sum_map[ssn] = loan_value
+
+        return ssn_to_loan_sum_map
+
+    @staticmethod
+    def _create_eds_for_value(
+            deduction_type: DeductionType,
+            value: Union[str, Decimal],
+            percentage: bool,
+            ssn: str,
+            effective_date: datetime,
+    ) -> EmployeeDeductionSetting:
+        eds = EmployeeDeductionSetting()
+        eds.ssn = ssn
+        eds.effective_date = effective_date
+        eds.deduction_type = deduction_type
+        eds.value = Decimal(value)  # type: ignore
+        eds.is_percentage = percentage
+        return eds
+
+    @staticmethod
+    def _is_valid_amount(value) -> bool:
+        try:
+            Decimal(value)
+            return True
+        except Exception:
+            return False
+
+    @staticmethod
+    def _parse_deduction_rows(
+            row: dict[str, Any], result: list[EmployeeDeductionSetting]
+    ) -> list[EmployeeDeductionSetting]:
+        ssn = row["SSN"]
+        deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(row["Code"])
+        eligibility_date = (
+            datetime.strptime(row["Eligibility Date"], "%m%d%Y")
+            if row["Eligibility Date"]
+            else datetime.now()
+        )
+
+        if (
+                UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["Value"])
+                and deduction_type
+        ):
+            result.append(
+                UpdateDeductionElectionsAscensusUtil._create_eds_for_value(
+                    deduction_type=deduction_type,
+                    value=row["Value"],
+                    percentage=True if row["Value Type"] == "Percent" else False,
+                    ssn=ssn,
+                    effective_date=eligibility_date,
+                )
+            )
+
+        return result
+
+    @staticmethod
+    def parse_deductions_for_pay_konnect(uri: str, stream: IOBase) -> list[EmployeeDeductionSetting]:
+        """
+        This method receives a stream from which the developer is expected to return a list of EmployeeDeductionSetting
+        for each employee identifier (SSN).
+        :param uri: Contains the path of file
+        :param stream: Contains the stream
+        :return: list[EmployeeDeductionSetting]
+        """
+        result: list[EmployeeDeductionSetting] = []
+
+        try:
+            reader = csv.DictReader(stream)  # type: ignore
+        except Exception as e:
+            logger.error(f"[UpdateDeductionElectionsImpl.parse_deductions] Parse deductions failed due to message {e}")
+            return result
+
+        ssn_to_loan_sum_map: dict[str, Decimal] = {}
+
+        for row in reader:
+            try:
+                ssn = row["SSN"]
+                record_type = row["Record Type"]
+
+                if record_type == "D":
+                    UpdateDeductionElectionsAscensusUtil._parse_deduction_rows(row, result)
+                elif record_type == "L":
+                    UpdateDeductionElectionsAscensusUtil._parse_loan_rows(row, ssn_to_loan_sum_map)
+                else:
+                    logger.error(f"Unknown transaction type in row: {row}")
+
+            except Exception as e:
+                logger.error(f"[UpdateDeductionElectionsImpl.parse_deductions] Parse row failed due to error {e}")
+
+        for ssn in ssn_to_loan_sum_map:
+            loan_sum = ssn_to_loan_sum_map[ssn]
+            result.append(
+                UpdateDeductionElectionsAscensusUtil._create_eds_for_value(
+                    deduction_type=DeductionType._401K_LOAN_PAYMENT,
+                    value=Decimal(loan_sum),
+                    percentage=False,
+                    ssn=ssn,
+                    effective_date=datetime.now(),
+                )
+            )
+
+        return result
+
