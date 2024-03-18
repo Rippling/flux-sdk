@@ -5,7 +5,7 @@ from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 from enum import Enum
 from io import IOBase, StringIO
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
@@ -420,17 +420,17 @@ class UpdateDeductionElectionsAscensusUtil:
         percentage: bool,
         ssn: str,
         effective_date: datetime,
-    ):
+    ) -> EmployeeDeductionSetting:
         eds = EmployeeDeductionSetting()
         eds.ssn = ssn
         eds.effective_date = effective_date
         eds.deduction_type = deduction_type
-        eds.value = Decimal(value) #type: ignore
+        eds.value = Decimal(value)  # type: ignore
         eds.is_percentage = percentage
         return eds
 
     @staticmethod
-    def _is_valid_amount(value):
+    def _is_valid_amount(value) -> bool:
         try:
             Decimal(value)
             return True
@@ -452,11 +452,15 @@ class UpdateDeductionElectionsAscensusUtil:
         return ded_match_map.get(given_ded_type, None)
 
     @staticmethod
-    def _parse_deduction_rows(row, result):
+    def _parse_deduction_rows(
+        row: dict[str, Any], result: list[EmployeeDeductionSetting]
+    ) -> list[EmployeeDeductionSetting]:
         ssn = row["EmployeeSSN"]
         deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(row["ContributionCode"])
         eligibility_date = (
-            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y").date() if row["EmployeeEligibilityDate"] else ""
+            datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y")
+            if row["EmployeeEligibilityDate"]
+            else datetime.now()
         )
 
         if (
@@ -479,7 +483,7 @@ class UpdateDeductionElectionsAscensusUtil:
         return result
 
     @staticmethod
-    def _parse_loan_rows(row, ssn_to_loan_sum_map):
+    def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> dict[str, Decimal]:
         ssn = row["EmployeeSSN"]
         if UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["LoanPaymentAmount"]):
             loan_value = Decimal(row["LoanPaymentAmount"])
@@ -502,7 +506,7 @@ class UpdateDeductionElectionsAscensusUtil:
         result: list[EmployeeDeductionSetting] = []
 
         try:
-            reader = csv.DictReader(stream) #type: ignore
+            reader = csv.DictReader(stream)  # type: ignore
         except Exception as e:
             logger.error(f"[UpdateDeductionElectionsImpl.parse_deductions] Parse deductions failed due to message {e}")
             return result
