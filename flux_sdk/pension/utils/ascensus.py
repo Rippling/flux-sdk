@@ -453,7 +453,7 @@ class UpdateDeductionElectionsAscensusUtil:
 
     @staticmethod
     def _parse_deduction_rows(
-        row: dict[Any, Any], result: list[EmployeeDeductionSetting]
+        row: dict[str, Any], result: list[EmployeeDeductionSetting]
     ) -> list[EmployeeDeductionSetting]:
         ssn = row["EmployeeSSN"]
         deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(row["ContributionCode"])
@@ -483,7 +483,7 @@ class UpdateDeductionElectionsAscensusUtil:
         return result
 
     @staticmethod
-    def _parse_loan_rows(row: dict[Any, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> dict[str, Decimal]:
+    def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> dict[str, Decimal]:
         ssn = row["EmployeeSSN"]
         if UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["LoanPaymentAmount"]):
             loan_value = Decimal(row["LoanPaymentAmount"])
