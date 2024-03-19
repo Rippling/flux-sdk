@@ -100,6 +100,8 @@ class EmployeePersonalAndEmploymentData:
     This contains the core data about an employee which is relevant to a benefits administration provider
     '''
     id: str
+    employee_number: int
+    company_tax_id: str
     personal: Employee
     employment: Employment
     pay: Pay
