@@ -2,6 +2,7 @@
 name = "rippling-flux-sdk"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version = "0.22"
 =======
 version = "0.20"
@@ -9,6 +10,9 @@ version = "0.20"
 =======
 version = "0.21"
 >>>>>>> 53e29d5 (bump version)
+=======
+version = "0.20"
+>>>>>>> f5b9be9 (dont change version)
 description = "Defines the interfaces and data-models used by Rippling Flux Apps."
 authors = ["Rippling Apps <apps@rippling.com>"]
 readme = "README.md"
