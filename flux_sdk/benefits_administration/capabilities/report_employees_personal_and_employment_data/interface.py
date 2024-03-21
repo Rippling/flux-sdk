@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
-
-from flux_sdk.benefits_administration.capabilities.report_employees_personal_and_employment_data.data_models import ( # noqa
+from flux_sdk.benefits_administration.capabilities.report_employees_personal_and_employment_data.data_models import (
     EmployeePersonalAndEmploymentData,
     ReportEmployeesPersonalAndEmploymentDataConfig
 )
