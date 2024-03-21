@@ -1,8 +1,8 @@
 from datetime import datetime
 from decimal import Decimal
+from enum import Enum
 from typing import Optional
 
-from enum import Enum
 
 class DeductionDetails:
     companyId: str
@@ -21,5 +21,4 @@ class ExternalDeductionCodeToRipplingCode:
     externalCode: str
     ripplingCode: str
     ripplingDeductionField: DeductionCodeField
-
 

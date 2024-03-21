@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-
 from flux_sdk.benefits_administration.capabilities.report_employees_personal_and_employment_data.data_models import ( # noqa
     ReportEmployeesPersonalAndEmploymentDataConfig,
     EmployeePersonalAndEmploymentData
@@ -18,7 +17,8 @@ class ReportEmployeesPersonalAndEmploymentData(ABC):
     @staticmethod
     @abstractmethod
     def format_employees_personal_and_employment_data(
-            config: ReportEmployeesPersonalAndEmploymentDataConfig, employee_data: list[EmployeePersonalAndEmploymentData]
+            config: ReportEmployeesPersonalAndEmploymentDataConfig,
+            employee_data: list[EmployeePersonalAndEmploymentData]
     ) -> File:
         """
         This method receives the apps configuration data and a list of employee data.
