@@ -1,12 +1,10 @@
-from io import IOBase
-
 from abc import ABC, abstractmethod
+from io import IOBase
 
 from flux_sdk.benefits_administration.capabilities.process_employees_deductions.data_models import (
     DeductionDetails,
     ExternalDeductionCodeToRipplingCode
 )
-
 
 
 class ProcessEmployeesDeductions(ABC):
