@@ -24,6 +24,11 @@ class TestSQLQuery(unittest.TestCase):
             with self.assertRaises(TypeError):
                 SQLQuery(text="select column from table", args=value)
 
+    def test_validate_text_contains_write_operation(self):
+        for value in ["insert into table", "update table", "delete from table", "drop table", "alter table", "create table"]:
+            with self.assertRaises(ValueError):
+                SQLQuery(text=value)
+
     def test_validate_success_minimal(self):
         SQLQuery(text="select column from table")
 
