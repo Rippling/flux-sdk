@@ -4,7 +4,7 @@ from enum import Enum
 from flux_sdk.flux_core.data_models import Employee, EmployeeState
 
 
-class ReportEmployeesPersonalAndEmploymentDataConfig:
+class ReportEmployeesHrDataConfig:
     '''
     This contains the application data gathered durring installation
     which is necesary to prepare employee data or process deductions
@@ -95,7 +95,7 @@ class EmployeeStatus:
     effective_date: datetime
 
 
-class EmployeePersonalAndEmploymentData:
+class EmployeeHrData:
     '''
     This contains the core data about an employee
     which is relevant to a benefits administration provider
