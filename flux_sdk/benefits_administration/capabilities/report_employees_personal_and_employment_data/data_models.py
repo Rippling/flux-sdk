@@ -1,6 +1,5 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
 from flux_sdk.flux_core.data_models import Employee, EmployeeState
 
@@ -53,12 +52,12 @@ class Pay:
     value_per_unit: MonetaryValue
     value_effective_date: datetime
     salary_or_equivalent: MonetaryValue
-    expected_commission: Optional[MonetaryValue]
+    expected_commission: MonetaryValue | None
 
 class EmploymentHours:
     type: EmploymentType
     type_effective_date: datetime
-    hours_per_week: Optional[int]
+    hours_per_week: int | None
     hours_effective_date: datetime
 
 class TerminationType(Enum):
@@ -75,8 +74,8 @@ class Employment:
     hours: EmploymentHours
     pay: Pay
     is_rehire: bool
-    termination_date: Optional[datetime]
-    termination_type: Optional[TerminationType]
+    termination_date: datetime | None
+    termination_type: TerminationType | None
     start_date: datetime
     original_hire_date: datetime
     w2_start_date: datetime
@@ -98,7 +97,8 @@ class EmployeeStatus:
 
 class EmployeePersonalAndEmploymentData:
     '''
-    This contains the core data about an employee which is relevant to a benefits administration provider
+    This contains the core data about an employee
+    which is relevant to a benefits administration provider
     '''
     id: str
     employee_number: int
