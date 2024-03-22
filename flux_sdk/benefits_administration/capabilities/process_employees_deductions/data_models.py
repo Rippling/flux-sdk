@@ -1,7 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Optional
 
 
 class DeductionDetails:
@@ -10,8 +9,8 @@ class DeductionDetails:
     deductionCode: str
     effectiveFrom: datetime
     endDate: datetime
-    employeeContribution: Optional[Decimal]
-    companyContribution: Optional[Decimal]
+    employeeContribution: Decimal | None
+    companyContribution: Decimal | None
 
 class DeductionCodeField(Enum):
     EMPLOYEE_CONTRIBUTION = "EMPLOYEE_CONTRIBUTION"
