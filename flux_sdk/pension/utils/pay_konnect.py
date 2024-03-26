@@ -539,8 +539,6 @@ class UpdateDeductionElectionsPayKonnectUtil:
 
     @staticmethod
     def get_deduction_type(given_ded_type) -> Optional[DeductionType]:
-        # Need to update based on PayKonnects response.
-        # https://rippling.atlassian.net/browse/BENPNP-5
         ded_match_map = {
             "4ROTH": DeductionType.ROTH_401K,
             "4ROTC": DeductionType.ROTH_401K,
@@ -556,8 +554,6 @@ class UpdateDeductionElectionsPayKonnectUtil:
     @staticmethod
     def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> dict[str, Decimal]:
         ssn = row["SSN"]
-        # For now, I have assumed that loans are always amount based. asked the same to paykonnect.
-        # will update this according to response.
         if UpdateDeductionElectionsPayKonnectUtil._is_valid_amount(row["Value"]):
             loan_value = Decimal(row["Value"])
             if ssn in ssn_to_loan_sum_map:
