@@ -1,5 +1,5 @@
-from flux_sdk.flux_core.data_models import DeductionType
 from typing import Optional
+from flux_sdk.flux_core.data_models import DeductionType
 
 
 def get_deduction_type(given_ded_type: str) -> Optional[DeductionType]:
