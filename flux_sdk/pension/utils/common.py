@@ -1,4 +1,5 @@
 from typing import Optional
+
 from flux_sdk.flux_core.data_models import DeductionType
 
 
