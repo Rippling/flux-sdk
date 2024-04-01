@@ -21,6 +21,7 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
 from flux_sdk.pension.capabilities.update_deduction_elections.data_models import (
     EmployeeDeductionSetting,
 )
+from flux_sdk.pension.common import get_deduction_type
 
 logger = logging.getLogger(__name__)
 
@@ -63,17 +64,17 @@ COLUMNS_180 = [
 ]
 
 COLUMNS_360 = [
-    "RecordType",
-    "PlanId",
+    "RecordType", ## 'D' represents Contribution Change, 'L' represents Loan
+    "PlanId", ## Plan ID or Contract number
     "EmployeeLastName",
     "EmployeeFirstName",
     "EmployeeMiddleInitial",
     "EmployeeSSN",
-    "EffectiveDate",
+    "EffectiveDate", ## The date that the change is effective
     "ContributionCode",
     "DeferralPercent",
     "DeferralAmount",
-    "EmployeeEligibilityDate",
+    "EmployeeEligibilityDate", ## The date the employee became eligible
     "LoanNumber",
     "LoanPaymentAmount",
     "TotalLoanAmount",
@@ -417,7 +418,7 @@ class UpdateDeductionElectionsAscensusUtil:
     def _create_eds_for_value(
         deduction_type: DeductionType,
         value: Union[str, Decimal],
-        percentage: bool,
+        is_percentage: bool,
         ssn: str,
         effective_date: datetime,
     ) -> EmployeeDeductionSetting:
@@ -426,7 +427,7 @@ class UpdateDeductionElectionsAscensusUtil:
         eds.effective_date = effective_date
         eds.deduction_type = deduction_type
         eds.value = Decimal(value)  # type: ignore
-        eds.is_percentage = percentage
+        eds.is_percentage = is_percentage
         return eds
 
     @staticmethod
@@ -438,25 +439,11 @@ class UpdateDeductionElectionsAscensusUtil:
             return False
 
     @staticmethod
-    def get_deduction_type(given_ded_type) -> Optional[DeductionType]:
-        ded_match_map = {
-            "4ROTH": DeductionType.ROTH_401K,
-            "4ROTC": DeductionType.ROTH_401K,
-            "401K": DeductionType._401K,
-            "401KC": DeductionType._401K,
-            "401L": DeductionType._401K_LOAN_PAYMENT,
-            "403B": DeductionType._403B,
-            "401A": DeductionType.AFTER_TAX_401K,
-            "401O": DeductionType._401K,
-        }
-        return ded_match_map.get(given_ded_type, None)
-
-    @staticmethod
     def _parse_deduction_rows(
         row: dict[str, Any], result: list[EmployeeDeductionSetting]
     ) -> list[EmployeeDeductionSetting]:
         ssn = row["EmployeeSSN"]
-        deduction_type = UpdateDeductionElectionsAscensusUtil.get_deduction_type(row["ContributionCode"])
+        deduction_type = get_deduction_type(row["ContributionCode"])
         eligibility_date = (
             datetime.strptime(row["EmployeeEligibilityDate"], "%m%d%Y")
             if row["EmployeeEligibilityDate"]
@@ -474,7 +461,7 @@ class UpdateDeductionElectionsAscensusUtil:
                     value=row["DeferralAmount"]
                     if row["DeferralAmount"] > row["DeferralPercent"]
                     else row["DeferralPercent"],
-                    percentage=row["DeferralPercent"] > row["DeferralAmount"],
+                    is_percentage=row["DeferralPercent"] > row["DeferralAmount"],
                     ssn=ssn,
                     effective_date=eligibility_date,
                 )
@@ -491,8 +478,6 @@ class UpdateDeductionElectionsAscensusUtil:
                 ssn_to_loan_sum_map[ssn] += loan_value
             else:
                 ssn_to_loan_sum_map[ssn] = loan_value
-
-        return ssn_to_loan_sum_map
 
     @staticmethod
     def parse_deductions_for_ascensus(uri: str, stream: IOBase) -> list[EmployeeDeductionSetting]:
@@ -534,7 +519,7 @@ class UpdateDeductionElectionsAscensusUtil:
                 UpdateDeductionElectionsAscensusUtil._create_eds_for_value(
                     deduction_type=DeductionType._401K_LOAN_PAYMENT,
                     value=Decimal(loan_sum),
-                    percentage=False,
+                    is_percentage=False,
                     ssn=ssn,
                     effective_date=datetime.now(),
                 )

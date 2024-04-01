@@ -5,6 +5,7 @@ import logging
 from decimal import Decimal
 from io import IOBase, StringIO
 from typing import Any, Optional, Union
+from flux_sdk.pension.utils.common import get_deduction_type
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
@@ -532,24 +533,10 @@ class ReportPayrollContributionsPayKonnectUtil:
 class UpdateDeductionElectionsPayKonnectUtil:
     """
     This class represents the "update deduction elections" capability for vendors utilizing
-    the Ascensus. The developer is supposed to implement
-    parse_deductions_for_ascensus method in their implementation. For further details regarding their
+    the PayKonnect. The app developer is supposed to implement
+    parse_deductions_for_pay_konnect method in their implementation. For further details regarding their
     implementation details, check their documentation.
     """
-
-    @staticmethod
-    def get_deduction_type(given_ded_type) -> Optional[DeductionType]:
-        ded_match_map = {
-            "4ROTH": DeductionType.ROTH_401K,
-            "4ROTC": DeductionType.ROTH_401K,
-            "401K": DeductionType._401K,
-            "401KC": DeductionType._401K,
-            "401L": DeductionType._401K_LOAN_PAYMENT,
-            "403B": DeductionType._403B,
-            "401A": DeductionType.AFTER_TAX_401K,
-            "401O": DeductionType._401K,
-        }
-        return ded_match_map.get(given_ded_type, None)
     
     @staticmethod
     def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> dict[str, Decimal]:
@@ -592,7 +579,7 @@ class UpdateDeductionElectionsPayKonnectUtil:
             row: dict[str, Any], result: list[EmployeeDeductionSetting]
     ) -> list[EmployeeDeductionSetting]:
         ssn = row["SSN"]
-        deduction_type = UpdateDeductionElectionsPayKonnectUtil.get_deduction_type(row["Code"])
+        deduction_type = get_deduction_type(row["Code"])
         eligibility_date = (
             datetime.datetime.strptime(row["Eligibility Date"], "%m%d%Y")
             if row["Eligibility Date"]
