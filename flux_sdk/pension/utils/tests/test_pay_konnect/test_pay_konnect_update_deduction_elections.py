@@ -4,7 +4,7 @@ from decimal import Decimal
 from typing import List
 
 from flux_sdk.pension.capabilities.update_deduction_elections.data_models import EmployeeDeductionSetting
-from flux_sdk.pension.utils.pay_konnect import UpdateDeductionElectionsPayKonnectUtil
+from flux_sdk.pension.utils.pay_konnect_update_deduction_elections import UpdateDeductionElectionsPayKonnectUtil
 
 
 class TestUpdateDeductionElections(unittest.TestCase):

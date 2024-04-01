@@ -20,7 +20,7 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
     PayrollUploadSettings,
     PayrunInfo,
 )
-from flux_sdk.pension.utils.pay_konnect import ReportPayrollContributionsPayKonnectUtil
+from flux_sdk.pension.utils.pay_konnect_report_payroll_contributions import ReportPayrollContributionsPayKonnectUtil
 
 
 class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
