@@ -16,24 +16,21 @@ from flux_sdk.pension.utils.common import get_deduction_type
 logger = logging.getLogger(__name__)
 
 COLUMNS_360 = [
-    "RecordType", ## 'D' represents Contribution Change, 'L' represents Loan
-    "PlanId", ## Plan ID or Contract number
+    "RecordType",  ## 'D' represents Contribution Change, 'L' represents Loan
+    "PlanId",  ## Plan ID or Contract number
     "EmployeeLastName",
     "EmployeeFirstName",
     "EmployeeMiddleInitial",
     "EmployeeSSN",
-    "EffectiveDate", ## The date that the change is effective
+    "EffectiveDate",  ## The date that the change is effective
     "ContributionCode",
     "DeferralPercent",
     "DeferralAmount",
-    "EmployeeEligibilityDate", ## The date the employee became eligible
+    "EmployeeEligibilityDate",  ## The date the employee became eligible
     "LoanNumber",
     "LoanPaymentAmount",
     "TotalLoanAmount",
 ]
-
-STANDARD_DATE_FORMAT = "%m/%d/%Y"
-TWO_PLACES = Decimal(".01")
 
 class UpdateDeductionElectionsAscensusUtil:
     """
@@ -107,6 +104,7 @@ class UpdateDeductionElectionsAscensusUtil:
                 ssn_to_loan_sum_map[ssn] += loan_value
             else:
                 ssn_to_loan_sum_map[ssn] = loan_value
+        return
 
     @staticmethod
     def parse_deductions_for_ascensus(uri: str, stream: IOBase) -> list[EmployeeDeductionSetting]:

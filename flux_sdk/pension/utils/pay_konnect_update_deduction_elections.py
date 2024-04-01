@@ -53,11 +53,11 @@ class UpdateDeductionElectionsPayKonnectUtil:
 
     @staticmethod
     def _create_eds_for_value(
-            deduction_type: DeductionType,
-            value: Union[str, Decimal],
-            percentage: bool,
-            ssn: str,
-            effective_date: datetime.datetime,
+        deduction_type: DeductionType,
+        value: Union[str, Decimal],
+        percentage: bool,
+        ssn: str,
+        effective_date: datetime.datetime,
     ) -> EmployeeDeductionSetting:
         eds = EmployeeDeductionSetting()
         eds.ssn = ssn
@@ -77,7 +77,7 @@ class UpdateDeductionElectionsPayKonnectUtil:
 
     @staticmethod
     def _parse_deduction_rows(
-            row: dict[str, Any], result: list[EmployeeDeductionSetting]
+        row: dict[str, Any], result: list[EmployeeDeductionSetting]
     ) -> list[EmployeeDeductionSetting]:
         ssn = row["SSN"]
         deduction_type = get_deduction_type(row["Code"])
@@ -87,10 +87,7 @@ class UpdateDeductionElectionsPayKonnectUtil:
             else datetime.datetime.now()
         )
 
-        if (
-                UpdateDeductionElectionsPayKonnectUtil._is_valid_amount(row["Value"])
-                and deduction_type
-        ):
+        if UpdateDeductionElectionsPayKonnectUtil._is_valid_amount(row["Value"]) and deduction_type:
             result.append(
                 UpdateDeductionElectionsPayKonnectUtil._create_eds_for_value(
                     deduction_type=deduction_type,
