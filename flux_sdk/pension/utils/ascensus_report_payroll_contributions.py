@@ -4,12 +4,10 @@ import logging
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 from enum import Enum
-from io import IOBase, StringIO
-from typing import Any, Optional, Union
+from io import StringIO
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
-    DeductionType,
     Employee,
     File,
 )
@@ -18,10 +16,6 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
     PayrollRunContribution,
     PayrollUploadSettings,
 )
-from flux_sdk.pension.capabilities.update_deduction_elections.data_models import (
-    EmployeeDeductionSetting,
-)
-from flux_sdk.pension.common import get_deduction_type
 
 logger = logging.getLogger(__name__)
 
@@ -61,23 +55,6 @@ COLUMNS_180 = [
     "ENROLLMENT ELIGIBILITY",
     "UNION STATUS CODE",
     "EMPLOYEE WORK EMAIL",
-]
-
-COLUMNS_360 = [
-    "RecordType", ## 'D' represents Contribution Change, 'L' represents Loan
-    "PlanId", ## Plan ID or Contract number
-    "EmployeeLastName",
-    "EmployeeFirstName",
-    "EmployeeMiddleInitial",
-    "EmployeeSSN",
-    "EffectiveDate", ## The date that the change is effective
-    "ContributionCode",
-    "DeferralPercent",
-    "DeferralAmount",
-    "EmployeeEligibilityDate", ## The date the employee became eligible
-    "LoanNumber",
-    "LoanPaymentAmount",
-    "TotalLoanAmount",
 ]
 
 STANDARD_DATE_FORMAT = "%m/%d/%Y"

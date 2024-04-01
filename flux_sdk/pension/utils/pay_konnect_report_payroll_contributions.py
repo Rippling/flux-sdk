@@ -3,13 +3,11 @@ import csv
 import datetime
 import logging
 from decimal import Decimal
-from io import IOBase, StringIO
-from typing import Any, Optional, Union
-from flux_sdk.pension.utils.common import get_deduction_type
+from io import StringIO
+from typing import Optional, Union
 
 from flux_sdk.flux_core.data_models import (
     ContributionType,
-    DeductionType,
     Employee,
     EmployeeState,
     File,
@@ -20,9 +18,6 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
     LeaveInfo,
     PayrollRunContribution,
     PayrollUploadSettings,
-)
-from flux_sdk.pension.capabilities.update_deduction_elections.data_models import (
-    EmployeeDeductionSetting,
 )
 
 logger = logging.getLogger(__name__)
@@ -115,21 +110,6 @@ columns_180 = [
     "CONT_Contribution_$_Company_Match",
     "LOAN_Ref_Number",
     "LOAN_Amount",
-]
-
-columns_360 = [
-    "Record Type",
-    "Plan Number",
-    "SSN",
-    "Effective Date",
-    "Eligibility Date",
-    "Transaction Date",
-    "Transaction Type",
-    "Code",
-    "Value Type",
-    "Value",
-    "Loan Reference Number",
-    "Loan Goal",
 ]
 
 STANDARD_DATE_FORMAT = "%m/%d/%Y"

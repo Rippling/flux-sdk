@@ -1,25 +1,13 @@
-import contextlib
 import csv
 import datetime
 import logging
 from decimal import Decimal
-from io import IOBase, StringIO
-from typing import Any, Optional, Union
+from io import IOBase
+from typing import Any, Union
 from flux_sdk.pension.utils.common import get_deduction_type
 
 from flux_sdk.flux_core.data_models import (
-    ContributionType,
     DeductionType,
-    Employee,
-    EmployeeState,
-    File,
-    Gender,
-)
-from flux_sdk.pension.capabilities.report_payroll_contributions.data_models import (
-    EmployeePayrollRecord,
-    LeaveInfo,
-    PayrollRunContribution,
-    PayrollUploadSettings,
 )
 from flux_sdk.pension.capabilities.update_deduction_elections.data_models import (
     EmployeeDeductionSetting,
@@ -41,8 +29,6 @@ columns_360 = [
     "Loan Reference Number",
     "Loan Goal",
 ]
-
-STANDARD_DATE_FORMAT = "%m/%d/%Y"
 
 
 class UpdateDeductionElectionsPayKonnectUtil:
