@@ -17,7 +17,7 @@ from flux_sdk.pension.capabilities.report_payroll_contributions.data_models impo
     PayrollUploadSettings,
     PayrunInfo,
 )
-from flux_sdk.pension.utils.ascensus import ReportPayrollContributionsAscensusUtil
+from flux_sdk.pension.utils.ascensus_report_payroll_contributions import ReportPayrollContributionsAscensusUtil
 
 
 class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
@@ -171,7 +171,7 @@ class TestReportPayrollContributionsAscensusUtil(unittest.TestCase):
         )
         file_content = contributions_file.content.decode()
         with open(
-            os.path.join(os.path.dirname(__file__), "contributions_180.csv")
+            os.path.join(os.path.dirname(__file__), "contributions_report_payroll_contributions.csv")
         ) as contribution_file:
             contribution_file_contents = contribution_file.read()
             self.assertEqual(

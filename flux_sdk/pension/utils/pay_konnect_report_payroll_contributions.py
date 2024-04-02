@@ -355,7 +355,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                     pay_type = ReportPayrollContributionsPayKonnectUtil._get_employee_pay_type(employee)
                     termination_date = getattr(employee, "termination_date", None)
                     termination_date = termination_date.strftime(STANDARD_DATE_FORMAT) if termination_date else ""
-                    birth_day = employee.dob.strftime(STANDARD_DATE_FORMAT)
+                    birth_day = employee.dob.strftime(STANDARD_DATE_FORMAT) if employee.dob else ""
                     phone_number = employee.phone_number if employee.phone_number else ""
                     rehire_date = employee.start_date.strftime(STANDARD_DATE_FORMAT)
                     hire_date = employee.original_hire_date.strftime(STANDARD_DATE_FORMAT)
