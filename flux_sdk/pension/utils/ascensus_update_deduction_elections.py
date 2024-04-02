@@ -69,7 +69,7 @@ class UpdateDeductionElectionsAscensusUtil:
             return False
 
     @staticmethod
-    def _parse_deduction_rows(row: dict[str, Any], result: list[EmployeeDeductionSetting]):
+    def _parse_deduction_rows(row: dict[str, Any], result: list[EmployeeDeductionSetting]) -> None:
         ssn = row["EmployeeSSN"]
         deduction_type = get_deduction_type(row["ContributionCode"])
         eligibility_date = (
@@ -96,7 +96,7 @@ class UpdateDeductionElectionsAscensusUtil:
             )
 
     @staticmethod
-    def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]):
+    def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> None:
         ssn = row["EmployeeSSN"]
         if UpdateDeductionElectionsAscensusUtil._is_valid_amount(row["LoanPaymentAmount"]):
             loan_value = Decimal(row["LoanPaymentAmount"])

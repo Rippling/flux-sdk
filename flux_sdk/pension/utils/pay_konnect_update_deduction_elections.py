@@ -41,7 +41,7 @@ class UpdateDeductionElectionsPayKonnectUtil:
     """
 
     @staticmethod
-    def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]):
+    def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> None:
         ssn = row["SSN"]
         if UpdateDeductionElectionsPayKonnectUtil._is_valid_amount(row["Value"]):
             loan_value = Decimal(row["Value"])
@@ -75,7 +75,7 @@ class UpdateDeductionElectionsPayKonnectUtil:
             return False
 
     @staticmethod
-    def _parse_deduction_rows(row: dict[str, Any], result: list[EmployeeDeductionSetting]):
+    def _parse_deduction_rows(row: dict[str, Any], result: list[EmployeeDeductionSetting]) -> None:
         ssn = row["SSN"]
         deduction_type = get_deduction_type(row["Code"])
         eligibility_date = (
