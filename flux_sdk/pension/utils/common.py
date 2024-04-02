@@ -1,11 +1,13 @@
+from enum import Enum
 from typing import Optional
 
-from enum import Enum
 from flux_sdk.flux_core.data_models import DeductionType
+
 
 class RecordTypeKeys(Enum):
     DeductionType = "D"
     LoanType = "L"
+
 
 def get_deduction_type(given_ded_type: str) -> Optional[DeductionType]:
     ded_match_map = {

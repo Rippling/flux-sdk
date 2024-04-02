@@ -12,8 +12,8 @@ from flux_sdk.pension.capabilities.update_deduction_elections.data_models import
     EmployeeDeductionSetting,
 )
 from flux_sdk.pension.utils.common import (
-    get_deduction_type,
     RecordTypeKeys,
+    get_deduction_type,
 )
 
 logger = logging.getLogger(__name__)
@@ -34,6 +34,7 @@ COLUMNS_360 = [
     "LoanPaymentAmount",
     "TotalLoanAmount",
 ]
+
 
 class UpdateDeductionElectionsAscensusUtil:
     """
@@ -68,9 +69,7 @@ class UpdateDeductionElectionsAscensusUtil:
             return False
 
     @staticmethod
-    def _parse_deduction_rows(
-        row: dict[str, Any], result: list[EmployeeDeductionSetting]
-    ):
+    def _parse_deduction_rows(row: dict[str, Any], result: list[EmployeeDeductionSetting]):
         ssn = row["EmployeeSSN"]
         deduction_type = get_deduction_type(row["ContributionCode"])
         eligibility_date = (
