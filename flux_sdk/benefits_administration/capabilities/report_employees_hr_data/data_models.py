@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 
 from flux_sdk.flux_core.data_models import Employee, EmployeeState
@@ -24,7 +25,7 @@ class EmploymentType(Enum):
 
 
 class MonetaryValue:
-    value: float
+    value: Decimal
     currency_type: str
 
 
