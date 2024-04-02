@@ -9,7 +9,10 @@ from flux_sdk.flux_core.data_models import DeductionType
 from flux_sdk.pension.capabilities.update_deduction_elections.data_models import (
     EmployeeDeductionSetting,
 )
-from flux_sdk.pension.utils.common import get_deduction_type
+from flux_sdk.pension.utils.common import (
+    get_deduction_type,
+    RecordTypeKeys,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +41,7 @@ class UpdateDeductionElectionsPayKonnectUtil:
     """
 
     @staticmethod
-    def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]) -> dict[str, Decimal]:
+    def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]):
         ssn = row["SSN"]
         if UpdateDeductionElectionsPayKonnectUtil._is_valid_amount(row["Value"]):
             loan_value = Decimal(row["Value"])
@@ -47,7 +50,7 @@ class UpdateDeductionElectionsPayKonnectUtil:
             else:
                 ssn_to_loan_sum_map[ssn] = loan_value
 
-        return ssn_to_loan_sum_map
+        return
 
     @staticmethod
     def _create_eds_for_value(
@@ -76,7 +79,7 @@ class UpdateDeductionElectionsPayKonnectUtil:
     @staticmethod
     def _parse_deduction_rows(
         row: dict[str, Any], result: list[EmployeeDeductionSetting]
-    ) -> list[EmployeeDeductionSetting]:
+    ):
         ssn = row["SSN"]
         deduction_type = get_deduction_type(row["Code"])
         eligibility_date = (
@@ -96,7 +99,7 @@ class UpdateDeductionElectionsPayKonnectUtil:
                 )
             )
 
-        return result
+        return
 
     @staticmethod
     def parse_deductions_for_pay_konnect(uri: str, stream: IOBase) -> list[EmployeeDeductionSetting]:
@@ -122,9 +125,9 @@ class UpdateDeductionElectionsPayKonnectUtil:
                 ssn = row["SSN"]
                 record_type = row["Record Type"]
 
-                if record_type == "D":
+                if record_type == RecordTypeKeys.DeductionType.value:
                     UpdateDeductionElectionsPayKonnectUtil._parse_deduction_rows(row, result)
-                elif record_type == "L":
+                elif record_type == RecordTypeKeys.LoanType.value:
                     UpdateDeductionElectionsPayKonnectUtil._parse_loan_rows(row, ssn_to_loan_sum_map)
                 else:
                     logger.error(f"Unknown transaction type in row: {row}")

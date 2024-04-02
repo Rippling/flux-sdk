@@ -12,9 +12,7 @@ class TestUpdateDeductionElections(unittest.TestCase):
     Tests for functions for the UpdateDeductionElections capability.
     """
 
-    def get_file_data_for_test_update_deduction(self, date):
-        ssn1 = "523546780"
-        ssn2 = "523546781"
+    def get_file_data_for_test_update_deduction(self, date, ssn1, ssn2):
 
         sample_deferral_file = (
             "Record Type,Plan Number,SSN,Effective Date,Eligibility Date,"
@@ -32,14 +30,15 @@ class TestUpdateDeductionElections(unittest.TestCase):
         return sample_deferral_file
 
     def test_parse_deductions(self):
-        sample_deferral_file = self.get_file_data_for_test_update_deduction("3/6/2023")
+        ssn1 = "523546780"
+        ssn2 = "523546781"
+        sample_deferral_file = self.get_file_data_for_test_update_deduction("3/6/2023", ssn1, ssn2)
 
         result: List[
             EmployeeDeductionSetting
         ] = UpdateDeductionElectionsPayKonnectUtil.parse_deductions_for_pay_konnect(
             "", io.StringIO(sample_deferral_file)
         )
-        ssn1 = "523546780"
 
         count = 0
         for ed in result:

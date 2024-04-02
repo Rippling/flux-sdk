@@ -11,7 +11,10 @@ from flux_sdk.flux_core.data_models import (
 from flux_sdk.pension.capabilities.update_deduction_elections.data_models import (
     EmployeeDeductionSetting,
 )
-from flux_sdk.pension.utils.common import get_deduction_type
+from flux_sdk.pension.utils.common import (
+    get_deduction_type,
+    RecordTypeKeys,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +70,7 @@ class UpdateDeductionElectionsAscensusUtil:
     @staticmethod
     def _parse_deduction_rows(
         row: dict[str, Any], result: list[EmployeeDeductionSetting]
-    ) -> list[EmployeeDeductionSetting]:
+    ):
         ssn = row["EmployeeSSN"]
         deduction_type = get_deduction_type(row["ContributionCode"])
         eligibility_date = (
@@ -93,7 +96,7 @@ class UpdateDeductionElectionsAscensusUtil:
                 )
             )
 
-        return result
+        return
 
     @staticmethod
     def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]):
@@ -130,9 +133,9 @@ class UpdateDeductionElectionsAscensusUtil:
                 ssn = row["EmployeeSSN"]
                 record_type = row["RecordType"]
 
-                if record_type == "D":
+                if record_type == RecordTypeKeys.DeductionType.value:
                     UpdateDeductionElectionsAscensusUtil._parse_deduction_rows(row, result)
-                elif record_type == "L":
+                elif record_type == RecordTypeKeys.LoanType.value:
                     UpdateDeductionElectionsAscensusUtil._parse_loan_rows(row, ssn_to_loan_sum_map)
                 else:
                     logger.error(f"Unknown transaction type in row: {row}")
