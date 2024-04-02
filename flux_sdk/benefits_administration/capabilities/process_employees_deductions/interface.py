@@ -17,14 +17,6 @@ class ProcessEmployeesDeductions(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_file_name(company_name: str, group_id: str) -> str:
-        """
-        This method returns the file name of deductions sent by the third party
-        """
-
-
-    @staticmethod
-    @abstractmethod
     def format_and_fetch_deduction_info(
             uri: str, stream: IOBase, deduction_code_mapping: list[ExternalDeductionCodeToRipplingCode]
     ) -> list[DeductionDetails]:
