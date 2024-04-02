@@ -50,8 +50,6 @@ class UpdateDeductionElectionsPayKonnectUtil:
             else:
                 ssn_to_loan_sum_map[ssn] = loan_value
 
-        return
-
     @staticmethod
     def _create_eds_for_value(
         deduction_type: DeductionType,
@@ -96,8 +94,6 @@ class UpdateDeductionElectionsPayKonnectUtil:
                     effective_date=eligibility_date,
                 )
             )
-
-        return
 
     @staticmethod
     def parse_deductions_for_pay_konnect(uri: str, stream: IOBase) -> list[EmployeeDeductionSetting]:

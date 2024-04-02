@@ -95,8 +95,6 @@ class UpdateDeductionElectionsAscensusUtil:
                 )
             )
 
-        return
-
     @staticmethod
     def _parse_loan_rows(row: dict[str, Any], ssn_to_loan_sum_map: dict[str, Decimal]):
         ssn = row["EmployeeSSN"]
@@ -106,7 +104,6 @@ class UpdateDeductionElectionsAscensusUtil:
                 ssn_to_loan_sum_map[ssn] += loan_value
             else:
                 ssn_to_loan_sum_map[ssn] = loan_value
-        return
 
     @staticmethod
     def parse_deductions_for_ascensus(uri: str, stream: IOBase) -> list[EmployeeDeductionSetting]:
