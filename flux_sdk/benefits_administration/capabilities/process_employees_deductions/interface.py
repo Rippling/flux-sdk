@@ -17,9 +17,9 @@ class ProcessEmployeesDeductions(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_file_name(company_name: str) -> str:
+    def get_file_name(company_name: str, group_id: str) -> str:
         """
-        This method returns the file name of deductions sent by Bswfit
+        This method returns the file name of deductions sent by the third party
         """
 
 

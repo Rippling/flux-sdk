@@ -8,7 +8,7 @@ class DeductionDetails:
     employeeId: str
     deductionCode: str
     effectiveFrom: datetime
-    endDate: datetime
+    endDate: datetime | None
     employeeContribution: Decimal | None
     companyContribution: Decimal | None
 
