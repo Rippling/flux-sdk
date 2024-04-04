@@ -2,7 +2,14 @@ from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 
-from flux_sdk.flux_core.data_models import Employee, EmployeeState
+from flux_sdk.flux_core.data_models import (
+    Employee,
+    EmployeeState,
+    EmploymentType,
+    PayFrequency,
+    PayTimeUnit,
+    TerminationType
+)
 
 
 class ReportEmployeesHrDataConfig:
@@ -13,37 +20,11 @@ class ReportEmployeesHrDataConfig:
     auto_enroll: bool
     group_number: str
     company_id: str
-    
-
-class EmploymentType(Enum):
-    CONTRACTOR = 1
-    SALARIED_FT = 2
-    SALARIED_PT = 3
-    HOURLY_FT = 4
-    HOURLY_PT = 5
-    TEMP = 6
 
 
 class MonetaryValue:
     value: Decimal
     currency_type: str
-
-
-class PayFrequency(Enum):
-    WEEKLY = 1
-    BI_WEEKLY = 2
-    MONTHLY = 3
-    SEMI_MONTHLY = 4
-    QUARTERLY = 5
-    ANNUALLY = 6
-
-class PayTimeUnit(Enum):
-    HOUR = 1
-    DAY = 2
-    WEEK = 3
-    MONTH = 4
-    YEAR = 5 
-    PAY_PERIOD = 6
 
 
 class Pay:
@@ -61,15 +42,6 @@ class EmploymentHours:
     hours_per_week: int | None
     hours_effective_date: datetime
 
-class TerminationType(Enum):
-    VOLUNTARY = 0
-    INVOLUNTARY = 1
-    RETIREMENT = 2
-    DEATH = 3
-    ABANDONMENT = 4
-    OFFER_DECLINE = 5
-    RESCIND = 6
-    RENEGE = 7
 
 class Employment:
     hours: EmploymentHours
