@@ -25,7 +25,7 @@ class ReportEmployeesHrData(ABC):
         The developer is expected to create a file, formated to their use case, and return that file.
         The file will be tranfered to the partner company via SFTP
 
-        :param App
-        :param list[EmployeeData]:
+        :param ReportEmployeesHrDataConfig:
+        :param list[EmployeeHrData]:
         :return File:
         """
