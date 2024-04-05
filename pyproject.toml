@@ -1,25 +1,13 @@
 [tool.poetry]
 name = "rippling-flux-sdk"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-version = "0.22"
-=======
 version = "0.20"
->>>>>>> 971ac56 (lint)
-=======
-version = "0.21"
->>>>>>> 53e29d5 (bump version)
-=======
-version = "0.20"
->>>>>>> f5b9be9 (dont change version)
 description = "Defines the interfaces and data-models used by Rippling Flux Apps."
 authors = ["Rippling Apps <apps@rippling.com>"]
 readme = "README.md"
 packages = [{include="flux_sdk"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.9"
 "ruamel.yaml" = "0.17.10"
 click = ">=8.0,<9"
 

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from flux_sdk.benefits_administration.capabilities.report_employees_hr_data.data_models import (
     EmployeeHrData,
-    ReportEmployeesHrDataConfig
+    ReportEmployeesHrDataConfig,
 )
 from flux_sdk.flux_core.data_models import File
 
