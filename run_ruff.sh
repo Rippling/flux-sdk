@@ -3,7 +3,7 @@
 set -e
 
 RUFF_LINT="${RUFF_LINT:-true}"
-REQUIRED_RUFF_VERSION="0.0.286"
+REQUIRED_RUFF_VERSION="0.3.3"
 PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE:-"python3"}
 
 ensure_ruff_installed() {
