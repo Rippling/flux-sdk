@@ -8,7 +8,7 @@ from flux_sdk.flux_core.data_models import (
     EmploymentType,
     PayFrequency,
     PayTimeUnit,
-    TerminationType
+    TerminationType,
 )
 
 
