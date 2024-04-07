@@ -8,7 +8,7 @@ class DeductionDetails:
     employee_id: str
     deduction_code: str
     effective_from: datetime
-    endDate: datetime | None
+    end_date: datetime | None
     employee_contribution: Decimal | None
     company_contribution: Decimal | None
 
