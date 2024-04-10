@@ -5,7 +5,8 @@ from flux_sdk.flux_core.data_models import CompanyInfo, File
 
 
 class ReportEligibilityData(ABC):
-    """
+    """Report eligibility data for employees in your application via data in Rippling.
+
     This class represents the "report eligibility data" capability. The developer is supposed to implement
     format_eligibility_file in their implementation.
 
@@ -18,8 +19,8 @@ class ReportEligibilityData(ABC):
         company_info: CompanyInfo,
         employee_eligibility_records: list[EmployeeEligibilityRecord]
     ) -> File:
-        """
-        Given a list of EmployeeEligibilityRecord, prepare a file for upload to the provider.
+        """Given a list of EmployeeEligibilityRecord, prepare a file for upload to the provider.
+
         The file will be sent verbatim, so any compression or other formatting required by the provider
         must be applied within this function.
         :param company_info:
