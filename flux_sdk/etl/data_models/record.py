@@ -41,7 +41,9 @@ class Record:
     For example, consider an Invoice object with a field named "customer_id" which is a foreign key pointing to another
     object Customer via id:
     
+    ```json
     references = { "customer_id": "customer_1" }
+    ```
     """
 
     checkpoint: Optional[Checkpoint] = None
