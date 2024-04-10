@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from io import IOBase
+from io import StringIO
 
 from flux_sdk.benefits_administration.capabilities.process_employees_deductions.data_models import (
     DeductionDetails,
@@ -18,12 +18,12 @@ class ProcessEmployeesDeductions(ABC):
     @staticmethod
     @abstractmethod
     def format_and_fetch_deduction_info(
-        stream: IOBase, deduction_code_mapping: list[ExternalDeductionCodeToRipplingCode]
+        stream: StringIO, deduction_code_mapping: list[ExternalDeductionCodeToRipplingCode]
     ) -> list[DeductionDetails]:
         """
         This method receives the file which contains the deductions relevant to the companies employees and returns the
         deductions details for each employee
-        :param IOBase:
+        :param StringIO:
         :param list[ExternalDeductionCodeToRipplingCode]:
         :return list[DeductionDetails]:
         """
