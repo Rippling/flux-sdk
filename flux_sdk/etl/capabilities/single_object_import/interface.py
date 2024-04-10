@@ -7,7 +7,8 @@ from flux_sdk.etl.data_models.schema import Schema
 
 
 class SingleObjectImport(ABC):
-    """
+    """Extract, transform, and load data into a Rippling Custom Object from anywhere.
+
     This class represents the "single_object_import" capability. This allows the import of a single object type from a
     database source.
     """
@@ -15,7 +16,8 @@ class SingleObjectImport(ABC):
     @staticmethod
     @abstractmethod
     def get_schema() -> Schema:
-        """
+        """A function that defines schema for the records being imported.
+
         Use this hook to indicate the structure (aka: schema) for the data being imported. This is used to ensure that
         Rippling Custom Objects has a target for the extracted records to be loaded into.
 
@@ -30,7 +32,8 @@ class SingleObjectImport(ABC):
     @staticmethod
     @abstractmethod
     def prepare_query(connector: Connector, schema: Schema, checkpoint: Optional[Checkpoint]) -> Query:
-        """
+        """A function that prepares the query that should be run by Rippling to extract records.
+
         Use this hook to construct the query that should be run by Rippling to extract records. If the passed connector
         is not supported by the hook, it should raise NotImplementedError to make the misconfiguration clear.
 
@@ -46,7 +49,8 @@ class SingleObjectImport(ABC):
     @staticmethod
     @abstractmethod
     def process_records(schema: Schema, records: list[Record]) -> list[Record]:
-        """
+        """A function that post process the results from `prepare_query` to fit in the schema.
+
         Use this hook to post-process the Records extracted via the query performed from "prepare_query". Implementing
         this method is required in order to implement incremental sync (by returning the checkpoint to Rippling) or to
         dynamically drop or to dynamically drop records from the sync (by setting drop to True).
