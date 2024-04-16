@@ -17,10 +17,12 @@ class UpdateEnrollments(ABC):
     @abstractmethod
     def get_formatted_enrollments_files(company_info: CompanyInfo, employee_enrollments: list[EmployeeEnrollment],
                                         app_context: AppContext) -> list[File]:
-        """
+        """A function that converts employee enrollments to formatted enrollment file.
+
         This method receives company information and a list of EmployeeEnrollment objects. The developer is expected to
         return the app specific list of formatted enrollment files.
         :param company_info:
         :param employee_enrollments:
+        :param app_context:
         :return:
         """
