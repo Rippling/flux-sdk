@@ -27,7 +27,7 @@ class PayrunInfo:
     """
     check_date: This field denotes the check date for the Payroll run
     """
-    check_date: Optional[date]
+    check_date: Optional[datetime]
     """
     paid_at_date: This field denotes the paid_at_date date for the Payroll run
     """

@@ -34,7 +34,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.payrunInfo.payroll_run_id = "54321"
         self.payrunInfo.pay_period_start_date = datetime(2021, 1, 1)
         self.payrunInfo.pay_period_end_date = datetime(2021, 2, 1)
-        self.payrunInfo.check_date = datetime(2021, 4, 1)
+        self.payrunInfo.check_date = date(2021, 4, 1)
         self.payrunInfo.paid_at_date = datetime(2021, 1, 1)
         self.payrunInfo.pay_frequency = "WEEKLY"
         self.customer_partner_settings: dict = {
