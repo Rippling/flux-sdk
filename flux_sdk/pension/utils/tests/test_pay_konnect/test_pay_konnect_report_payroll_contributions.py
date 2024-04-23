@@ -34,7 +34,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.payrunInfo.payroll_run_id = "54321"
         self.payrunInfo.pay_period_start_date = datetime(2021, 1, 1)
         self.payrunInfo.pay_period_end_date = datetime(2021, 2, 1)
-        self.payrunInfo.check_date = datetime(2021, 1, 1)
+        self.payrunInfo.check_date = datetime(2021, 4, 1)
         self.payrunInfo.paid_at_date = datetime(2021, 1, 1)
         self.payrunInfo.pay_frequency = "WEEKLY"
         self.customer_partner_settings: dict = {
@@ -104,6 +104,52 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.seed_loa(employeePayrollRecord)
 
         self.employee_payroll_records = [employeePayrollRecord]
+        terminated_employee_payroll_records: list[EmployeePayrollRecord] = self._get_terminated_employee_payroll_records()
+        self.employee_payroll_records.extend(terminated_employee_payroll_records)
+        self.employee_payroll_records.append(self.get_terminated_employee(date(2020, 3, 1)))
+
+    def get_terminated_employee(self, end_date: date = date(2020, 5, 1)) -> Employee:
+        employee: Employee = Employee()
+        employee.first_name = "John"
+        employee.middle_name = "D"
+        employee.ssn = "523546780"
+        employee.role_id = "12345"
+        employee.last_name = "Doe"
+        employee.address = Address()
+        employee.address.address_line_1 = "123 Main St"
+        employee.address.address_line_2 = "Apt 1"
+        employee.address.city = "San Francisco"
+        employee.address.state = "CA"
+        employee.address.zip_code = "94105"
+        employee.business_email = "abc@website.com"
+        employee.dob = datetime(1990, 1, 1)
+        employee.start_date = datetime(2020, 1, 1)
+        employee.original_hire_date = datetime(2020, 1, 1)
+        employee.gender = Gender.FEMALE
+        employee.is_full_time = True
+        employee.is_contractor = False
+        employee.phone_number = "1234543212"
+        employee.status = EmployeeState.TERMINATED
+        employee.termination_date = end_date
+        employee.is_international_employee = False
+        employee.marital_status = MaritalStatus.SINGLE
+        return employee
+
+    def _get_terminated_employee_payroll_records(self):
+        employee_payroll_records = []
+        for i in range(1, 5):
+            employee_payroll_record = EmployeePayrollRecord()
+            employee_payroll_record.employee = self.get_terminated_employee()
+            employee_payroll_record.hours_worked = 2400
+            employee_payroll_record.annual_salary = 100000
+            employee_payroll_records.append(employee_payroll_record)
+
+        employee_payroll_record = EmployeePayrollRecord()
+        employee_payroll_record.employee = self.get_terminated_employee(date(2019, 1, 1))
+        employee_payroll_record.hours_worked = 2400
+        employee_payroll_record.annual_salary = 100000
+        employee_payroll_records.append(employee_payroll_record)
+        return employee_payroll_records
 
     def get_nested_attributes(self, obj, attribute):
         nested_list = attribute.split(".")
@@ -168,6 +214,8 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             self.employee_payroll_records, self.payroll_upload_settings
         )
         file_content = contributions_file.content.decode()
+        print(file_content)
+        self.maxDiff = 0
         with open(
             os.path.join(os.path.dirname(__file__), "contributions.csv")
         ) as contribution_file:

@@ -251,6 +251,34 @@ class ReportPayrollContributionsPayKonnectUtil:
         return "{}_{}_{}.csv".format(plan_name, transmission_date, report_time)
 
     @staticmethod
+    def _get_filtered_employee_payroll_records(
+            payroll_records: list[EmployeePayrollRecord], payroll_upload_settings: PayrollUploadSettings
+    ) -> list[EmployeePayrollRecord]:
+        customer_partner_settings = payroll_upload_settings.customer_partner_settings
+        plan_year_end_date = customer_partner_settings.get("plan_year_end_date",
+                                                           ReportPayrollContributionsPayKonnectUtil._pst_now())
+        plan_year_end_date = datetime.date(ReportPayrollContributionsPayKonnectUtil._pst_now().year,
+                                           plan_year_end_date.month, plan_year_end_date.day)
+        plan_year = ReportPayrollContributionsPayKonnectUtil._pst_now().year
+        if payroll_upload_settings and payroll_upload_settings.payrun_info and payroll_upload_settings.payrun_info.check_date and payroll_upload_settings.payrun_info.check_date <= plan_year_end_date:
+            plan_year = ReportPayrollContributionsPayKonnectUtil._pst_now().year - 1
+
+        filter_termination_date = datetime.date(plan_year, plan_year_end_date.month, plan_year_end_date.day)
+
+        if not plan_year_end_date:
+            return payroll_records
+
+        filtered_records = []
+        for record in payroll_records:
+            employee: Employee = record.employee
+            # filter all the terminated employees after the filter_termination_date
+            if employee.status == EmployeeState.TERMINATED and hasattr(employee,
+                                                                       "termination_date") and employee.termination_date <= filter_termination_date:
+                continue
+            filtered_records.append(record)
+        return filtered_records
+
+    @staticmethod
     def format_contributions_for_pay_konnect_vendor(
         employee_payroll_records: list[EmployeePayrollRecord],
         payroll_upload_settings: PayrollUploadSettings,
@@ -263,6 +291,9 @@ class ReportPayrollContributionsPayKonnectUtil:
         :param payroll_upload_settings:
         :return: File
         """
+
+        employee_payroll_records = ReportPayrollContributionsPayKonnectUtil._get_filtered_employee_payroll_records(employee_payroll_records, payroll_upload_settings)
+
         customer_partner_settings = payroll_upload_settings.customer_partner_settings
         plan_id = str(customer_partner_settings.get("plan_id"))
         plan_name = str(customer_partner_settings.get("plan_name"))
@@ -274,7 +305,7 @@ class ReportPayrollContributionsPayKonnectUtil:
             writer.writeheader()
 
             for employee_payroll_record in employee_payroll_records:
-                payroll_contributions: list[PayrollRunContribution] = employee_payroll_record.payroll_contributions
+                payroll_contributions: list[PayrollRunContribution] = employee_payroll_record.payroll_contributions if hasattr(employee_payroll_record, 'payroll_contributions') else []
                 payroll_contribution_map = {pc.deduction_type.name: pc for pc in payroll_contributions}
                 employee: Employee = employee_payroll_record.employee
                 ssn: str = ReportPayrollContributionsPayKonnectUtil._get_formatted_ssn(employee.ssn)
