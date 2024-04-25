@@ -106,7 +106,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.employee_payroll_records = [employeePayrollRecord]
         terminated_employee_payroll_records: list[EmployeePayrollRecord] = self._get_terminated_employee_payroll_records()
         self.employee_payroll_records.extend(terminated_employee_payroll_records)
-        self.employee_payroll_records.append(self.get_terminated_employee(date(2020, 3, 1)))
+        self.employee_payroll_records.append(self._get_terminated_employee_payroll_records(date(2020, 3, 1)))
 
     def get_terminated_employee(self, end_date: date = date(2020, 5, 1)) -> Employee:
         employee: Employee = Employee()
@@ -135,7 +135,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employee.marital_status = MaritalStatus.SINGLE
         return employee
 
-    def _get_terminated_employee_payroll_records(self):
+    def _get_terminated_employee_payroll_records(self, end_date: date = date(2020, 5, 1)):
         employee_payroll_records = []
         for i in range(1, 5):
             employee_payroll_record = EmployeePayrollRecord()
@@ -214,7 +214,6 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             self.employee_payroll_records, self.payroll_upload_settings
         )
         file_content = contributions_file.content.decode()
-        print(file_content)
         self.maxDiff = 0
         with open(
             os.path.join(os.path.dirname(__file__), "contributions.csv")
