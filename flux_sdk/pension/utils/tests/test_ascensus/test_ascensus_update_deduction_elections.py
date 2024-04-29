@@ -1,9 +1,7 @@
 import io
 import unittest
 from decimal import Decimal
-from typing import List
 
-from flux_sdk.pension.capabilities.update_deduction_elections.data_models import EmployeeDeductionSetting
 from flux_sdk.pension.utils.ascensus_update_deduction_elections import UpdateDeductionElectionsAscensusUtil
 
 
@@ -33,7 +31,7 @@ class TestUpdateDeductionElections(unittest.TestCase):
     def test_parse_deductions(self):
         sample_deferral_file = self.get_file_data_for_test_update_deduction("3/6/2023")
 
-        result: List[EmployeeDeductionSetting] = UpdateDeductionElectionsAscensusUtil.parse_deductions_for_ascensus(
+        result = UpdateDeductionElectionsAscensusUtil.parse_deductions_for_ascensus(
             "", io.StringIO(sample_deferral_file)
         )
         ssn1 = "523546780"
