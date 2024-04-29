@@ -34,9 +34,7 @@ class TestUpdateDeductionElections(unittest.TestCase):
         ssn2 = "523546781"
         sample_deferral_file = self.get_file_data_for_test_update_deduction("3/6/2023", ssn1, ssn2)
 
-        result: List[
-            EmployeeDeductionSetting
-        ] = UpdateDeductionElectionsPayKonnectUtil.parse_deductions_for_pay_konnect(
+        result = UpdateDeductionElectionsPayKonnectUtil.parse_deductions_for_pay_konnect(
             "", io.StringIO(sample_deferral_file)
         )
 

@@ -43,7 +43,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             "plan_name": "Hiss",
             "division": "Division",
             "pay_group": "pay group",
-            "plan_year_end_date": datetime(2021, 4, 30)
+            "plan_year_end_date": datetime(2021, 4, 30),
         }
         self.payroll_upload_settings.customer_partner_settings = self.customer_partner_settings
         self.payroll_upload_settings.payrun_info = self.payrunInfo
@@ -142,7 +142,9 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employee.marital_status = MaritalStatus.SINGLE
         return employee
 
-    def _get_terminated_employee_payroll_records(self, end_date: date = date(2020, 5, 1)) -> list[EmployeePayrollRecord]:
+    def _get_terminated_employee_payroll_records(
+        self, end_date: date = date(2020, 5, 1)
+    ) -> list[EmployeePayrollRecord]:
         employee_payroll_records = []
         for i in range(1, 5):
             employee_payroll_record = EmployeePayrollRecord()
@@ -204,7 +206,8 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
 
     @patch(
         "flux_sdk.pension.utils.pay_konnect_report_payroll_contributions.ReportPayrollContributionsPayKonnectUtil._pst_now",
-        return_value=datetime(2021, 1, 1))
+        return_value=datetime(2021, 1, 1),
+    )
     def test_format_contributions_for_pay_konnect_vendor(self, mock_pst_now) -> None:
         contributions_file: File = ReportPayrollContributionsPayKonnectUtil.format_contributions_for_pay_konnect_vendor(
             self.employee_payroll_records, self.payroll_upload_settings
