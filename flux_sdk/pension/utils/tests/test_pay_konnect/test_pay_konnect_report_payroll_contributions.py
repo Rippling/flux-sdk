@@ -1,5 +1,6 @@
 import os
 import unittest
+from unittest.mock import patch
 from datetime import date, datetime
 from decimal import Decimal
 
@@ -42,6 +43,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             "plan_name": "Hiss",
             "division": "Division",
             "pay_group": "pay group",
+            "plan_year_end_date": datetime(2021, 4, 30)
         }
         self.payroll_upload_settings.customer_partner_settings = self.customer_partner_settings
         self.payroll_upload_settings.payrun_info = self.payrunInfo
@@ -53,7 +55,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employeePayrollRecord = EmployeePayrollRecord()
 
         employee: Employee = Employee()
-        employee.first_name = "John"
+        employee.first_name = "Rand"
         employee.middle_name = "D"
         employee.ssn = "523546780"
         employee.last_name = "Doe"
@@ -64,7 +66,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employee.address.state = "CA"
         employee.address.zip_code = "94105"
         employee.address.country = "US"
-        employee.business_email = "abc@website.com"
+        employee.business_email = "abcd@website.com"
         employee.dob = datetime(1990, 1, 1)
         employee.start_date = datetime(2020, 1, 1)
         employee.original_hire_date = datetime(2020, 1, 1)
@@ -75,9 +77,8 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employee.is_contractor = False
         employee.employment_type = "Hourly"
         employee.department = "department"
-        employee.termination_reason = "terminated"
         employee.phone_number = "1234543212"
-        employee.personal_email = "test@email.com"
+        employee.personal_email = "test1@email.com"
         employee.is_salaried = True
         employee.status = EmployeeState.ACTIVE
         employee.is_international_employee = False
@@ -108,7 +109,7 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.employee_payroll_records.extend(terminated_employee_payroll_records)
         self.employee_payroll_records.extend(self._get_terminated_employee_payroll_records(date(2020, 3, 1)))
 
-    def get_terminated_employee(self, end_date: date = date(2020, 5, 1)) -> Employee:
+    def get_terminated_employee(self, end_date: date = date(2020, 5, 1), name: str = "NotAppear") -> Employee:
         employee: Employee = Employee()
         employee.first_name = "John"
         employee.middle_name = "D"
@@ -121,7 +122,13 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employee.address.city = "San Francisco"
         employee.address.state = "CA"
         employee.address.zip_code = "94105"
+        employee.address.country = "US"
         employee.business_email = "abc@website.com"
+        employee.employment_type = "Hourly"
+        employee.department = "department"
+        employee.termination_reason = "terminated"
+        employee.personal_email = "test2@email.com"
+        employee.is_salaried = True
         employee.dob = datetime(1990, 1, 1)
         employee.start_date = datetime(2020, 1, 1)
         employee.original_hire_date = datetime(2020, 1, 1)
@@ -135,20 +142,14 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         employee.marital_status = MaritalStatus.SINGLE
         return employee
 
-    def _get_terminated_employee_payroll_records(self, end_date: date = date(2020, 5, 1)):
+    def _get_terminated_employee_payroll_records(self, end_date: date = date(2020, 5, 1)) -> list[EmployeePayrollRecord]:
         employee_payroll_records = []
         for i in range(1, 5):
             employee_payroll_record = EmployeePayrollRecord()
-            employee_payroll_record.employee = self.get_terminated_employee()
-            employee_payroll_record.hours_worked = 2400
-            employee_payroll_record.annual_salary = 100000
+            employee_payroll_record.employee = self.get_terminated_employee(name="John")
+            employee_payroll_record.hours_worked = Decimal(2400)
+            employee_payroll_record.annual_salary = Decimal(100000)
             employee_payroll_records.append(employee_payroll_record)
-
-        employee_payroll_record = EmployeePayrollRecord()
-        employee_payroll_record.employee = self.get_terminated_employee(date(2019, 1, 1))
-        employee_payroll_record.hours_worked = 2400
-        employee_payroll_record.annual_salary = 100000
-        employee_payroll_records.append(employee_payroll_record)
         return employee_payroll_records
 
     def get_nested_attributes(self, obj, attribute):
@@ -201,12 +202,15 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
                     original_attr_value,
                 )
 
-    def test_format_contributions_for_pay_konnect_vendor(self) -> None:
+    @patch(
+        "flux_sdk.pension.utils.pay_konnect_report_payroll_contributions.ReportPayrollContributionsPayKonnectUtil._pst_now",
+        return_value=datetime(2021, 1, 1))
+    def test_format_contributions_for_pay_konnect_vendor(self, mock_pst_now) -> None:
         contributions_file: File = ReportPayrollContributionsPayKonnectUtil.format_contributions_for_pay_konnect_vendor(
             self.employee_payroll_records, self.payroll_upload_settings
         )
         file_content = contributions_file.content.decode()
-        self.maxDiff = 0
+        print(file_content)
         with open(os.path.join(os.path.dirname(__file__), "contributions.csv")) as contribution_file:
             contribution_file_contents = contribution_file.read()
             self.assertEqual(file_content.replace("\r\n", "\n"), contribution_file_contents)
