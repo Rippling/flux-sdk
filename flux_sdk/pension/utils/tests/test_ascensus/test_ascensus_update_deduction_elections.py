@@ -1,9 +1,7 @@
 import io
 import unittest
 from decimal import Decimal
-from typing import List
 
-from flux_sdk.pension.capabilities.update_deduction_elections.data_models import EmployeeDeductionSetting
 from flux_sdk.pension.utils.ascensus_update_deduction_elections import UpdateDeductionElectionsAscensusUtil
 
 
