@@ -252,15 +252,22 @@ class ReportPayrollContributionsPayKonnectUtil:
 
     @staticmethod
     def _get_filtered_employee_payroll_records(
-            payroll_records: list[EmployeePayrollRecord], payroll_upload_settings: PayrollUploadSettings
+        payroll_records: list[EmployeePayrollRecord], payroll_upload_settings: PayrollUploadSettings
     ) -> list[EmployeePayrollRecord]:
         customer_partner_settings = payroll_upload_settings.customer_partner_settings
-        plan_year_end_date = customer_partner_settings.get("plan_year_end_date",
-                                                           ReportPayrollContributionsPayKonnectUtil._pst_now())
-        plan_year_end_date = datetime.date(ReportPayrollContributionsPayKonnectUtil._pst_now().year,
-                                           plan_year_end_date.month, plan_year_end_date.day)
+        plan_year_end_date = customer_partner_settings.get(
+            "plan_year_end_date", ReportPayrollContributionsPayKonnectUtil._pst_now()
+        )
+        plan_year_end_date = datetime.date(
+            ReportPayrollContributionsPayKonnectUtil._pst_now().year, plan_year_end_date.month, plan_year_end_date.day
+        )
         plan_year = ReportPayrollContributionsPayKonnectUtil._pst_now().year
-        if payroll_upload_settings and payroll_upload_settings.payrun_info and payroll_upload_settings.payrun_info.check_date and payroll_upload_settings.payrun_info.check_date <= plan_year_end_date:
+        if (
+            payroll_upload_settings
+            and payroll_upload_settings.payrun_info
+            and payroll_upload_settings.payrun_info.check_date
+            and payroll_upload_settings.payrun_info.check_date <= plan_year_end_date
+        ):
             plan_year = ReportPayrollContributionsPayKonnectUtil._pst_now().year - 1
 
         filter_termination_date = datetime.date(plan_year, plan_year_end_date.month, plan_year_end_date.day)
@@ -272,8 +279,11 @@ class ReportPayrollContributionsPayKonnectUtil:
         for record in payroll_records:
             employee: Employee = record.employee
             # filter all the terminated employees after the filter_termination_date
-            if employee.status == EmployeeState.TERMINATED and hasattr(employee,
-                                                                       "termination_date") and employee.termination_date <= filter_termination_date:
+            if (
+                employee.status == EmployeeState.TERMINATED
+                and hasattr(employee, "termination_date")
+                and employee.termination_date <= filter_termination_date
+            ):
                 continue
             filtered_records.append(record)
         return filtered_records
@@ -292,7 +302,9 @@ class ReportPayrollContributionsPayKonnectUtil:
         :return: File
         """
 
-        employee_payroll_records = ReportPayrollContributionsPayKonnectUtil._get_filtered_employee_payroll_records(employee_payroll_records, payroll_upload_settings)
+        employee_payroll_records = ReportPayrollContributionsPayKonnectUtil._get_filtered_employee_payroll_records(
+            employee_payroll_records, payroll_upload_settings
+        )
 
         customer_partner_settings = payroll_upload_settings.customer_partner_settings
         plan_id = str(customer_partner_settings.get("plan_id"))
@@ -305,7 +317,11 @@ class ReportPayrollContributionsPayKonnectUtil:
             writer.writeheader()
 
             for employee_payroll_record in employee_payroll_records:
-                payroll_contributions: list[PayrollRunContribution] = employee_payroll_record.payroll_contributions if hasattr(employee_payroll_record, 'payroll_contributions') else []
+                payroll_contributions: list[PayrollRunContribution] = (
+                    employee_payroll_record.payroll_contributions
+                    if hasattr(employee_payroll_record, "payroll_contributions")
+                    else []
+                )
                 payroll_contribution_map = {pc.deduction_type.name: pc for pc in payroll_contributions}
                 employee: Employee = employee_payroll_record.employee
                 ssn: str = ReportPayrollContributionsPayKonnectUtil._get_formatted_ssn(employee.ssn)
@@ -508,16 +524,16 @@ class ReportPayrollContributionsPayKonnectUtil:
                         "CONT_Contribution_$_401K": "",
                         "CONT_ROTH_401K": employee_roth,
                         "CONT_YTD_ROTH_401K": ytd_employee_roth,
-                        "CONT_Contribution_%_ROTH_401K":"",
-                        "CONT_Contribution_$_ROTH_401K":"",
+                        "CONT_Contribution_%_ROTH_401K": "",
+                        "CONT_Contribution_$_ROTH_401K": "",
                         "CONT_401K_CATCHUP": employee_catchup,
                         "CONT_YTD_401K_CATCHUP": ytd_employee_catchup,
-                        "CONT_Contribution_%_401K_CATCHUP":"",
-                        "CONT_Contribution_$_401K_CATCHUP":"",
+                        "CONT_Contribution_%_401K_CATCHUP": "",
+                        "CONT_Contribution_$_401K_CATCHUP": "",
                         "CONT_ROTH_401K_CATCHUP": employee_roth_catchup,
                         "CONT_YTD_ROTH_401K_CATCHUP": ytd_employee_roth_catchup,
-                        "CONT_Contribution_%_ROTH_401K_CATCHUP":"",
-                        "CONT_Contribution_$_ROTH_401K_CATCHUP":"",
+                        "CONT_Contribution_%_ROTH_401K_CATCHUP": "",
+                        "CONT_Contribution_$_ROTH_401K_CATCHUP": "",
                         "CONT_Company_Match": company_match_contribution,
                         "CONT_YTD_Company_Match": ytd_company_match_contribution,
                         "CONT_Contribution_%_Company_Match": "",

@@ -41,11 +41,9 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             "plan_id": "HISS001",
             "plan_name": "Hiss",
             "division": "Division",
-            "pay_group": "pay group"
+            "pay_group": "pay group",
         }
-        self.payroll_upload_settings.customer_partner_settings = (
-            self.customer_partner_settings
-        )
+        self.payroll_upload_settings.customer_partner_settings = self.customer_partner_settings
         self.payroll_upload_settings.payrun_info = self.payrunInfo
         self.payroll_upload_settings.company_legal_name = "RIPPLING TEST"
         self.payroll_upload_settings.company_name = "RIPPLING"
@@ -104,9 +102,11 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         self.seed_loa(employeePayrollRecord)
 
         self.employee_payroll_records = [employeePayrollRecord]
-        terminated_employee_payroll_records: list[EmployeePayrollRecord] = self._get_terminated_employee_payroll_records()
+        terminated_employee_payroll_records: list[
+            EmployeePayrollRecord
+        ] = self._get_terminated_employee_payroll_records()
         self.employee_payroll_records.extend(terminated_employee_payroll_records)
-        self.employee_payroll_records.append(self._get_terminated_employee_payroll_records(date(2020, 3, 1)))
+        self.employee_payroll_records.extend(self._get_terminated_employee_payroll_records(date(2020, 3, 1)))
 
     def get_terminated_employee(self, end_date: date = date(2020, 5, 1)) -> Employee:
         employee: Employee = Employee()
@@ -186,23 +186,15 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         ]
         incomplete_employee_payroll_records = self.employee_payroll_records
         for required_field in required_employee_payroll_records_information:
-            for index, incomplete_employee_payroll_record in enumerate(
-                incomplete_employee_payroll_records
-            ):
-                self.set_nested_attribute(
-                    incomplete_employee_payroll_record, required_field, None
-                )
+            for index, incomplete_employee_payroll_record in enumerate(incomplete_employee_payroll_records):
+                self.set_nested_attribute(incomplete_employee_payroll_record, required_field, None)
             with self.assertRaises(Exception):
                 ReportPayrollContributionsPayKonnectUtil.format_contributions_for_pay_konnect_vendor(
                     incomplete_employee_payroll_records, self.payroll_upload_settings
                 )
 
-            for index, incomplete_employee_payroll_record in enumerate(
-                incomplete_employee_payroll_records
-            ):
-                original_attr_value = self.get_nested_attributes(
-                    self.employee_payroll_records[index], required_field
-                )
+            for index, incomplete_employee_payroll_record in enumerate(incomplete_employee_payroll_records):
+                original_attr_value = self.get_nested_attributes(self.employee_payroll_records[index], required_field)
                 self.set_nested_attribute(
                     incomplete_employee_payroll_record,
                     required_field,
@@ -215,22 +207,16 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
         )
         file_content = contributions_file.content.decode()
         self.maxDiff = 0
-        with open(
-            os.path.join(os.path.dirname(__file__), "contributions.csv")
-        ) as contribution_file:
+        with open(os.path.join(os.path.dirname(__file__), "contributions.csv")) as contribution_file:
             contribution_file_contents = contribution_file.read()
-            self.assertEqual(
-                file_content.replace("\r\n", "\n"), contribution_file_contents
-            )
+            self.assertEqual(file_content.replace("\r\n", "\n"), contribution_file_contents)
 
     def test_get_file_name(self) -> None:
-        file_name = ReportPayrollContributionsPayKonnectUtil.get_file_name(
-            self.payroll_upload_settings
-        )
+        file_name = ReportPayrollContributionsPayKonnectUtil.get_file_name(self.payroll_upload_settings)
         transmission_date = ReportPayrollContributionsPayKonnectUtil._get_today_date()
-        self.assertEqual(file_name.split('_')[0], "HISS001")
-        self.assertEqual(file_name.split('_')[1], transmission_date)
-        report_time_without_extension = file_name.split('_')[2].split('.')[0]
+        self.assertEqual(file_name.split("_")[0], "HISS001")
+        self.assertEqual(file_name.split("_")[1], transmission_date)
+        report_time_without_extension = file_name.split("_")[2].split(".")[0]
         self.assertTrue(report_time_without_extension.isdigit())
 
     def seed_loa(self, employeePayrollRecord) -> None:
