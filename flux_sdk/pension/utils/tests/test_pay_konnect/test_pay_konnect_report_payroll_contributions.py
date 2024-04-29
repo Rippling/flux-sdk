@@ -1,8 +1,8 @@
 import os
-import unittest
-from unittest.mock import patch
 from datetime import date, datetime
 from decimal import Decimal
+import unittest
+from unittest.mock import patch
 
 from flux_sdk.flux_core.data_models import (
     Address,
@@ -210,7 +210,6 @@ class TestReportPayrollContributionsPayKonnectUtil(unittest.TestCase):
             self.employee_payroll_records, self.payroll_upload_settings
         )
         file_content = contributions_file.content.decode()
-        print(file_content)
         with open(os.path.join(os.path.dirname(__file__), "contributions.csv")) as contribution_file:
             contribution_file_contents = contribution_file.read()
             self.assertEqual(file_content.replace("\r\n", "\n"), contribution_file_contents)

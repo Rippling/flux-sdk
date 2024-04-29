@@ -281,7 +281,7 @@ class ReportPayrollContributionsPayKonnectUtil:
             # filter all the terminated employees after the filter_termination_date
             if (
                 employee.status == EmployeeState.TERMINATED
-                and hasattr(employee, "termination_date")
+                and employee.termination_date
                 and employee.termination_date <= filter_termination_date
             ):
                 continue
