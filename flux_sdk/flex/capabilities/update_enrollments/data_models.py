@@ -74,3 +74,6 @@ class EmployeeEnrollment:
     has_dependent: bool
     hsa_family_type: Optional[HSAFamilyType]
     fsa_plan_type: Optional[FSAPlanType]
+    first_enrollment_date: Optional[date]
+    department: Optional[str]
+    hsa_annual_limit_type: Optional[str]
