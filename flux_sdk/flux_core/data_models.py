@@ -122,6 +122,9 @@ class ContributionType(Enum):
     LOAN = 9
     _401K_CATCHUP = 10
     ROTH_401K_CATCHUP = 11
+    ROTH_403B = 12
+    _457B = 13
+    ROTH_457B = 14
 
 
 class DeductionType(Enum):
@@ -138,6 +141,9 @@ class DeductionType(Enum):
     _403B = 4
     _401K_CATCHUP = 5
     ROTH_401K_CATCHUP = 6
+    ROTH_403B = 7
+    _457B = 8
+    ROTH_457B = 9
 
 
 class PayrollRunType(Enum):

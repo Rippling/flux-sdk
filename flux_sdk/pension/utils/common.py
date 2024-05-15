@@ -19,5 +19,8 @@ def get_deduction_type(given_ded_type: str) -> Optional[DeductionType]:
         "403B": DeductionType._403B,
         "401A": DeductionType.AFTER_TAX_401K,
         "401O": DeductionType._401K,
+        "457B": DeductionType._457B,
+        "ROTH_403B": DeductionType.ROTH_403B,
+        "ROTH_457B": DeductionType.ROTH_457B,
     }
     return ded_match_map.get(given_ded_type, None)
