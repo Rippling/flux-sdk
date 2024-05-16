@@ -255,9 +255,9 @@ class ReportPayrollContributionsPayKonnectUtil:
         payroll_records: list[EmployeePayrollRecord], payroll_upload_settings: PayrollUploadSettings
     ) -> list[EmployeePayrollRecord]:
         customer_partner_settings = payroll_upload_settings.customer_partner_settings
-        plan_year_end_date = customer_partner_settings.get(
-            "plan_year_end_date", ReportPayrollContributionsPayKonnectUtil._pst_now()
-        )
+        plan_year_end_date = customer_partner_settings.get("plan_year_end_date", None)
+        if not plan_year_end_date:
+            plan_year_end_date = ReportPayrollContributionsPayKonnectUtil._pst_now()
         plan_year_end_date = datetime.date(
             ReportPayrollContributionsPayKonnectUtil._pst_now().year, plan_year_end_date.month, plan_year_end_date.day
         )
@@ -406,9 +406,7 @@ class ReportPayrollContributionsPayKonnectUtil:
                     phone_number = employee.phone_number if employee.phone_number else ""
                     rehire_date = employee.start_date.strftime(STANDARD_DATE_FORMAT)
                     hire_date = employee.original_hire_date.strftime(STANDARD_DATE_FORMAT)
-                    hours_worked = (
-                        employee_payroll_record.hours_worked if employee_payroll_record.hours_worked else Decimal(0)
-                    )
+                    hours_worked = getattr(employee_payroll_record, "hours_worked", Decimal(0))
                     gross_pay = getattr(employee_payroll_record, "gross_pay", 0)
                     eoy_info = getattr(employee_payroll_record, "eoy_info", None)
                     employee_year_to_date_hours_worked = Decimal(0)
