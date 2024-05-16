@@ -125,6 +125,10 @@ class ContributionType(Enum):
     ROTH_403B = 12
     _457B = 13
     ROTH_457B = 14
+    COMPANY_MATCH_403B = 15
+    COMPANY_MATCH_ROTH_403B = 16
+    COMPANY_MATCH_457B = 17
+    COMPANY_MATCH_ROTH_457B = 18
 
 
 class DeductionType(Enum):
