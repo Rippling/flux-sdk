@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.flex.capabilities.update_with_joined_enrollments_contributions.data_models import (
+from flux_sdk.flex.capabilities.update_joined_enrollments_contributions.data_models import (
     EmployeeJoinedEnrollmentContribution,
 )
 from flux_sdk.flux_core.data_models import AppContext, CompanyInfo, File
