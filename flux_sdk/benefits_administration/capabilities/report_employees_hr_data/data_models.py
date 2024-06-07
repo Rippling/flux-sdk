@@ -75,6 +75,7 @@ class EmployeeHrData:
     '''
     id: str
     employee_number: int
+    group_number: str
     company_tax_id: str
     personal: Employee
     employment: Employment
