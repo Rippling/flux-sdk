@@ -1,7 +1,8 @@
+import re
 from typing import Any, Type, Union, get_args, get_origin
 
 
-def check_field(obj: Any, attr: str, desired_type: Type, required: bool = False):
+def check_field(obj: Any, attr: str, desired_type: Type, required: bool = False, block_list_regex: str = None):
     value = getattr(obj, attr)
 
     if required and not value:
@@ -9,6 +10,9 @@ def check_field(obj: Any, attr: str, desired_type: Type, required: bool = False)
 
     if value:
         _check_type(value, attr, desired_type)
+
+    if block_list_regex and value and re.search(block_list_regex, value, re.IGNORECASE):
+        raise ValueError(f"{attr} is not allowed")
 
 
 def _check_type(value: Any, attr: str, desired_type: Type):
