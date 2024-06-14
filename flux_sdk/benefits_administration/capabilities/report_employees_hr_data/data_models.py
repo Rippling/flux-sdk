@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
+from typing import Any
 
 from flux_sdk.flux_core.data_models import (
     Employee,
@@ -21,6 +22,8 @@ class ReportEmployeesHrDataConfig:
     auto_enroll: bool
     """ The unique identifier of the company in Rippling"""
     company_id: str
+    """ Any app settings that are configured per fein """
+    fein_settings: dict[str, dict[str, Any]]
 
 
 class MonetaryValue:
