@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Any, Union
+from typing import Any
 
 from flux_sdk.flux_core.data_models import (
     Employee,
@@ -24,6 +24,8 @@ class ReportEmployeesHrDataConfig:
     company_id: str
     """ Any app settings that are configured per fein """
     fein_settings: dict[str, dict[str, Any]]
+    """ Any settings unique to the partner company """
+    customer_partner_settings: dict[str, Any]
 
 
 class MonetaryValue:
@@ -102,11 +104,6 @@ class EmployeeStatus:
     """ The date when the employee entered this status """
     effective_date: datetime
 
-
-class EmployeeAppSettings:
-    """ A code mapped to the user specific to the bswift installation """
-    benefits_class_code: Union[None, str]
-
 class EmployeeHrData:
     '''
     This contains the core data about an employee
@@ -130,6 +127,3 @@ class EmployeeHrData:
     status: EmployeeStatus
     """ Whether or not the employee is considered eligible for benefits """
     benefits_eligibility: BenefitsEligibilityStatus
-    """ An object of optional fields only used by a subset of apps """
-    app_settings: EmployeeAppSettings
-    
