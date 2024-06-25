@@ -24,6 +24,8 @@ class ReportEmployeesHrDataConfig:
     company_id: str
     """ Any app settings that are configured per fein """
     fein_settings: dict[str, dict[str, Any]]
+    """ Any settings unique to the partner company """
+    customer_partner_settings: dict[str, Any]
 
 
 class MonetaryValue:
@@ -102,7 +104,6 @@ class EmployeeStatus:
     """ The date when the employee entered this status """
     effective_date: datetime
 
-
 class EmployeeHrData:
     '''
     This contains the core data about an employee
@@ -126,4 +127,3 @@ class EmployeeHrData:
     status: EmployeeStatus
     """ Whether or not the employee is considered eligible for benefits """
     benefits_eligibility: BenefitsEligibilityStatus
-    
