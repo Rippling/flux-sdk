@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rippling-flux-sdk"
-version = "0.33"
+version = "0.34"
 description = "Defines the interfaces and data-models used by Rippling Flux Apps."
 authors = ["Rippling Apps <apps@rippling.com>"]
 readme = "README.md"

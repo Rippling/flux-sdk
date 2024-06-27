@@ -70,6 +70,7 @@ class EmployeeEnrollment:
     election_amount_indicator: Optional[str]
     hdhp_coverage_level: Optional[str]
     plan_year_start_date: str
+    plan_year_end_date: str
     division: str
     has_dependent: bool
     hsa_family_type: Optional[HSAFamilyType]
