@@ -69,8 +69,10 @@ class EmployeeEnrollment:
     employer_per_pay_period_contribution_amount: Decimal
     election_amount_indicator: Optional[str]
     hdhp_coverage_level: Optional[str]
-    plan_year_start_date: str
-    plan_year_end_date: str
+    plan_year_start_date: str  # DEPRECATE: the type is wrong, replaced by plan_year_valid_from_date
+    plan_year_end_date: str  # DEPRECATE: the type is wrong, replaced by plan_year_valid_to_date
+    plan_year_valid_from_date: date
+    plan_year_valid_to_date: date
     division: str
     has_dependent: bool
     hsa_family_type: Optional[HSAFamilyType]
