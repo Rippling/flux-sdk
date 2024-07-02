@@ -11,10 +11,12 @@ class DeductionDetails:
     end_date: datetime | None
     employee_contribution: Decimal | None
     company_contribution: Decimal | None
+    imputed_income: Decimal | None
 
 class DeductionCodeField(Enum):
     EMPLOYEE_CONTRIBUTION = "EMPLOYEE_CONTRIBUTION"
     COMPANY_CONTRIBUTION = "COMPANY_CONTRIBUTION"
+    IMPUTED_INCOME = "IMPUTED_INCOME"
 
 class ExternalDeductionCodeToRipplingCode:
     external_code: str
