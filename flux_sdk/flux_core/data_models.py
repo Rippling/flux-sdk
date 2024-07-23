@@ -64,6 +64,14 @@ class MaritalStatus(Enum):
     PERMANENTLY_SEPARATED = 4
     REGISTERED_PARTNERSHIP = 5
 
+class PhoneNumber:
+    """
+    This contains the details of an international phone number.
+    """
+    country_code: str
+    national_number: str
+    extension: Optional[str]
+
 
 class Employee:
     """
@@ -90,6 +98,7 @@ class Employee:
     status: EmployeeState
     dob: datetime
     phone_number: str
+    phone_number_v2: PhoneNumber
     is_temporary: bool
     is_hourly: bool
     is_salaried: bool
