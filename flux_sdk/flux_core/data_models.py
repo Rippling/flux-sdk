@@ -90,6 +90,7 @@ class Employee:
     status: EmployeeState
     dob: datetime
     phone_number: str
+    phone_number_v2: Optional[str]
     is_temporary: bool
     is_hourly: bool
     is_salaried: bool
