@@ -34,7 +34,7 @@ class SQLQuery:
 
     def __post_init__(self):
         """Perform validation."""
-        check_field(self, "text", str, required=True)
+        check_field(self, "text", str, required=True, block_list_regex=r'\b(?:INSERT\s+INTO|UPDATE|DELETE\s+FROM|DROP|ALTER|CREATE)\b')
         check_field(self, "args", dict[str, SQLQueryArg])
 
 
