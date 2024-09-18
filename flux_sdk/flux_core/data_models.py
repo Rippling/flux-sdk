@@ -1,6 +1,38 @@
+from abc import ABC
 from datetime import date, datetime
 from enum import Enum
+import requests
 from typing import Optional
+
+
+class BaseHttpResponse:
+    """The base class for all HTTP response data classes."""
+
+
+    next_page: Optional[str] = None
+    """This indicates the cursor to fetch the next page of results. If no more results to fetch, this field will be None."""
+
+    is_app_disconnected: bool = False
+    """This indicates if the app is disconnected from the third-party system."""
+
+
+class BaseHttpRequest:
+    """The base class for all HTTP request data classes."""
+
+    next_page: Optional[str] = None
+    """
+    The next page token to fetch the next page of results.
+    The initial request will always have this field as None;
+    when the previous response has the next_page set, the same hook will be invoked again with the next_page set in the request.
+    """
+
+
+class BaseCapability(ABC):
+    """The base class for all capabilities."""
+
+    def __init__(self, session: requests.Session | None = None):
+        self.session = session
+        """The session to make HTTP requests to the third party."""
 
 
 class LeaveType(Enum):
