@@ -5,26 +5,16 @@ import requests
 from typing import Optional
 
 
-class BaseHttpResponse:
-    """The base class for all HTTP response data classes."""
-
-
-    next_page: Optional[str] = None
-    """This indicates the cursor to fetch the next page of results. If no more results to fetch, this field will be None."""
+class BaseExternalResponse:
+    """The base class for all the response from the third party system."""
 
     is_app_disconnected: bool = False
     """This indicates if the app is disconnected from the third-party system."""
 
 
-class BaseHttpRequest:
-    """The base class for all HTTP request data classes."""
-
-    next_page: Optional[str] = None
-    """
-    The next page token to fetch the next page of results.
-    The initial request will always have this field as None;
-    when the previous response has the next_page set, the same hook will be invoked again with the next_page set in the request.
-    """
+class BaseExternalRequest:
+    """The base class for all external request made to the third party system."""
+    pass
 
 
 class BaseCapability(ABC):
