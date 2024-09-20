@@ -10,7 +10,7 @@ from flux_sdk.user_management.data_models.data_models import (
 
 class UserLifecycleManagement(BaseCapability):
     """
-    This class represents the "user_lifecycle_management"pyproject.toml capability.
+    This class represents the "user_lifecycle_management" capability.
     This capability is used to manage the lifecycle of users in the third-party system with supports including:
     - Getting user's organizations from the third-party system
     - Getting users from the third-party system

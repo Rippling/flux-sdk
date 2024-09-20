@@ -1,8 +1,9 @@
 from abc import ABC
 from datetime import date, datetime
 from enum import Enum
-import requests
 from typing import Optional
+
+import requests
 
 
 class BaseCapability(ABC):
