@@ -5,18 +5,6 @@ import requests
 from typing import Optional
 
 
-class BaseExternalResponse:
-    """The base class for all the response from the third party system."""
-
-    is_app_disconnected: bool = False
-    """This indicates if the app is disconnected from the third-party system."""
-
-
-class BaseExternalRequest:
-    """The base class for all external request made to the third party system."""
-    pass
-
-
 class BaseCapability(ABC):
     """The base class for all capabilities."""
 
@@ -293,4 +281,11 @@ class TerminationType(Enum):
     OFFER_DECLINE = 5
     RESCIND = 6
     RENEGE = 7
+
+
+class AppDisconnectedError(Exception):
+    """
+    This exception is raised when the app is disconnected from the third-party system.
+    """
+    pass
     

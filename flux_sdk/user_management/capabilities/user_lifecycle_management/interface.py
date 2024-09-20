@@ -1,5 +1,5 @@
 from flux_sdk.flux_core.data_models import BaseCapability
-from flux_sdk.user_management.capabilities.user_lifecycle_management.data_models import (
+from flux_sdk.user_management.data_models.data_models import (
     GetOrganizationsRequest,
     GetOrganizationsResponse,
     GetUsersRequest,

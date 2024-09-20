@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import Optional
-from flux_sdk.flux_core.data_models import BaseExternalRequest, BaseExternalResponse
 
 
 @dataclass(kw_only=True)
@@ -38,7 +37,7 @@ class User:
 
 
 @dataclass(kw_only=True)
-class GetUsersRequest(BaseExternalRequest):
+class GetUsersRequest:
     """This represents a request to get users from the third party system."""
 
     organizations: Optional[list[Organization]] = None
@@ -46,7 +45,7 @@ class GetUsersRequest(BaseExternalRequest):
 
 
 @dataclass(kw_only=True)
-class GetUsersResponse(BaseExternalResponse):
+class GetUsersResponse:
     """This represents a response containing the users from the third party system."""
 
     users: list[User]
@@ -54,14 +53,14 @@ class GetUsersResponse(BaseExternalResponse):
 
 
 @dataclass(kw_only=True)
-class GetOrganizationsRequest(BaseExternalRequest):
+class GetOrganizationsRequest:
     """This represents a request to get organizations from the third party system."""
 
     pass
 
 
 @dataclass(kw_only=True)
-class GetOrganizationsResponse(BaseHttpResponse):
+class GetOrganizationsResponse:
     """This represents a response containing the organizations from the third party system."""
 
     organizations: list[Organization]
