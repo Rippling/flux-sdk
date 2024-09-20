@@ -5,8 +5,10 @@ from typing import Optional
 @dataclass(kw_only=True)
 class Organization:
     """
-    This represents an organization in the third party system. An organization is used to group users in the third party system.
-    Different third party systems may have different names of organizations: Github calls it "Organization", while Google Workspace calls it "Domain".
+    This represents an organization in the third party system.
+    An organization is used to group users in the third party system.
+    Different third party systems may have different names of organizations:
+    Github calls it "Organization", while Google Workspace calls it "Domain".
     """
 
     id: str
@@ -21,7 +23,8 @@ class User:
     """This represents a user in the third party system."""
 
     id: Optional[str] = None
-    """The unique identifier of the user in the third party system. This field is required when getting users from the third party system."""
+    """The unique identifier of the user in the third party system.
+     This field is required when getting users from the third party system."""
 
     first_name: Optional[str] = None
     """The first name of the user."""
@@ -41,7 +44,8 @@ class GetUsersRequest:
     """This represents a request to get users from the third party system."""
 
     organizations: Optional[list[Organization]] = None
-    """The organizations to get users from. If this field is not provided, the users from all organizations should be returned."""
+    """The organizations to get users from. If this field is not provided, 
+    the users from all organizations should be returned."""
 
 
 @dataclass(kw_only=True)
