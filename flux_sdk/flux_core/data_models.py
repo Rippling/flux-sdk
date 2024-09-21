@@ -271,4 +271,11 @@ class TerminationType(Enum):
     OFFER_DECLINE = 5
     RESCIND = 6
     RENEGE = 7
+
+
+class AppDisconnectedError(Exception):
+    """
+    This exception is raised when the app is disconnected from the third-party system.
+    """
+    pass
     
