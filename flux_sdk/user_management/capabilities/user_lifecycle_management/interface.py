@@ -1,5 +1,4 @@
-from abc import abstractmethod
-from flux_sdk.flux_core.data_models import BaseCapability
+from abc import ABC, abstractmethod
 from flux_sdk.user_management.data_models.data_models import (
     GetOrganizationsRequest,
     GetOrganizationsResponse,
@@ -8,7 +7,7 @@ from flux_sdk.user_management.data_models.data_models import (
 )
 
 
-class UserLifecycleManagement(BaseCapability):
+class UserLifecycleManagement(ABC):
     """
     This class represents the "user_lifecycle_management" capability.
     This capability is used to manage the lifecycle of users in the third-party system with supports including:

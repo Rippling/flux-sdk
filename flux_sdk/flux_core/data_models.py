@@ -6,14 +6,6 @@ from typing import Optional
 import requests
 
 
-class BaseCapability(ABC):
-    """The base class for all capabilities."""
-
-    def __init__(self, session: requests.Session | None = None):
-        self.session = session
-        """The session to make HTTP requests to the third party."""
-
-
 class LeaveType(Enum):
     VACATION = 1
     WFH = 2
