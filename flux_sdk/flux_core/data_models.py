@@ -1,9 +1,6 @@
-from abc import ABC
 from datetime import date, datetime
 from enum import Enum
 from typing import Optional
-
-import requests
 
 
 class LeaveType(Enum):
