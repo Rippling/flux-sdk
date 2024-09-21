@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 from flux_sdk.user_management.data_models.data_models import (
     GetOrganizationsRequest,
     GetOrganizationsResponse,
