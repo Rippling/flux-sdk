@@ -29,7 +29,7 @@ class JobShift:
 class Break:
     """
     This class represents the equivalent of Rippling TimeEntryBreak. It may be called different
-    names in different apps, but should break periods. Note that these may overlap
+    names in different apps, but should reflect break periods. Note that these may overlap
     in time with JobShifts but must not overlap with other Breaks.
     """
     id: Optional[str]
