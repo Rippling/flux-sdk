@@ -17,7 +17,7 @@ class RipplingAttribute(Enum):
     JobSiteLocation = "JOB_SITE_LOCATION"
 
 @dataclass(kw_only=True)
-class Attributes(kw_only=True):
+class Attribute:
     """
     This represents an attribute from the third party system and how it is mapped to Rippling.
     """
@@ -50,13 +50,23 @@ class GetJobAttributesResponse:
     This represents a response containing the attributes from the third party system.
     """
 
-    attributes: list[Attributes]
+    attributes: list[Attribute]
     """The attributes from the third party system and how they map to Rippling."""
 
     def __post_init__(self):
         """Perform validation."""
-        check_field(self, "attributes", list[Attributes], required=True)
+        check_field(self, "attributes", list[Attribute], required=True)
 
         if len(self.attributes) == 0:
             raise ValueError("attributes must have at least 1 value")
+
+        ids = set()
+        names = set()
+        for attribute in self.attributes:
+            if attribute.id in ids:
+                raise ValueError(f"Duplicate id found: {attribute.id}")
+            if attribute.name in names:
+                raise ValueError(f"Duplicate name found: {attribute.name}")
+            ids.add(attribute.id)
+            names.add(attribute.name)
 
