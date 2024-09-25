@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from typing import Optional
 from enum import Enum
+from typing import Optional
 
 from flux_sdk.flux_core.validation import check_field
 

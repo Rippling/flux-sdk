@@ -10,7 +10,8 @@ class JobManagement(ABC):
         """
         A function that gets job attributes from the third-party system.
 
-        Use this hook to fetch job attributes from the third-party system so that they can be matched with attributes in Rippling.
+        Use this hook to fetch job attributes from the third-party system
+        so that they can be matched with attributes in Rippling.
         :return: The response containing the job attributes from the third-party system.
         """
 
