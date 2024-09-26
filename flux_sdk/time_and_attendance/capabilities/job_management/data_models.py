@@ -32,7 +32,7 @@ class Attribute:
     """The optional description associated with the attribute."""
 
     compatible_rippling_attribute: list[RipplingAttribute]
-    """The list of Rippling attributes that match the attribute."""
+    """The list of Rippling attributes that are compatible with the attribute, sorted from most compatible to least."""
 
     def __post_init__(self):
         """Perform validation."""
