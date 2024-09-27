@@ -8,67 +8,56 @@ from flux_sdk.flux_core.validation import check_field
 @dataclass(kw_only=True)
 class TimeEntriesQuery:
     """
-    This class unifies supported queries for time entries data. Not all apps may support
-    all of these filters, it is us to app developer to determine how to handle the case
-    where unsupported filters are passed in. All date time fields will contain timezone
-    information.
+    This class unifies supported queries for time entries data. Not all app APIs may support
+    all of these filters, it is up to the app developer to handle those cases and provide the
+    correct time entry list that matches the query.
     """
-    """
-    time_entry_ids: This field denotes list of 3rd party time entry ids
-    """
-    time_entry_ids: Optional[list[str]]
-    """
-    organization_id: This field denotes the 3rd party organization id
-    """
-    organization_id: Optional[str]
-    """
-    start_time: This field denotes the time entry start datetime (after) to filter for
-    """
+
     start_time: datetime
-    """
-    modified_time: This field denotes the time entry modified datetime (after) to filter for
-    """
-    modified_time: Optional[datetime]
-    """
-    end_time: This field denotes the time entry end datetime (before) to filter for
-    """
+    """start_time: This field denotes the time entry start datetime with timezone (after) to filter for."""
+
+    include_modified: bool
+    """include_modified: This field denotes the whether to include time entries that are modified between
+    the start and end times provided. For apps that do not support filtering by modified time, this will
+    always be false."""
+
     end_time: Optional[datetime]
+    """end_time: This field denotes the time entry end datetime with timezone (before) to filter for."""
 
 @dataclass(kw_only=True)
 class JobShift:
     """
     This class represents the equivalent of Rippling Job Shift. It may be called different
     names in different apps, but should reflect clocked in periods. Note that these may overlap
-    in time with breaks but must not overlap with other JobShifts. All datetime fields must
-    include time zone information.
+    in time with breaks but must not overlap with other JobShifts.
     """
-    """
-    id: This field denotes the 3rd party job shift id
-    """
+
     id: str
-    """
-    job_title: This field denotes the 3rd party job title or job id
-    """
-    job: dict[str, Any]
-    """
-    start_time: This field denotes the job shift start datetime
-    """
+    """id: This field denotes the 3rd party job shift id."""
+
+    job_attributes: dict[str, str]
+    """job_attributes: This dict denotes the 3rd party job identifying attribute key-values that will be 
+    provided with the JobShift. Non string attribute values should be serialized to strings."""
+
     start_time: datetime
-    """
-    end_time: This field denotes the job shift end datetime
-    """
+    """start_time: This field denotes the job shift start datetime with timezone."""
+
     end_time: Optional[datetime]
-    """
-    description: This field denotes the 3rd party job shift description
-    """
+    """end_time: This field denotes the job shift end datetime with timezone."""
+
     description: Optional[str]
+    """description: This field denotes the 3rd party job shift description."""
 
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "id", str, required=True)
         check_field(self, "job", dict[str, Any], required=True)
         check_field(self, "start_time", datetime, required=True)
+        if self.start_time.tzinfo is None:
+            raise ValueError("No time zone provided for start_time")
         check_field(self, "end_time", datetime)
+        if self.end_time.tzinfo is None:
+            raise ValueError("No time zone provided for end_time")
         check_field(self, "description", str)
 
 @dataclass(kw_only=True)
@@ -76,31 +65,30 @@ class Break:
     """
     This class represents the equivalent of Rippling TimeEntryBreak. It may be called different
     names in different apps, but should reflect break periods. Note that these may overlap
-    in time with JobShifts but must not overlap with other Breaks. All datetime fields must
-    include time zone information.
+    in time with JobShifts but must not overlap with other Breaks.
     """
-    """
-    id: This field denotes the 3rd party break id
-    """
+
     id: str
-    """
-    start_time: This field denotes the break start datetime
-    """
+    """id: This field denotes the 3rd party break id."""
+
     start_time: datetime
-    """
-    end_time: This field denotes the break end datetime
-    """
+    """start_time: This field denotes the break start datetime with timezone."""
+
     end_time: Optional[datetime]
-    """
-    description: This field denotes the 3rd party break description
-    """
+    """end_time: This field denotes the break end datetime with timezone."""
+
     description: Optional[str]
+    """description: This field denotes the 3rd party break description."""
 
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "id", str, required=True)
         check_field(self, "start_time", datetime, required=True)
+        if self.start_time.tzinfo is None:
+            raise ValueError("No time zone provided for start_time")
         check_field(self, "end_time", datetime)
+        if self.end_time.tzinfo is None:
+            raise ValueError("No time zone provided for end_time")
         check_field(self, "description", str)
 
 @dataclass(kw_only=True)
@@ -108,28 +96,26 @@ class TimeEntry:
     """
     This class represents the equivalent of Rippling time entry object. It may be called different
     names in different apps, but should reflect the overarching record that tracks time segments of
-    work and breaks as child lists. All datetime fields must include time zone information.
+    work and breaks as child lists.
     """
-    """
-    id: This field denotes the 3rd party time entry id
-    """
+
     id: str
-    """
-    user_id: This field denotes the 3rd party user id this time entry belongs to
-    """
+    """id: This field denotes the 3rd party time entry id."""
+
     user_id: str
-    """
-    organization_id: This field denotes the 3rd party organization id this time entry belongs to
-    """
-    organization_id: Optional[str]
-    """
-    job_shifts: This field denotes the list of 3rd party job shifts this time entry contains
-    """
+    """user_id: This field denotes the 3rd party user id this time entry belongs to."""
+
     job_shifts: Optional[list[JobShift]]
-    """
-    breaks: This field denotes the list of 3rd party breaks this time entry contains
-    """
+    """job_shifts: This field denotes the list of 3rd party job shifts this time entry contains."""
+
     breaks: Optional[list[Break]]
+    """breaks: This field denotes the list of 3rd party breaks this time entry contains."""
+
+    start_time: datetime
+    """start_time: This field denotes the time entry start datetime with timezone."""
+
+    end_time: Optional[datetime]
+    """end_time: This field denotes the break end datetime with timezone."""
 
     def __post_init__(self):
         """Perform validation."""
@@ -138,3 +124,9 @@ class TimeEntry:
         check_field(self, "organization_id", str)
         check_field(self, "job_shifts", list[JobShift])
         check_field(self, "breaks", list[Break])
+        check_field(self, "start_time", datetime, required=True)
+        if self.start_time.tzinfo is None:
+            raise ValueError("No time zone provided for start_time")
+        check_field(self, "end_time", datetime)
+        if self.end_time.tzinfo is None:
+            raise ValueError("No time zone provided for end_time")
