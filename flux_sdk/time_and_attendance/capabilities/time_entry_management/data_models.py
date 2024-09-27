@@ -56,7 +56,7 @@ class JobShift:
         if self.start_time.tzinfo is None:
             raise ValueError("No time zone provided for start_time")
         check_field(self, "end_time", datetime)
-        if self.end_time.tzinfo is None:
+        if self.end_time is not None and self.end_time.tzinfo is None:
             raise ValueError("No time zone provided for end_time")
         check_field(self, "description", str)
 
@@ -87,7 +87,7 @@ class Break:
         if self.start_time.tzinfo is None:
             raise ValueError("No time zone provided for start_time")
         check_field(self, "end_time", datetime)
-        if self.end_time.tzinfo is None:
+        if self.end_time is not None and self.end_time.tzinfo is None:
             raise ValueError("No time zone provided for end_time")
         check_field(self, "description", str)
 
@@ -128,5 +128,5 @@ class TimeEntry:
         if self.start_time.tzinfo is None:
             raise ValueError("No time zone provided for start_time")
         check_field(self, "end_time", datetime)
-        if self.end_time.tzinfo is None:
+        if self.end_time is not None and self.end_time.tzinfo is None:
             raise ValueError("No time zone provided for end_time")
