@@ -188,7 +188,7 @@ class GetJobAttributeValuesResponse:
                 if not isinstance(val, (WorkLocationCompatibleValue, PayRateCompatibleValue,
                                         JobSiteLocationCompatibleValue)):
                     raise ValueError("value must be of type .*CompatibleValue")
-                compatible_values.add(val)
+                compatible_values.add(type(val))
 
             if len(compatible_values) != 1:
                 raise ValueError("value must be of the same type per key")
