@@ -17,7 +17,7 @@ class TimeEntriesQuery:
     """start_time: This field denotes the time entry start datetime with timezone (after) to filter for."""
 
     include_modified: bool
-    """include_modified: This field denotes the whether to include time entries that are modified between
+    """include_modified: This field denotes whether to include time entries that are modified between
     the start and end times provided. For apps that do not support filtering by modified time, this will
     always be false."""
 
@@ -27,7 +27,7 @@ class TimeEntriesQuery:
 @dataclass(kw_only=True)
 class JobShift:
     """
-    This class represents the equivalent of Rippling Job Shift. It may be called different
+    This class represents the equivalent of a Job Shift period. It may be called different
     names in different apps, but should reflect clocked in periods. Note that these may overlap
     in time with breaks but must not overlap with other JobShifts.
     """
@@ -63,7 +63,7 @@ class JobShift:
 @dataclass(kw_only=True)
 class Break:
     """
-    This class represents the equivalent of Rippling TimeEntryBreak. It may be called different
+    This class represents the equivalent of a break duration. It may be called different
     names in different apps, but should reflect break periods. Note that these may overlap
     in time with JobShifts but must not overlap with other Breaks.
     """
@@ -94,9 +94,10 @@ class Break:
 @dataclass(kw_only=True)
 class TimeEntry:
     """
-    This class represents the equivalent of Rippling time entry object. It may be called different
+    This class represents the equivalent of overarching time entry object. It may be called different
     names in different apps, but should reflect the overarching record that tracks time segments of
-    work and breaks as child lists.
+    work and breaks as child lists, but should also have its own start and end times to reflect the
+    period of time the time entry covers.
     """
 
     id: str
