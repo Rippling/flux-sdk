@@ -87,7 +87,6 @@ class PayRateCompatibleValue:
     """
     This represents a pay rate compatible value.
     """
-
     name: str
     """The value associated with the attribute, for ex, if your attribute was job_title, name would be Cashier."""
 
@@ -96,19 +95,21 @@ class PayRateCompatibleValue:
 
     def __post_init__(self):
         """Perform validation."""
-        check_field(self, "job_title", str, required=True)
+        check_field(self, "name", str, required=True)
 
         if self.pay_rate is not None:
-            if self.pay_rate is not isinstance(self.pay_rate, str):
+            if self.pay_rate and not isinstance(self.pay_rate, str):
                 raise ValueError(f"pay_rate must be a str if provided, got {type(self.pay_rate).__name__} instead.")
+
             try:
                 decimal = Decimal(self.pay_rate)
-                if decimal < 0:
-                    raise ValueError("pay_rate must be a positive number")
-                if decimal.as_tuple().exponent < -4:
-                    raise ValueError("pay_rate must have at most 4 decimal places")
-            except Exception as e:
-                raise ValueError(f"pay_rate must be a valid number, got {e}")
+            except Exception:
+                raise ValueError("pay_rate must be a valid number")
+
+            if decimal < 0:
+                raise ValueError("pay_rate must be a positive number")
+            if decimal.as_tuple().exponent < -4:
+                raise ValueError("pay_rate must have at most 4 decimal places")
 
 
 @dataclass(kw_only=True)
@@ -125,6 +126,7 @@ class JobSiteLocationCompatibleValue:
 
     def __post_init__(self):
         """Perform validation."""
+        check_field(self, "name", str, required=True)
         check_field(self, "address", Address, required=True)
 
 @dataclass(kw_only=True)
