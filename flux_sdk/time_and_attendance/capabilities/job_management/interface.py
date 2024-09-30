@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from flux_sdk.time_and_attendance.capabilities.job_management.data_models import (
     GetJobAttributesResponse,
-    GetJobAttributesValueResponse,
+    GetJobAttributeValuesResponse,
 )
 
 
@@ -19,7 +19,7 @@ class JobManagement(ABC):
         """
 
     @abstractmethod
-    def get_job_attributes_values(self) -> GetJobAttributesValueResponse:
+    def get_job_attribute_values(self) -> GetJobAttributeValuesResponse:
         """
         A function that gets job attributes mapped to their values from the third-party system.
 

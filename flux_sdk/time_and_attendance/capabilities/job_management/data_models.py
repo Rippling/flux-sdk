@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from decimal import Decimal
 from enum import Enum
 from typing import Dict, List, Optional, Union
 
@@ -69,9 +70,6 @@ class Address:
     country_code: str
     """The 2 letter uppercase country code of the address."""
 
-    phone: str
-    """The phone number of the address."""
-
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "street_line_1", str, required=True)
@@ -84,8 +82,6 @@ class Address:
         if len(self.country_code) != 2 or self.country_code != self.country_code.upper():
             raise ValueError("country_code must be a 2 letter uppercase country code")
 
-        check_field(self, "phone", str, required=True)
-
 @dataclass(kw_only=True)
 class PayRateCompatibleValue:
     """
@@ -95,15 +91,15 @@ class PayRateCompatibleValue:
     job_title: str
     """The job title associated with the pay rate."""
 
-    pay_rate: Optional[float] = None
+    pay_rate: Optional[Decimal] = None
     """The pay rate associated with the job title."""
 
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "job_title", str, required=True)
 
-        if self.pay_rate is not None and not isinstance(self.pay_rate, float):
-            raise ValueError(f"pay_rate must be a float if provided, got {type(self.pay_rate).__name__} instead.")
+        if self.pay_rate is not None and not isinstance(self.pay_rate, Decimal):
+            raise ValueError(f"pay_rate must be a Decimal if provided, got {type(self.pay_rate).__name__} instead.")
 
 @dataclass(kw_only=True)
 class JobSiteLocationCompatibleValue:
@@ -127,37 +123,26 @@ class WorkLocationCompatibleValue:
     name: str
     """The name of the work location."""
 
-    active: bool
-    """Whether the work location is enabled or not. This is not the same as whether it is closed for the day."""
-
-    latitude: float
-    """The latitude of the work location."""
-
-    longitude: float
-    """The longitude of the work location."""
-
     address: Address
     """The address of the work location."""
 
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "name", str, required=True)
-        check_field(self, "active", bool, required=True)
-        check_field(self, "latitude", float, required=True)
-        check_field(self, "longitude", float, required=True)
         check_field(self, "address", Address, required=True)
 
 @dataclass(kw_only=True)
-class GetJobAttributesValueResponse:
+class GetJobAttributeValuesResponse:
     """
     This represents a response containing the attributes from the third party mapped to their most compatible values.
 
-    For instance, if the third party system has an attribute "work_location" that is most compatible with Rippling's
+    The attributes should match the keys returned in the get_job_attributes hook.
+
+    For instance, if the third party system has an attribute "location" that is most compatible with Rippling's
      "WORK_LOCATION" attribute, and something like the following is defined:
 
     result = {
-        "work_location": [WorkLocationCompatibleValue(name="sf",...), WorkLocationCompatibleValue(...)],
-        "pay_rate": [PayRateCompatibleValue(job_title="cashier",...)],
+        "location": [WorkLocationCompatibleValue(name="sf",...), WorkLocationCompatibleValue(...)],
         "job_title": [PayRateCompatibleValue(...)],
     }
     """
