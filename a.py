@@ -1,8 +1,16 @@
 import unittest
-from decimal import Decimal
+
 from flux_sdk.time_and_attendance.capabilities.job_management.data_models import (
-    Attribute, Address, PayRateCompatibleValue, JobSiteLocationCompatibleValue, WorkLocationCompatibleValue, GetJobAttributeValuesResponse, GetJobAttributesResponse, RipplingAttribute
+    Address,
+    Attribute,
+    GetJobAttributesResponse,
+    GetJobAttributeValuesResponse,
+    JobSiteLocationCompatibleValue,
+    PayRateCompatibleValue,
+    RipplingAttribute,
+    WorkLocationCompatibleValue,
 )
+
 
 class TestDataModels(unittest.TestCase):
 
