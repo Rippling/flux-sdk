@@ -88,24 +88,37 @@ class PayRateCompatibleValue:
     This represents a pay rate compatible value.
     """
 
-    job_title: str
-    """The job title associated with the pay rate."""
+    name: str
+    """The value associated with the attribute, for ex, if your attribute was job_title, name would be Cashier."""
 
-    pay_rate: Optional[Decimal] = None
-    """The pay rate associated with the job title."""
+    pay_rate: Optional[str] = None
+    """The pay rate associated with the job title, str with max 4 decimals, for ex, 43.3943"""
 
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "job_title", str, required=True)
 
-        if self.pay_rate is not None and not isinstance(self.pay_rate, Decimal):
-            raise ValueError(f"pay_rate must be a Decimal if provided, got {type(self.pay_rate).__name__} instead.")
+        if self.pay_rate is not None:
+            if self.pay_rate is not isinstance(self.pay_rate, str):
+                raise ValueError(f"pay_rate must be a str if provided, got {type(self.pay_rate).__name__} instead.")
+            try:
+                decimal = Decimal(self.pay_rate)
+                if decimal < 0:
+                    raise ValueError("pay_rate must be a positive number")
+                if decimal.as_tuple().exponent < -4:
+                    raise ValueError("pay_rate must have at most 4 decimal places")
+            except Exception as e:
+                raise ValueError(f"pay_rate must be a valid number, got {e}")
+
 
 @dataclass(kw_only=True)
 class JobSiteLocationCompatibleValue:
     """
     This represents a job site location compatible value.
     """
+
+    name: str
+    """The name of the job site location, for ex, San Francisco."""
 
     address: Address
     """The address of the job site location."""
@@ -121,7 +134,7 @@ class WorkLocationCompatibleValue:
     """
 
     name: str
-    """The name of the work location."""
+    """The name of the work location, for ex, San Francisco."""
 
     address: Address
     """The address of the work location."""
