@@ -88,7 +88,7 @@ class PayRateCompatibleValue:
     This represents a pay rate compatible value.
     """
     name: str
-    """The value associated with the attribute, for ex, if your attribute was job_title, name would be Cashier."""
+    """The unique value associated with the attribute, ex: if your attribute was job_title, name would be Cashier."""
 
     pay_rate: Optional[str] = None
     """The pay rate associated with the job title, str with max 4 decimals, for ex, 43.3943"""
@@ -119,7 +119,7 @@ class JobSiteLocationCompatibleValue:
     """
 
     name: str
-    """The name of the job site location, for ex, San Francisco."""
+    """The unique name of the job site location, ex: San Francisco."""
 
     address: Address
     """The address of the job site location."""
@@ -136,7 +136,7 @@ class WorkLocationCompatibleValue:
     """
 
     name: str
-    """The name of the work location, for ex, San Francisco."""
+    """The unique name of the work location, ex: San Francisco."""
 
     address: Address
     """The address of the work location."""
@@ -151,7 +151,8 @@ class GetJobAttributeValuesResponse:
     """
     This represents a response containing the attributes from the third party mapped to their most compatible values.
 
-    The attributes should match the keys returned in the get_job_attributes hook.
+    The attributes should match the keys returned in the get_job_attributes hook, which is also available in the
+    GetJobAttributeValuesRequest.
 
     For instance, if the third party system has an attribute "location" that is most compatible with Rippling's
      "WORK_LOCATION" attribute, and something like the following is defined:
@@ -159,6 +160,11 @@ class GetJobAttributeValuesResponse:
     result = {
         "location": [WorkLocationCompatibleValue(name="sf",...), WorkLocationCompatibleValue(...)],
         "job_title": [PayRateCompatibleValue(...)],
+    }
+
+    Do not mix different types of values for the same key. For example, the following is invalid:
+    result = {
+        "job_title": [PayRateCompatibleValue(...), WorkLocationCompatibleValue(...)],
     }
     """
 
@@ -193,9 +199,30 @@ class GetJobAttributeValuesResponse:
             if len(compatible_values) != 1:
                 raise ValueError("value must be of the same type per key")
 
+@dataclass(kw_only=True)
+class GetJobAttributeValuesRequest:
+    """
+    This represents a request to fetch the attribute values from the third party system.
+    """
 
+    attributes: List[str] | None = None
+    """
+    The attributes to fetch the values for.
+    You should check if your attribute name is in this list before fetching the values.
+    If attributes is None, fetch all attributes and their values.
+    """
 
+    def __post_init__(self):
+        """Perform validation."""
 
+        check_field(self, "attributes", list, required=False)
+
+        if self.attributes is not None:
+            if len(self.attributes) == 0:
+                raise ValueError("attributes must have at least 1 value")
+            for attribute in self.attributes:
+                if not isinstance(attribute, str):
+                    raise ValueError("attribute must be a string")
 
 @dataclass(kw_only=True)
 class GetJobAttributesResponse:
