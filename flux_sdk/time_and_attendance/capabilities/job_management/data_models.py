@@ -87,6 +87,7 @@ class PayRateCompatibleValue:
     """
     This represents a pay rate compatible value.
     """
+
     name: str
     """The unique value associated with the attribute, ex: if your attribute was job_title, name would be Cashier."""
 
@@ -166,6 +167,12 @@ class GetJobAttributeValuesResponse:
     result = {
         "job_title": [PayRateCompatibleValue(...), WorkLocationCompatibleValue(...)],
     }
+
+    Do not repeat *CompatibleValue types across keys. It should be a 1-1 mapping. For example, the following is invalid:
+    result = {
+        "location": [WorkLocationCompatibleValue(name="sf",...), WorkLocationCompatibleValue(...)],
+        "job_title": [WorkLocationCompatibleValue(...)],
+    }
     """
 
     result: Dict[str, List[Union[WorkLocationCompatibleValue, PayRateCompatibleValue, JobSiteLocationCompatibleValue]]]
@@ -178,6 +185,7 @@ class GetJobAttributeValuesResponse:
         if len(self.result) == 0:
             raise ValueError("result must have at least 1 value")
 
+        compatible_values_global = set()
         for key, value in self.result.items():
             if not isinstance(key, str):
                 raise ValueError("key must be a string")
@@ -190,14 +198,22 @@ class GetJobAttributeValuesResponse:
 
             # make sure values are only of one type per key
             compatible_values = set()
+            compatible_values_name = []
             for val in value:
                 if not isinstance(val, (WorkLocationCompatibleValue, PayRateCompatibleValue,
                                         JobSiteLocationCompatibleValue)):
                     raise ValueError("value must be of type .*CompatibleValue")
+
+                if type(val) in compatible_values_global:
+                    raise ValueError("value type must be unique across all keys, ie, an attribute")
                 compatible_values.add(type(val))
+                compatible_values_name.append(val.name)
+            compatible_values_global.update(compatible_values)
 
             if len(compatible_values) != 1:
                 raise ValueError("value must be of the same type per key")
+
+
 
 @dataclass(kw_only=True)
 class GetJobAttributeValuesRequest:
