@@ -205,7 +205,7 @@ class GetJobAttributeValuesRequest:
     This represents a request to fetch the attribute values from the third party system.
     """
 
-    attributes: List[str] | None = None
+    requested_attributes: List[str] | None = None
     """
     The attributes to fetch the values for.
     You should check if your attribute name is in this list before fetching the values.
@@ -215,12 +215,12 @@ class GetJobAttributeValuesRequest:
     def __post_init__(self):
         """Perform validation."""
 
-        check_field(self, "attributes", list, required=False)
+        check_field(self, "requested_attributes", list, required=False)
 
-        if self.attributes is not None:
-            if len(self.attributes) == 0:
+        if self.requested_attributes is not None:
+            if len(self.requested_attributes) == 0:
                 raise ValueError("attributes must have at least 1 value")
-            for attribute in self.attributes:
+            for attribute in self.requested_attributes:
                 if not isinstance(attribute, str):
                     raise ValueError("attribute must be a string")
 
