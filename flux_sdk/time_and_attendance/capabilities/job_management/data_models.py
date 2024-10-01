@@ -208,8 +208,7 @@ class GetJobAttributeValuesRequest:
     requested_attributes: List[str] | None = None
     """
     The attributes to fetch the values for.
-    You should check if your attribute name is in this list before fetching the values.
-    If attributes is None, fetch all attributes and their values.
+    Use key_in_requested_attributes to determine whether to fetch this attribute or not.
     """
 
     def __post_init__(self):
@@ -223,6 +222,13 @@ class GetJobAttributeValuesRequest:
             for attribute in self.requested_attributes:
                 if not isinstance(attribute, str):
                     raise ValueError("attribute must be a string")
+
+    def key_in_requested_attributes(self, key: str) -> bool:
+        """
+        Check if the key is in the requested attributes.
+        Returns True if key exists, or if requested_attributes is None.
+        """
+        return self.requested_attributes is None or key in self.requested_attributes
 
 @dataclass(kw_only=True)
 class GetJobAttributesResponse:
