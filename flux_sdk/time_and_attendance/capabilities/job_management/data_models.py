@@ -85,7 +85,7 @@ class Address:
 @dataclass(kw_only=True)
 class PayRateCompatibleValue:
     """
-    This represents a pay rate compatible value.
+    This represents a pay rate compatible value. The name must be unique across all pay rate compatible values.
     """
 
     name: str
@@ -117,6 +117,7 @@ class PayRateCompatibleValue:
 class JobSiteLocationCompatibleValue:
     """
     This represents a job site location compatible value.
+    The name must be unique across all job site location compatible values.
     """
 
     name: str
@@ -134,6 +135,7 @@ class JobSiteLocationCompatibleValue:
 class WorkLocationCompatibleValue:
     """
     This represents a work location compatible value.
+    The name must be unique across all work location compatible values.
     """
 
     name: str
@@ -198,7 +200,7 @@ class GetJobAttributeValuesResponse:
 
             # make sure values are only of one type per key
             compatible_values = set()
-            compatible_values_name = []
+            compatible_values_name = set()
             for val in value:
                 if not isinstance(val, (WorkLocationCompatibleValue, PayRateCompatibleValue,
                                         JobSiteLocationCompatibleValue)):
@@ -206,8 +208,12 @@ class GetJobAttributeValuesResponse:
 
                 if type(val) in compatible_values_global:
                     raise ValueError("value type must be unique across all keys, ie, an attribute")
+
+                if val.name in compatible_values_name:
+                    raise ValueError(f"value name must be unique per key, {val.name} is repeated")
+
                 compatible_values.add(type(val))
-                compatible_values_name.append(val.name)
+                compatible_values_name.add(val.name)
             compatible_values_global.update(compatible_values)
 
             if len(compatible_values) != 1:
