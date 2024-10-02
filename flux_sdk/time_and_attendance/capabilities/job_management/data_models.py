@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from flux_sdk.flux_core.validation import check_field
 
@@ -97,7 +97,7 @@ class AttributeValue:
     For ex, if the attribute was "job_title", the value could be "Cashier".
     """
 
-    associated_attribute_values: List[Union[PayRateCompatibleValue, AddressCompatibleValue]]
+    associated_attribute_values: list[Union[PayRateCompatibleValue, AddressCompatibleValue]]
     """
     The non-empty list of associated attribute values based on compatible_rippling_attributes.
     For ex, if the attribute was "job_title" and compatible_rippling_attributes was [PAY_RATE], 
@@ -146,7 +146,7 @@ class Attribute:
     sorted from most compatible to least, for ex, [PAY_RATE].
     """
 
-    attribute_values: Optional[List[AttributeValue]] = None
+    attribute_values: Optional[list[AttributeValue]] = None
     """
     The non-empty (if not None) list of attribute values associated with the attribute.
     This field should only be used if requested_attribute_values is True in GetJobAttributesRequest.
@@ -198,7 +198,7 @@ class GetJobAttributesRequest:
     If True, GetJobAttributesResponse will also contain the values of the attributes in addition to their mappings.
     """
 
-    requested_attributes: List[str] | None = None
+    requested_attributes: list[str] | None = None
     """
     The third party attributes to fetch the values for. If None, all attributes should be fetched.
     Note, it is recommended to use the key_in_requested_attributes helper.
