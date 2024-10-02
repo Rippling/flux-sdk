@@ -16,11 +16,6 @@ class TimeEntriesQuery:
     start_time: datetime
     """start_time: This field denotes the time entry start datetime with timezone (after) to filter for."""
 
-    include_modified: bool
-    """include_modified: This field denotes whether to include time entries that are modified between
-    the start and end times provided. For apps that do not support filtering by modified time, this will
-    always be false."""
-
     end_time: Optional[datetime]
     """end_time: This field denotes the time entry end datetime with timezone (before) to filter for."""
 
