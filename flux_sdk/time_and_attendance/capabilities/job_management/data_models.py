@@ -32,10 +32,7 @@ class PayRateCompatibleValue:
         """Perform validation."""
         if self.pay_rate is not None:
             if self.pay_rate and not isinstance(self.pay_rate, str):
-                raise ValueError(
-                    f"PayRateCompatibleValue error: "
-                    f"pay_rate must be a str if provided, got {type(self.pay_rate).__name__} instead."
-                )
+                raise ValueError("PayRateCompatibleValue error: pay_rate must be a str.")
 
             try:
                 decimal = Decimal(self.pay_rate)
@@ -216,7 +213,8 @@ class GetJobAttributesRequest:
 
     def __post_init__(self):
         """Perform validation."""
-        check_field(self, "requested_attribute_values", bool, required=True)
+        if self.requested_attribute_values not in [False, True]:
+            raise ValueError("GetJobAttributesRequest error: requested_attribute_values must be a bool")
 
         if self.requested_attributes is not None:
             if not isinstance(self.requested_attributes, list):
