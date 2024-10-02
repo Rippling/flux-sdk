@@ -32,8 +32,10 @@ class PayRateCompatibleValue:
         """Perform validation."""
         if self.pay_rate is not None:
             if self.pay_rate and not isinstance(self.pay_rate, str):
-                raise ValueError(f"PayRateCompatibleValue error: "
-                                 f"pay_rate must be a str if provided, got {type(self.pay_rate).__name__} instead.")
+                raise ValueError(
+                    f"PayRateCompatibleValue error: "
+                    f"pay_rate must be a str if provided, got {type(self.pay_rate).__name__} instead."
+                )
 
             try:
                 decimal = Decimal(self.pay_rate)
@@ -44,6 +46,7 @@ class PayRateCompatibleValue:
                 raise ValueError("PayRateCompatibleValue error: pay_rate must be a positive number")
             if decimal.as_tuple().exponent < -4:
                 raise ValueError("PayRateCompatibleValue error: pay_rate must have at most 4 decimal places")
+
 
 @dataclass(kw_only=True)
 class AddressCompatibleValue:
@@ -201,6 +204,7 @@ class GetJobAttributesRequest:
     requested_attributes: List[str] | None = None
     """
     The third party attributes to fetch the values for. If None, all attributes should be fetched.
+    Note, it is recommended to use the key_in_requested_attributes helper.
     """
 
     def key_in_requested_attributes(self, key: str) -> bool:
@@ -209,6 +213,17 @@ class GetJobAttributesRequest:
         Returns True if key exists, or if requested_attributes is None.
         """
         return self.requested_attributes is None or key in self.requested_attributes
+
+    def __post_init__(self):
+        """Perform validation."""
+        check_field(self, "requested_attribute_values", bool, required=True)
+
+        if self.requested_attributes is not None:
+            if not isinstance(self.requested_attributes, list):
+                raise ValueError("GetJobAttributesRequest error: requested_attributes must be a list if provided")
+            if len(self.requested_attributes) == 0:
+                raise ValueError("GetJobAttributesRequest error: requested_attributes must have at least 1 value")
+
 
 @dataclass(kw_only=True)
 class GetJobAttributesResponse:
