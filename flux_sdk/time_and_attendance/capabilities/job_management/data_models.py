@@ -160,6 +160,14 @@ class Attribute:
         check_field(self, "description", str)
         check_field(self, "compatible_rippling_attributes", list, required=True)
 
+        rippling_attributes_to_attribute_values = {
+            RipplingAttribute.PAY_RATE: PayRateCompatibleValue,
+            RipplingAttribute.JOB_SITE_LOCATION: AddressCompatibleValue,
+            RipplingAttribute.WORK_LOCATION: AddressCompatibleValue
+        }
+        allowed_compatible_values = [rippling_attributes_to_attribute_values[attribute]
+                                     for attribute in self.compatible_rippling_attributes]
+
         if len(self.compatible_rippling_attributes) == 0:
             raise ValueError("Attribute error: compatible_rippling_attributes must have at least 1 value")
 
@@ -172,12 +180,22 @@ class Attribute:
                 raise ValueError("Attribute error: attribute_values must have at least 1 value")
 
             names = set()
+            associated_attribute_values_types = set()
             for value in self.attribute_values:
                 if not isinstance(value, AttributeValue):
                     raise ValueError("Attribute error: attribute_values must be of type AttributeValue")
+                for associated_attribute_values in value.associated_attribute_values:
+                    associated_attribute_values_types.add(type(associated_attribute_values))
                 if value.name.strip().lower() in names:
                     raise ValueError(f"Attribute error: duplicate name in attribute_values: {value.name}")
                 names.add(value.name.strip().lower())
+
+            if associated_attribute_values_types != set(allowed_compatible_values):
+                raise ValueError(
+                    f"Attribute error: associated_attribute_values in attribute_values must be of type"
+                    f" {allowed_compatible_values}"
+                )
+
 
 
 @dataclass(kw_only=True)
