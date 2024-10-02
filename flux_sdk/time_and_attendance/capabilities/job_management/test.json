@@ -1,0 +1,47 @@
+request GetJobAttributesRequest: {
+  requested_attributes : list
+  requested_attribute_values : false --> give a list of attributes
+}
+
+GetJobAttributesResponse: {
+  attributes: [
+    {
+      id: "job_title",
+      name: "Job title",
+      description: "The title of the job",
+      compatible_rippling_attribute: [
+        RipplingAttribute.PAY_RATE
+      ],
+
+//      attribute_values: [PayRateCompatibleValue(name=Cashier,pay_rate=None), ....]
+      attribute_values (optional): [
+        {
+          name: "Cashier",
+          associated_attribute_values: [
+            PayRateAttributeValue("20.0000")
+          ]
+        },
+        {...},
+        {...}
+      ]
+    },
+    {
+      id: "location",
+      name: "Location",
+      description: "The store location of the job",
+      compatible_rippling_attribute: [
+        RipplingAttribute.WORK_LOCATION, RipplingAttribute.JOB_SITE_LOCATION
+      ],
+      attribute_values: [
+        {
+          name: "Downtown",
+          associated_attribute_values: [
+            AddressAttributeValue(street_line="xxx", city="xxx",...)
+          ]
+        },
+        {...},
+        {...}
+      ]
+    }
+  ]
+}

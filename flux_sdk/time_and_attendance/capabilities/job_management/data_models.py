@@ -32,17 +32,18 @@ class PayRateCompatibleValue:
         """Perform validation."""
         if self.pay_rate is not None:
             if self.pay_rate and not isinstance(self.pay_rate, str):
-                raise ValueError(f"pay_rate must be a str if provided, got {type(self.pay_rate).__name__} instead.")
+                raise ValueError(f"PayRateCompatibleValue error: "
+                                 f"pay_rate must be a str if provided, got {type(self.pay_rate).__name__} instead.")
 
             try:
                 decimal = Decimal(self.pay_rate)
             except Exception:
-                raise ValueError("pay_rate must be a valid number")
+                raise ValueError("PayRateCompatibleValue error: pay_rate must be a valid number")
 
             if decimal < 0:
-                raise ValueError("pay_rate must be a positive number")
+                raise ValueError("PayRateCompatibleValue error: pay_rate must be a positive number")
             if decimal.as_tuple().exponent < -4:
-                raise ValueError("pay_rate must have at most 4 decimal places")
+                raise ValueError("PayRateCompatibleValue error: pay_rate must have at most 4 decimal places")
 
 @dataclass(kw_only=True)
 class AddressCompatibleValue:
@@ -78,7 +79,7 @@ class AddressCompatibleValue:
         check_field(self, "country_code", str, required=True)
 
         if len(self.country_code) != 2 or self.country_code != self.country_code.upper():
-            raise ValueError("country_code must be a 2 letter uppercase country code")
+            raise ValueError("AddressCompatibleValue error: country_code must be a 2 letter uppercase country code")
 
 
 @dataclass(kw_only=True)
@@ -112,12 +113,13 @@ class AttributeValue:
         check_field(self, "associated_attribute_values", list, required=True)
 
         if len(self.associated_attribute_values) == 0:
-            raise ValueError("associated_attribute_values must have at least 1 value")
+            raise ValueError("AttributeValue error: associated_attribute_values must have at least 1 value")
 
         for value in self.associated_attribute_values:
             if not isinstance(value, (PayRateCompatibleValue, AddressCompatibleValue)):
                 raise ValueError(
-                    "associated_attribute_values must be of type PayRateCompatibleValue or AddressCompatibleValue"
+                    "AttributeValue error: associated_attribute_values must be of type PayRateCompatibleValue or "
+                    "AddressCompatibleValue"
                 )
 
 
@@ -159,22 +161,22 @@ class Attribute:
         check_field(self, "compatible_rippling_attributes", list, required=True)
 
         if len(self.compatible_rippling_attributes) == 0:
-            raise ValueError("compatible_rippling_attributes must have at least 1 value")
+            raise ValueError("Attribute error: compatible_rippling_attributes must have at least 1 value")
 
         for attribute in self.compatible_rippling_attributes:
             if not isinstance(attribute, RipplingAttribute):
-                raise ValueError("compatible_rippling_attributes must be of type RipplingAttribute")
+                raise ValueError("Attribute error: compatible_rippling_attributes must be of type RipplingAttribute")
 
         if self.attribute_values is not None:
             if len(self.attribute_values) == 0:
-                raise ValueError("attribute_values must have at least 1 value")
+                raise ValueError("Attribute error: attribute_values must have at least 1 value")
 
             names = set()
             for value in self.attribute_values:
                 if not isinstance(value, AttributeValue):
-                    raise ValueError("attribute_values must be of type AttributeValue")
+                    raise ValueError("Attribute error: attribute_values must be of type AttributeValue")
                 if value.name.strip().lower() in names:
-                    raise ValueError(f"Duplicate name found in attribute_values: {value.name}")
+                    raise ValueError(f"Attribute error: duplicate name in attribute_values: {value.name}")
                 names.add(value.name.strip().lower())
 
 
@@ -201,6 +203,12 @@ class GetJobAttributesRequest:
     The third party attributes to fetch the values for. If None, all attributes should be fetched.
     """
 
+    def key_in_requested_attributes(self, key: str) -> bool:
+        """
+        Check if the key is in the requested attributes.
+        Returns True if key exists, or if requested_attributes is None.
+        """
+        return self.requested_attributes is None or key in self.requested_attributes
 
 @dataclass(kw_only=True)
 class GetJobAttributesResponse:
@@ -222,14 +230,14 @@ class GetJobAttributesResponse:
         check_field(self, "attributes", list[Attribute], required=True)
 
         if len(self.attributes) == 0:
-            raise ValueError("attributes must have at least 1 value")
+            raise ValueError("GetJobAttributesResponse error: attributes must have at least 1 value")
 
         ids = set()
         names = set()
         for attribute in self.attributes:
             if attribute.id in ids:
-                raise ValueError(f"Duplicate id found: {attribute.id}")
+                raise ValueError(f"GetJobAttributesResponse error: duplicate id in attributes: {attribute.id}")
             if attribute.name.strip().lower() in names:
-                raise ValueError(f"Duplicate name found: {attribute.name}")
+                raise ValueError(f"GetJobAttributesResponse error: duplicate name in attributes: {attribute.name}")
             ids.add(attribute.id)
             names.add(attribute.name.strip().lower())

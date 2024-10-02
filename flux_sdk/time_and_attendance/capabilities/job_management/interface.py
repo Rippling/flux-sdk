@@ -20,6 +20,7 @@ class JobManagement(ABC):
         If request.requested_attribute_values is True, fetch the mapping and the attribute values.
 
         Only fetch data for the attributes in request.requested_attributes. If requested_attributes is None, fetch all.
+        Hint: Use key_in_requested_attributes helper method.
 
         :param request: The request containing the attributes to fetch and if values are required.
         :return: The response containing the job attributes from the third-party system, mapping to their Rippling
