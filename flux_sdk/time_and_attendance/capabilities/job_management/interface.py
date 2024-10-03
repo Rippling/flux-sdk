@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from flux_sdk.time_and_attendance.capabilities.job_management.data_models import (
+    GetEmployeesPayRatePerJobResponse,
     GetJobAttributesRequest,
     GetJobAttributesResponse,
 )
@@ -25,4 +26,14 @@ class JobManagement(ABC):
         :param request: The request containing the attributes to fetch and if values are required.
         :return: The response containing the job attributes from the third-party system, mapping to their Rippling
         attributes and possible values.
+        """
+
+    def get_employee_pay_rate_per_job(self) -> GetEmployeesPayRatePerJobResponse:
+        """
+        A function that gets the pay rate for each employee per job from the third-party system.
+
+        For instance, if "Bob" works as a "Cashier" and earns 20.0000$ per hour, this should be returned.
+        Bob may also work as a "Manager" and earn 30.0000$ per hour, this should also be returned.
+
+        :return: The response containing the pay rate for each employee per job.
         """
