@@ -28,6 +28,7 @@ class JobManagement(ABC):
         attributes and possible values.
         """
 
+    @abstractmethod
     def get_employee_pay_rate_per_job(self) -> GetEmployeesPayRatePerJobResponse:
         """
         A function that gets the pay rate for each employee per job from the third-party system.
