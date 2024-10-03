@@ -14,7 +14,7 @@ class TimeEntryManagement(ABC):
 
     @abstractmethod
     def fetch_time_entries(
-        self,
+        self: 'TimeEntryManagement',
         query: TimeEntriesQuery
     ) -> list[TimeEntry]:
         """Fetch all time entries for a given query filter.

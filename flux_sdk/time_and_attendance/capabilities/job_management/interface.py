@@ -8,7 +8,7 @@ from flux_sdk.time_and_attendance.capabilities.job_management.data_models import
 
 class JobManagement(ABC):
     @abstractmethod
-    def get_job_attributes(self, request: GetJobAttributesRequest) -> GetJobAttributesResponse:
+    def get_job_attributes(self: 'JobManagement' , request: GetJobAttributesRequest) -> GetJobAttributesResponse:
         """
         A function that gets job attributes from the third-party system.
 

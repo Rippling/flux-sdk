@@ -17,7 +17,7 @@ class UserLifecycleManagement(ABC):
     """
 
     @abstractmethod
-    def get_users(self, request: GetUsersRequest) -> GetUsersResponse:
+    def get_users(self: 'UserLifecycleManagement', request: GetUsersRequest) -> GetUsersResponse:
         """
         A function that get users from the third-party system.
 
@@ -29,7 +29,8 @@ class UserLifecycleManagement(ABC):
 
 
     @abstractmethod
-    def get_organizations(self, request: GetOrganizationsRequest) -> GetOrganizationsResponse:
+    def get_organizations(self: 'UserLifecycleManagement',
+                          request: GetOrganizationsRequest) -> GetOrganizationsResponse:
         """
         A function that get organizations from the third-party system.
 

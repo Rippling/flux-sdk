@@ -1,0 +1,15 @@
+GetJobAttributesResponse
+
+
+
+attributes: list[Attribute]
+
+
+    class Attribute:
+        attribute_values: Optional[List[AttributeValue]] = None
+
+
+            class AttributeValue:
+                    associated_attribute_values: List[Union[PayRateCompatibleValue, AddressCompatibleValue]]
+
+
