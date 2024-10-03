@@ -272,3 +272,63 @@ class GetJobAttributesResponse:
                 raise ValueError(f"GetJobAttributesResponse error: duplicate name in attributes: {attribute.name}")
             ids.add(attribute.id)
             names.add(attribute.name.strip().lower())
+
+
+@dataclass(kw_only=True)
+class EmployeePayRatePerJob:
+    """
+    This represents the pay rate associated with a job title for a specific employee.
+    For instance, an employee "Bob" may have a pay rate of $43.3943 associated with the job title "Cashier".
+    Bob may also have a pay rate of $50.00 associated with the job title "Manager".
+
+    This should only be used if pay rate is not specific in the get_job_attributes hook.
+    """
+
+    employee_id: str
+    """The unique identifier of the user in the third party system."""
+
+    pay_rate: str
+    """The pay rate associated with the job title, str with max 4 decimals, for ex, 43.3943"""
+
+    job_name: str
+    """The job title of the employee for which this pay rate is associated with."""
+
+    def __post_init__(self):
+        """Perform validation."""
+        check_field(self, "employee_id", str, required=True)
+        check_field(self, "pay_rate", str, required=True)
+        check_field(self, "job_name", str, required=True)
+
+
+@dataclass(kw_only=True)
+class GetEmployeesPayRatePerJobResponse:
+    """
+    This represents a response containing the pay rates associated with job titles for employees.
+    For instance, an employee "Bob" may have a pay rate of $43.3943 associated with the job title "Cashier".
+    Bob may also have a pay rate of $50.00 associated with the job title "Manager".
+
+    This should only be used if pay rate is not specific in the get_job_attributes hook.
+    """
+
+    employee_pay_rate_per_job: list[EmployeePayRatePerJob]
+    """The non-empty list of pay rates associated with job titles for employees."""
+
+    def __post_init__(self):
+        """Perform validation."""
+        check_field(self, "employee_pay_rate_per_job", list, required=True)
+
+        if len(self.employee_pay_rate_per_job) == 0:
+            raise ValueError("GetEmployeesPayRatePerJobResponse error: "
+                             "employee_pay_rate_per_job must have at least 1 value")
+
+        seen = set()
+        for employee_pay_rate in self.employee_pay_rate_per_job:
+            if not isinstance(employee_pay_rate, EmployeePayRatePerJob):
+                raise ValueError("GetEmployeesPayRatePerJobResponse error: "
+                                 "employee_pay_rate_per_job must be of type EmployeePayRatePerJob")
+            key = (employee_pay_rate.employee_id, employee_pay_rate.job_name.strip().lower())
+            if key in seen:
+                raise ValueError(
+                    f"GetEmployeesPayRatePerJobResponse error: duplicate entry for "
+                    f"employee id {employee_pay_rate.employee_id} and job name {employee_pay_rate.job_name}")
+            seen.add(key)
