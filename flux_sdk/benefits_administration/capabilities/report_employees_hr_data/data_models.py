@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 from flux_sdk.flux_core.data_models import (
     Employee,
@@ -115,6 +115,8 @@ class EmployeeHrData:
     employee_number: int
     """ The companies policy group number which the employee is included in """
     group_number: str
+    """ The employee's social security number """
+    ssn: Optional[str]
     """ The company tax id (ein) that applies to the employee """
     company_tax_id: str
     """ An object containing the personal details of the employee """
