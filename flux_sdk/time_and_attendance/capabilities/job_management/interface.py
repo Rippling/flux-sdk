@@ -32,7 +32,7 @@ class JobManagement(ABC):
     def get_employees_pay_rate_overrides(self) -> GetEmployeesPayRateOverridesResponse:
         """
         A function that gets the pay rate override for each employee that requires an override.
-        
+
         Use this hook to fetch the pay rate override for each employee that requires it.
 
         The pay rate override is tied to the attribute mapped to Rippling.PAY_RATE.

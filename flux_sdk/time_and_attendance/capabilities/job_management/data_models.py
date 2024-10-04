@@ -376,8 +376,6 @@ class GetEmployeesPayRateOverridesResponse:
                 employee_attribute_value.strip().lower()
             )
 
-        print("attributes names are ", attribute_names)
-
         if len(attribute_names) > 1:
             raise ValueError("GetEmployeePayRateOverrideResponse error: "
                              "attribute_name must be the same across all EmployeePayRateOverride values")
