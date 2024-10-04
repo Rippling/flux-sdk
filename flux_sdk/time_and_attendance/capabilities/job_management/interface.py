@@ -35,9 +35,9 @@ class JobManagement(ABC):
 
         Use this hook to fetch the pay rate override for each employee that requires it.
 
-        The pay rate override is tied to the attribute mapped to Rippling.PAY_RATE.
+        The pay rate override is tied to the attribute mapped to RipplingAttribute.PAY_RATE.
 
-        If a default pay rate is given in the get_job_attributes hook, an employee may get a different one through this.
+        The pay rate override will take precedence over the default pay rate returned from the get_job_attributes hook.
 
         :return: The response containing the pay rate override for each employee that requires it.
         """

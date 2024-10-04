@@ -278,16 +278,17 @@ class GetJobAttributesResponse:
 @dataclass(kw_only=True)
 class EmployeePayRateOverride:
     """
-    This represents the pay rate override for a specific employee, tied to the attribute that maps to Rippling.PAY_RATE.
+    This represents the pay rate override for a specific employee, tied to the attribute that maps to RipplingAttribute.PAY_RATE.
 
-    For instance, assume that third party attribute job_title is mapped to Rippling.PAY_RATE.
+    For instance, assume that third party attribute job_title is mapped to RipplingAttribute.PAY_RATE.
 
     Here are some example data:
 
     EmployeePayRateOverride(employee_id="123", pay_rate="43.3943",
     attribute_name="job_title", attribute_value="Cashier")
 
-    Employee 123 can also have a pay rate of $50.00 associated with the job title "Manager".
+    Employee 123 can also have a pay rate of $50.00 overridden for the job title "Manager" with such record: EmployeePayRateOverride(employee_id="123", pay_rate="50.0000",
+    attribute_id="job_title_attribute_id", attribute_value_id="job_title_value_id")
 
     If a pay rate is specified in the get_job_attributes hook, we will override if an employee has a specific override.
     """
