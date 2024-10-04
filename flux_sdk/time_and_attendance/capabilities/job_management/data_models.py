@@ -335,7 +335,7 @@ class EmployeePayRateOverride:
 
 
 @dataclass(kw_only=True)
-class GetEmployeePayRateOverrideResponse:
+class GetEmployeesPayRateOverridesResponse:
     """
     This represents a response containing the pay rates overrides for employees.
 

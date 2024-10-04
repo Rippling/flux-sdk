@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from flux_sdk.time_and_attendance.capabilities.job_management.data_models import (
-    GetEmployeesPayRatePerJobResponse,
+    GetEmployeesPayRateOverridesResponse,
     GetJobAttributesRequest,
     GetJobAttributesResponse,
 )
@@ -29,12 +29,15 @@ class JobManagement(ABC):
         """
 
     @abstractmethod
-    def get_employee_pay_rate_per_job(self) -> GetEmployeesPayRatePerJobResponse:
+    def get_employees_pay_rate_overrides(self) -> GetEmployeesPayRateOverridesResponse:
         """
-        A function that gets the pay rate for each employee per job from the third-party system.
+        A function that gets the pay rate override for each employee that requires an override.
+        
+        Use this hook to fetch the pay rate override for each employee that requires it.
 
-        For instance, if "Bob" works as a "Cashier" and earns 20.0000$ per hour, this should be returned.
-        Bob may also work as a "Manager" and earn 30.0000$ per hour, this should also be returned.
+        The pay rate override is tied to the attribute mapped to Rippling.PAY_RATE.
 
-        :return: The response containing the pay rate for each employee per job.
+        If a default pay rate is given in the get_job_attributes hook, an employee may get a different one through this.
+
+        :return: The response containing the pay rate override for each employee that requires it.
         """
