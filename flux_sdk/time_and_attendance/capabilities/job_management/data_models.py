@@ -344,7 +344,7 @@ class GetEmployeesPayRateOverridesResponse:
     If a pay rate value is specified in the get_job_attributes hook, it will update if an employee has an override.
     """
 
-    employee_pay_rate_per_job: list[EmployeePayRateOverride]
+    employee_pay_rate_overrides: list[EmployeePayRateOverride]
     """
     The list of pay rates overrides associated with employees.
     
@@ -358,13 +358,13 @@ class GetEmployeesPayRateOverridesResponse:
 
         attribute_names = set()
         employee_id_and_attribute_name_to_value = defaultdict(set)
-        for employee_pay_rate in self.employee_pay_rate_per_job:
+        for employee_pay_rate in self.employee_pay_rate_overrides:
             employee_id = employee_pay_rate.employee_id
             employee_attribute_name = employee_pay_rate.attribute_name
             employee_attribute_value = employee_pay_rate.attribute_value
             if not isinstance(employee_pay_rate, EmployeePayRateOverride):
                 raise ValueError("GetEmployeePayRateOverrideResponse error: "
-                                 "employee_pay_rate_per_job must be of type EmployeePayRateOverride")
+                                 "employee_pay_rate_overrides must be of type EmployeePayRateOverride")
             attribute_names.add(employee_attribute_name)
 
             if employee_attribute_value.strip().lower() in employee_id_and_attribute_name_to_value[
