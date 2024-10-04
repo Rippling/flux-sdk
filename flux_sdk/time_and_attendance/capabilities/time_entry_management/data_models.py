@@ -117,7 +117,6 @@ class TimeEntry:
         """Perform validation."""
         check_field(self, "id", str, required=True)
         check_field(self, "user_id", str, required=True)
-        check_field(self, "organization_id", str)
         check_field(self, "job_shifts", list[JobShift])
         check_field(self, "breaks", list[Break])
         check_field(self, "start_time", datetime, required=True)
