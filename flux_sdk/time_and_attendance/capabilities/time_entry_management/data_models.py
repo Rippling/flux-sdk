@@ -16,7 +16,7 @@ class TimeEntriesQuery:
     start_time: datetime
     """start_time: This field denotes the time entry start datetime with timezone (after) to filter for."""
 
-    end_time: Optional[datetime]
+    end_time: Optional[datetime] = None
     """end_time: This field denotes the time entry end datetime with timezone (before) to filter for."""
 
 @dataclass(kw_only=True)
@@ -37,16 +37,16 @@ class JobShift:
     start_time: datetime
     """start_time: This field denotes the job shift start datetime with timezone."""
 
-    end_time: Optional[datetime]
+    end_time: Optional[datetime] = None
     """end_time: This field denotes the job shift end datetime with timezone."""
 
-    description: Optional[str]
+    description: Optional[str] = None
     """description: This field denotes the 3rd party job shift description."""
 
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "id", str, required=True)
-        check_field(self, "job", dict[str, Any], required=True)
+        check_field(self, "job_attributes", dict[str, Any], required=True)
         check_field(self, "start_time", datetime, required=True)
         if self.start_time.tzinfo is None:
             raise ValueError("No time zone provided for start_time")
@@ -69,10 +69,10 @@ class Break:
     start_time: datetime
     """start_time: This field denotes the break start datetime with timezone."""
 
-    end_time: Optional[datetime]
+    end_time: Optional[datetime] = None
     """end_time: This field denotes the break end datetime with timezone."""
 
-    description: Optional[str]
+    description: Optional[str] = None
     """description: This field denotes the 3rd party break description."""
 
     def __post_init__(self):
@@ -101,23 +101,22 @@ class TimeEntry:
     user_id: str
     """user_id: This field denotes the 3rd party user id this time entry belongs to."""
 
-    job_shifts: Optional[list[JobShift]]
+    job_shifts: Optional[list[JobShift]] = None
     """job_shifts: This field denotes the list of 3rd party job shifts this time entry contains."""
 
-    breaks: Optional[list[Break]]
+    breaks: Optional[list[Break]] = None
     """breaks: This field denotes the list of 3rd party breaks this time entry contains."""
 
     start_time: datetime
     """start_time: This field denotes the time entry start datetime with timezone."""
 
-    end_time: Optional[datetime]
+    end_time: Optional[datetime] = None
     """end_time: This field denotes the break end datetime with timezone."""
 
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "id", str, required=True)
         check_field(self, "user_id", str, required=True)
-        check_field(self, "organization_id", str)
         check_field(self, "job_shifts", list[JobShift])
         check_field(self, "breaks", list[Break])
         check_field(self, "start_time", datetime, required=True)
