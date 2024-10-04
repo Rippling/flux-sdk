@@ -21,7 +21,7 @@ class TimeEntriesQuery:
     the start and end times provided. For apps that do not support filtering by modified time, this will
     always be false."""
 
-    end_time: Optional[datetime]
+    end_time: Optional[datetime] = None
     """end_time: This field denotes the time entry end datetime with timezone (before) to filter for."""
 
 @dataclass(kw_only=True)
@@ -42,10 +42,10 @@ class JobShift:
     start_time: datetime
     """start_time: This field denotes the job shift start datetime with timezone."""
 
-    end_time: Optional[datetime]
+    end_time: Optional[datetime] = None
     """end_time: This field denotes the job shift end datetime with timezone."""
 
-    description: Optional[str]
+    description: Optional[str] = None
     """description: This field denotes the 3rd party job shift description."""
 
     def __post_init__(self):
@@ -74,10 +74,10 @@ class Break:
     start_time: datetime
     """start_time: This field denotes the break start datetime with timezone."""
 
-    end_time: Optional[datetime]
+    end_time: Optional[datetime] = None
     """end_time: This field denotes the break end datetime with timezone."""
 
-    description: Optional[str]
+    description: Optional[str] = None
     """description: This field denotes the 3rd party break description."""
 
     def __post_init__(self):
@@ -106,16 +106,16 @@ class TimeEntry:
     user_id: str
     """user_id: This field denotes the 3rd party user id this time entry belongs to."""
 
-    job_shifts: Optional[list[JobShift]]
+    job_shifts: Optional[list[JobShift]] = None
     """job_shifts: This field denotes the list of 3rd party job shifts this time entry contains."""
 
-    breaks: Optional[list[Break]]
+    breaks: Optional[list[Break]] = None
     """breaks: This field denotes the list of 3rd party breaks this time entry contains."""
 
     start_time: datetime
     """start_time: This field denotes the time entry start datetime with timezone."""
 
-    end_time: Optional[datetime]
+    end_time: Optional[datetime] = None
     """end_time: This field denotes the break end datetime with timezone."""
 
     def __post_init__(self):
