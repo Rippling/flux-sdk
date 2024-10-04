@@ -51,7 +51,7 @@ class JobShift:
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "id", str, required=True)
-        check_field(self, "job", dict[str, Any], required=True)
+        check_field(self, "job_attributes", dict[str, Any], required=True)
         check_field(self, "start_time", datetime, required=True)
         if self.start_time.tzinfo is None:
             raise ValueError("No time zone provided for start_time")
