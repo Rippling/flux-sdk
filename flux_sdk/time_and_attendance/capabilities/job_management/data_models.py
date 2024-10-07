@@ -278,47 +278,50 @@ class GetJobAttributesResponse:
 @dataclass(kw_only=True)
 class EmployeePayRateOverride:
     """
-    This represents the pay rate override for a specific employee, tied to the attribute that maps to RipplingAttribute.PAY_RATE.
+    This represents the pay rate override for a specific employee, tied to the attribute_id that maps to
+     RipplingAttribute.PAY_RATE.
 
-    For instance, assume that third party attribute job_title is mapped to RipplingAttribute.PAY_RATE.
+    For instance, assume that third party attribute_id job_title is mapped to RipplingAttribute.PAY_RATE.
 
     Here are some example data:
 
     EmployeePayRateOverride(employee_id="123", pay_rate="43.3943",
-    attribute_name="job_title", attribute_value="Cashier")
-
-    Employee 123 can also have a pay rate of $50.00 overridden for the job title "Manager" with such record: EmployeePayRateOverride(employee_id="123", pay_rate="50.0000",
-    attribute_id="job_title_attribute_id", attribute_value_id="job_title_value_id")
+    attribute_value_name="Cashier", attribute_value_id="123")
 
     If a pay rate is specified in the get_job_attributes hook, we will override if an employee has a specific override.
+
+    Note that an employee can have more than one override as long as the attribute_value_id is unique.
     """
 
     employee_id: str
     """The unique identifier of the user in the third party system."""
 
-    attribute_name: str
+    attribute_value_name: str
     """
-    The third party attribute name mapped to Rippling.PAY_RATE.
-    This must be the same for all employees, ie, you cannot override different attribute names for pay rate.
+    The value of the attribute_id for this employee.
+    For ex, if the attribute_id was "job_title", the value name can be "Cashier".
     """
 
-    attribute_value: str
+    attribute_value_id: str
     """
-    The attribute value for the attribute_name associated with the pay rate. 
-    For ex, if the attribute was "job_title", the value can be "Cashier".
-    This must be unique on an (employee_id, attribute_name) basis.
+    The id of the attribute_value for this employee.
+    For ex, if the attribute_id was "job_title" and the attribute_value_name was "Cashier", the attribute_value_id
+     would be the id associated with "Cashier", for ex "123".
+    
+    Note, attribute_value_id has a 1-1 mapping with attribute_value_name for a given attribute_id.
+    For ex, (123, Cashier) is allowed, but we should not have (123, Manager) as another entry 
     """
 
     pay_rate: str
     """
-    The pay rate associated with the attribute value, a str with max 4 decimals, for ex, 43.3943.
+    The pay rate associated with the attribute_value_id, a str with max 4 decimals, for ex, 43.3943.
      """
 
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "employee_id", str, required=True)
-        check_field(self, "attribute_name", str, required=True)
-        check_field(self, "attribute_value", str, required=True)
+        check_field(self, "attribute_value_name", str, required=True)
+        check_field(self, "attribute_value_id", str, required=True)
         check_field(self, "pay_rate", str, required=True)
 
         if not isinstance(self.pay_rate, str):
@@ -340,44 +343,60 @@ class GetEmployeesPayRateOverridesResponse:
     """
     This represents a response containing the pay rates overrides for employees.
 
-    The pay rate override is tied to the attribute that maps to Rippling.PAY_RATE.
+    Employees pay rate overrides are tied to a specific attribute_id that maps to RipplingAttribute.PAY_RATE.
 
-    If a pay rate value is specified in the get_job_attributes hook, it will update if an employee has an override.
+    If a pay rate value is specified in the get_job_attributes hook, we will update if an employee has an override.
+
+    For now, we only support overriding pay rates for one attribute_id.
     """
 
-    employee_pay_rate_overrides: list[EmployeePayRateOverride]
+    employee_pay_rate_overrides: dict[str, list[EmployeePayRateOverride]]
     """
-    The list of pay rates overrides associated with employees.
+    The dict which maps attribute_id with the pay rate overrides associated with the employees for this attribute_id.
     
+    The key should be the attribute_id that directly maps to RipplingAttribute.PAY_RATE, 
+    as determined in the get_job_attributes hook.
+    
+    ex: {"job_title": [EmployeePayRateOverride(...),...]}
+    
+    For now, we only support one attribute_id, which is the attribute_id that maps to RipplingAttribute.PAY_RATE.
+        
     We will determine the employee pay rate based on the pay rate value specified in the get_job_attributes hook,
-     if it is not overriden in this list.
+     if it is not overriden in the above mapping.
     """
 
     def __post_init__(self):
         """Perform validation."""
-        check_field(self, "employee_pay_rate_per_job", list, required=True)
+        check_field(self, "employee_pay_rate_overrides", dict, required=True)
 
-        attribute_names = set()
-        employee_id_and_attribute_name_to_value = defaultdict(set)
-        for employee_pay_rate in self.employee_pay_rate_overrides:
-            employee_id = employee_pay_rate.employee_id
-            employee_attribute_name = employee_pay_rate.attribute_name
-            employee_attribute_value = employee_pay_rate.attribute_value
-            if not isinstance(employee_pay_rate, EmployeePayRateOverride):
-                raise ValueError("GetEmployeePayRateOverrideResponse error: "
-                                 "employee_pay_rate_overrides must be of type EmployeePayRateOverride")
-            attribute_names.add(employee_attribute_name)
+        attribute_value_id_to_name = dict()
+        employee_id_to_attribute_value_id = defaultdict(set)
+        for attribute_id, pay_rate_overrides in self.employee_pay_rate_overrides.items():
+            if not isinstance(attribute_id, str):
+                raise ValueError("GetEmployeesPayRateOverridesResponse error: attribute_id must be a str.")
+            for pay_rate_override in pay_rate_overrides:
+                if not isinstance(pay_rate_override, EmployeePayRateOverride):
+                    raise ValueError(
+                        "GetEmployeesPayRateOverridesResponse error: pay_rate_overrides must be of type"
+                        " EmployeePayRateOverride"
+                    )
+                attribute_value_id = pay_rate_override.attribute_value_id
+                attribute_value_name = pay_rate_override.attribute_value_name
+                employee_id = pay_rate_override.employee_id
 
-            if employee_attribute_value.strip().lower() in employee_id_and_attribute_name_to_value[
-                (employee_id, employee_attribute_name)
-            ]:
-                raise ValueError("GetEmployeePayRateOverrideResponse error: "
-                                 "attribute_value must be unique on an (employee_id, attribute_name) basis")
-            employee_id_and_attribute_name_to_value[(employee_id, employee_attribute_name)].add(
-                employee_attribute_value.strip().lower()
-            )
+                if attribute_value_id in attribute_value_id_to_name:
+                    if attribute_value_id_to_name[attribute_value_id] != attribute_value_name:
+                        raise ValueError(
+                            f"GetEmployeesPayRateOverridesResponse error: attribute_value_id {attribute_value_id} "
+                            f"maps to multiple attribute_value_names: {attribute_value_id_to_name[attribute_value_id]} "
+                            f"and {attribute_value_name}"
+                        )
+                attribute_value_id_to_name[attribute_value_id] = attribute_value_name
 
-        if len(attribute_names) > 1:
-            raise ValueError("GetEmployeePayRateOverrideResponse error: "
-                             "attribute_name must be the same across all EmployeePayRateOverride values")
+                if attribute_value_id in employee_id_to_attribute_value_id[employee_id]:
+                    raise ValueError(
+                        f"GetEmployeesPayRateOverridesResponse error: employee_id {employee_id} has "
+                        f"multiple entries for attribute_value_id {attribute_value_id}"
+                    )
+                employee_id_to_attribute_value_id[employee_id].add(attribute_value_id)
 
