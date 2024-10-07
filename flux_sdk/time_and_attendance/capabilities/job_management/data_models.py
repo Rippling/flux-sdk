@@ -350,7 +350,7 @@ class GetEmployeesPayRateOverridesResponse:
     For now, we only support overriding pay rates for one attribute_id.
     """
 
-    employee_pay_rate_overrides: dict[str, list[EmployeePayRateOverride]]
+    employee_pay_rate_overrides_per_attribute: dict[str, list[EmployeePayRateOverride]]
     """
     The dict which maps attribute_id with the pay rate overrides associated with the employees for this attribute_id.
     
@@ -367,11 +367,11 @@ class GetEmployeesPayRateOverridesResponse:
 
     def __post_init__(self):
         """Perform validation."""
-        check_field(self, "employee_pay_rate_overrides", dict, required=True)
+        check_field(self, "employee_pay_rate_overrides_per_attribute", dict, required=True)
 
         attribute_value_id_to_name = dict()
         employee_id_to_attribute_value_id = defaultdict(set)
-        for attribute_id, pay_rate_overrides in self.employee_pay_rate_overrides.items():
+        for attribute_id, pay_rate_overrides in self.employee_pay_rate_overrides_per_attribute.items():
             if not isinstance(attribute_id, str):
                 raise ValueError("GetEmployeesPayRateOverridesResponse error: attribute_id must be a str.")
             for pay_rate_override in pay_rate_overrides:
