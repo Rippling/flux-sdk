@@ -39,5 +39,5 @@ class JobManagement(ABC):
 
         The pay rate override will take precedence over the default pay rate returned from the get_job_attributes hook.
 
-        :return: The response containing the pay rate override for each employee that requires it.
+        :return: The response containing the attribute id that maps to pay rate mapping to a list of pay rate overrides.
         """
