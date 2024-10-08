@@ -285,8 +285,7 @@ class EmployeePayRateOverride:
 
     Here are some example data:
 
-    EmployeePayRateOverride(employee_id="123", pay_rate="43.3943",
-    attribute_value_name="Cashier", attribute_value_id="123")
+    EmployeePayRateOverride(employee_id="123", pay_rate="43.3943", attribute_value_id="123")
 
     If a pay rate is specified in the get_job_attributes hook, we will override if an employee has a specific override.
 
@@ -296,20 +295,13 @@ class EmployeePayRateOverride:
     employee_id: str
     """The unique identifier of the user in the third party system."""
 
-    attribute_value_name: str
-    """
-    The value of the attribute_id for this employee.
-    For ex, if the attribute_id was "job_title", the value name can be "Cashier".
-    """
-
     attribute_value_id: str
     """
-    The id of the attribute_value for this employee.
-    For ex, if the attribute_id was "job_title" and the attribute_value_name was "Cashier", the attribute_value_id
+    The unique id of the attribute value for this employee.
+    For ex, if the attribute_id was "job_title" and the job title for this employee is "Cashier", the attribute_value_id
      would be the id associated with "Cashier", for ex "123".
-    
-    Note, attribute_value_id has a 1-1 mapping with attribute_value_name for a given attribute_id.
-    For ex, (123, Cashier) is allowed, but we should not have (123, Manager) as another entry 
+     
+     Note, if an employee maps to this attribute_value_id, it should not be mapped again within the same attribute_id.
     """
 
     pay_rate: str
@@ -320,7 +312,6 @@ class EmployeePayRateOverride:
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "employee_id", str, required=True)
-        check_field(self, "attribute_value_name", str, required=True)
         check_field(self, "attribute_value_id", str, required=True)
         check_field(self, "pay_rate", str, required=True)
 
@@ -369,7 +360,6 @@ class GetEmployeesPayRateOverridesResponse:
         """Perform validation."""
         check_field(self, "employee_pay_rate_overrides_per_attribute", dict, required=True)
 
-        attribute_value_id_to_name = dict()
         employee_id_to_attribute_value_id = defaultdict(set)
         for attribute_id, pay_rate_overrides in self.employee_pay_rate_overrides_per_attribute.items():
             if not isinstance(attribute_id, str):
@@ -381,17 +371,7 @@ class GetEmployeesPayRateOverridesResponse:
                         " EmployeePayRateOverride"
                     )
                 attribute_value_id = pay_rate_override.attribute_value_id
-                attribute_value_name = pay_rate_override.attribute_value_name
                 employee_id = pay_rate_override.employee_id
-
-                if attribute_value_id in attribute_value_id_to_name:
-                    if attribute_value_id_to_name[attribute_value_id] != attribute_value_name:
-                        raise ValueError(
-                            f"GetEmployeesPayRateOverridesResponse error: attribute_value_id {attribute_value_id} "
-                            f"maps to multiple attribute_value_names: {attribute_value_id_to_name[attribute_value_id]} "
-                            f"and {attribute_value_name}"
-                        )
-                attribute_value_id_to_name[attribute_value_id] = attribute_value_name
 
                 if attribute_value_id in employee_id_to_attribute_value_id[employee_id]:
                     raise ValueError(
