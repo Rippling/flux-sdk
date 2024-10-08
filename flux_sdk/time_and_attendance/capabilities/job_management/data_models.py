@@ -1,3 +1,4 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
@@ -272,3 +273,110 @@ class GetJobAttributesResponse:
                 raise ValueError(f"GetJobAttributesResponse error: duplicate name in attributes: {attribute.name}")
             ids.add(attribute.id)
             names.add(attribute.name.strip().lower())
+
+
+@dataclass(kw_only=True)
+class EmployeePayRateOverride:
+    """
+    This represents the pay rate override for a specific employee, tied to the attribute_id that maps to
+     RipplingAttribute.PAY_RATE.
+
+    For instance, assume that third party attribute_id job_title is mapped to RipplingAttribute.PAY_RATE.
+
+    Here are some example data:
+
+    EmployeePayRateOverride(employee_id="123", pay_rate="43.3943", attribute_value_id="123")
+
+    If a pay rate is specified in the get_job_attributes hook, we will override if an employee has a specific override.
+
+    Note that an employee can have more than one override as long as the attribute_value_id is unique.
+    """
+
+    employee_id: str
+    """The unique identifier of the user in the third party system."""
+
+    attribute_value_id: str
+    """
+    The unique id of the attribute value for this employee.
+    For ex, if the attribute_id was "job_title" and the job title for this employee is "Cashier", the attribute_value_id
+     would be the id associated with "Cashier", for ex "123".
+     
+     Note, if an employee maps to this attribute_value_id, it should not be mapped again within the same attribute_id.
+    """
+
+    pay_rate: str
+    """
+    The pay rate associated with the attribute_value_id, a str with max 4 decimals, for ex, 43.3943.
+     """
+
+    def __post_init__(self):
+        """Perform validation."""
+        check_field(self, "employee_id", str, required=True)
+        check_field(self, "attribute_value_id", str, required=True)
+        check_field(self, "pay_rate", str, required=True)
+
+        if not isinstance(self.pay_rate, str):
+            raise ValueError("EmployeePayRateOverride error: pay_rate must be a str.")
+
+        try:
+            decimal = Decimal(self.pay_rate)
+        except Exception:
+            raise ValueError("EmployeePayRateOverride error: pay_rate must be a valid number")
+
+        if decimal < 0:
+            raise ValueError("EmployeePayRateOverride error: pay_rate must be a positive number")
+        if decimal.as_tuple().exponent < -4:
+            raise ValueError("EmployeePayRateOverride error: pay_rate must have at most 4 decimal places")
+
+
+@dataclass(kw_only=True)
+class GetEmployeesPayRateOverridesResponse:
+    """
+    This represents a response containing the pay rates overrides for employees.
+
+    Employees pay rate overrides are tied to a specific attribute_id that maps to RipplingAttribute.PAY_RATE.
+
+    If a pay rate value is specified in the get_job_attributes hook, we will update if an employee has an override.
+
+    For now, we only support overriding pay rates for one attribute_id.
+    """
+
+    employee_pay_rate_overrides_per_attribute: dict[str, list[EmployeePayRateOverride]]
+    """
+    The dict which maps attribute_id with the pay rate overrides associated with the employees for this attribute_id.
+    
+    The key should be the attribute_id that directly maps to RipplingAttribute.PAY_RATE, 
+    as determined in the get_job_attributes hook.
+    
+    ex: {"job_title": [EmployeePayRateOverride(...),...]}
+    
+    For now, we only support one attribute_id, which is the attribute_id that maps to RipplingAttribute.PAY_RATE.
+        
+    We will determine the employee pay rate based on the pay rate value specified in the get_job_attributes hook,
+     if it is not overriden in the above mapping.
+    """
+
+    def __post_init__(self):
+        """Perform validation."""
+        check_field(self, "employee_pay_rate_overrides_per_attribute", dict, required=True)
+
+        employee_id_to_attribute_value_id = defaultdict(set)
+        for attribute_id, pay_rate_overrides in self.employee_pay_rate_overrides_per_attribute.items():
+            if not isinstance(attribute_id, str):
+                raise ValueError("GetEmployeesPayRateOverridesResponse error: attribute_id must be a str.")
+            for pay_rate_override in pay_rate_overrides:
+                if not isinstance(pay_rate_override, EmployeePayRateOverride):
+                    raise ValueError(
+                        "GetEmployeesPayRateOverridesResponse error: pay_rate_overrides must be of type"
+                        " EmployeePayRateOverride"
+                    )
+                attribute_value_id = pay_rate_override.attribute_value_id
+                employee_id = pay_rate_override.employee_id
+
+                if attribute_value_id in employee_id_to_attribute_value_id[employee_id]:
+                    raise ValueError(
+                        f"GetEmployeesPayRateOverridesResponse error: employee_id {employee_id} has "
+                        f"multiple entries for attribute_value_id {attribute_value_id}"
+                    )
+                employee_id_to_attribute_value_id[employee_id].add(attribute_value_id)
+
