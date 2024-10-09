@@ -115,8 +115,8 @@ class EmployeeHrData:
     employee_number: int
     """ The companies policy group number which the employee is included in """
     group_number: str
-    """ The employee's social security number """
-    ssn: Optional[str]
+    """ The employee's class code """
+    class_code: Optional[str]
     """ The company tax id (ein) that applies to the employee """
     company_tax_id: str
     """ An object containing the personal details of the employee """
