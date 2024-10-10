@@ -88,8 +88,14 @@ class AttributeValue:
     """
     This represents an attribute value associated with an attribute.
 
-    Each attribute value will have a name, and a list of associated attribute values based on the
+    Each attribute value will have an id, a name, and a list of associated attribute values based on the
     compatible_rippling_attributes field.
+    """
+
+    id: str
+    """
+    The unique id associated with the attribute value.
+    For ex, the id for a particular job title in the third party system.
     """
 
     name: str
@@ -110,6 +116,7 @@ class AttributeValue:
 
     def __post_init__(self):
         """Perform validation."""
+        check_field(self, "id", str, required=True)
         check_field(self, "name", str, required=True)
         check_field(self, "associated_attribute_values", list, required=True)
 
@@ -181,6 +188,7 @@ class Attribute:
                 raise ValueError("Attribute error: attribute_values must have at least 1 value")
 
             names = set()
+            ids = set()
             associated_attribute_values_types = set()
             for value in self.attribute_values:
                 if not isinstance(value, AttributeValue):
@@ -190,6 +198,9 @@ class Attribute:
                 if value.name.strip().lower() in names:
                     raise ValueError(f"Attribute error: duplicate name in attribute_values: {value.name}")
                 names.add(value.name.strip().lower())
+                if value.id in ids:
+                    raise ValueError(f"Attribute error: duplicate id in attribute_values: {value.id}")
+                ids.add(value.id)
 
             if associated_attribute_values_types != set(allowed_compatible_values):
                 raise ValueError(
