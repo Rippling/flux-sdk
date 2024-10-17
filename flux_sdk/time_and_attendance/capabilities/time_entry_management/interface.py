@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.time_and_attendance.capabilities.time_entry_management.data_models import GetBreakTypesResponse, TimeEntriesQuery, TimeEntry
+from flux_sdk.time_and_attendance.capabilities.time_entry_management.data_models import (
+    GetBreakTypesResponse,
+    TimeEntriesQuery,
+    TimeEntry,
+)
 
 
 class TimeEntryManagement(ABC):
