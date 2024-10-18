@@ -75,6 +75,9 @@ class Break:
     description: Optional[str] = None
     """description: This field denotes the 3rd party break description."""
 
+    break_type_id: str
+    """break_type_id: This field denotes the id of the break type that's associated with the break."""
+
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "id", str, required=True)
@@ -85,6 +88,7 @@ class Break:
         if self.end_time is not None and self.end_time.tzinfo is None:
             raise ValueError("No time zone provided for end_time")
         check_field(self, "description", str)
+        check_field(self, "break_type_id", str, required=True)
 
 
 @dataclass(kw_only=True)
