@@ -98,6 +98,25 @@ class BenefitsEligibilityStatus:
     """ The date that this status began for the employee """
     effective_date: datetime
 
+class JobStatus:
+    """ The employees job title """
+    title: str
+    """ The date the employee took on this job title """
+    effective_date: datetime
+
+class DepartmentStatus:
+    """ The employees department code """
+    department_code: str
+    """ The date the employee entered this department """
+    effective_date: datetime
+
+class LocationStatus:
+    """ The employees location code """
+    location_code: str
+    """ The date the employee entered this location """
+    effective_date: datetime
+
+
 class EmployeeStatus:
     """ The employees employment status """
     status: EmployeeState
@@ -129,3 +148,13 @@ class EmployeeHrData:
     status: EmployeeStatus
     """ Whether or not the employee is considered eligible for benefits """
     benefits_eligibility: BenefitsEligibilityStatus
+    """ An object describing the employees job details """
+    job: JobStatus
+    """ An object describing the employees department """
+    department: DepartmentStatus
+    """ An object describing the employees location """
+    location: LocationStatus
+
+
+
+
