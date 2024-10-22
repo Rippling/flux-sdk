@@ -75,6 +75,9 @@ class Break:
     description: Optional[str] = None
     """description: This field denotes the 3rd party break description."""
 
+    break_type_id: str
+    """break_type_id: This field denotes the id of the break type that's associated with the break."""
+
     def __post_init__(self):
         """Perform validation."""
         check_field(self, "id", str, required=True)
@@ -85,6 +88,52 @@ class Break:
         if self.end_time is not None and self.end_time.tzinfo is None:
             raise ValueError("No time zone provided for end_time")
         check_field(self, "description", str)
+        check_field(self, "break_type_id", str, required=True)
+
+
+@dataclass(kw_only=True)
+class BreakType:
+    """
+    This class represents the equivalent of a break type. It may be called different
+    names in different apps, but should reflect the type of the break in the third party
+    system so that it can be mapped to the correct break type in Rippling by the customer.
+    """
+
+    id: str
+    """id: This field denotes the 3rd party break type id."""
+
+    name: str
+    """name: This field denotes the break type name."""
+
+    def __post_init__(self):
+        """Perform validation."""
+        check_field(self, "id", str, required=True)
+        check_field(self, "name", str, required=True)
+
+
+@dataclass(kw_only=True)
+class GetBreakTypesResponse:
+    """
+    This class represents the response of the get_break_types hook.
+    """
+
+    break_types: list[BreakType]
+    """break_types: This field denotes the list of 3rd party break types."""
+
+    def __post_init__(self):
+        """Perform validation."""
+        check_field(self, "break_types", list[BreakType], required=True)
+
+        ids = set()
+        names = set()
+        for break_type in self.break_types:
+            if break_type.id in ids:
+                raise ValueError(f"GetBreakTypesResponse error: duplicate id in break_type: {break_type.id}")
+            if break_type.name.strip().lower() in names:
+                raise ValueError(f"GetBreakTypesResponse error: duplicate name in attributes: {break_type.name}")
+            ids.add(break_type.id)
+            names.add(break_type.name.strip().lower())
+
 
 @dataclass(kw_only=True)
 class TimeEntry:

@@ -209,7 +209,6 @@ class Attribute:
                 )
 
 
-
 @dataclass(kw_only=True)
 class GetJobAttributesRequest:
     """
