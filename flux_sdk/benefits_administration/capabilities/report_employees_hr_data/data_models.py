@@ -3,16 +3,15 @@ from decimal import Decimal
 from enum import Enum
 from typing import Any, Optional
 
-from hris.models import Department
-from hub.models import WorkLocation
-
 from flux_sdk.flux_core.data_models import (
+    Department,
     Employee,
     EmployeeState,
     EmploymentType,
     PayFrequency,
     PayTimeUnit,
     TerminationType,
+    WorkLocation,
 )
 
 
@@ -73,14 +72,10 @@ class JobDetails:
     title: str
     """ The date the employee took on this job title """
     job_effective_date: datetime
-    """ The employees department code """
+    """ The employees department """
     department: Department
-    """ The date the employee entered this department """
-    department_effective_date: datetime
-    """ The employees location code """
+    """ The employees location """
     location: WorkLocation
-    """ The date the employee entered this location """
-    location_effective_date: datetime
 
 
 class Employment:

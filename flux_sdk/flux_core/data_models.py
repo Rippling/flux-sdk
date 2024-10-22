@@ -115,6 +115,25 @@ class Employee:
     work_location_nickname: Optional[str]
     teams: Optional[list[str]]
 
+class WorkLocation:
+    """
+    This contains the details of the work location of an employee.
+    """
+    location_code: str
+    city: str
+    state: str
+    zip_code: str
+    location_effective_date: datetime
+
+class Department:
+    """
+    This contains the details of a department.
+    """
+    department_reference_code: str
+    department_name: str
+    department_effective_date: datetime
+
+
 
 class ContributionType(Enum):
     """
@@ -278,4 +297,3 @@ class AppDisconnectedError(Exception):
     This exception is raised when the app is disconnected from the third-party system.
     """
     pass
-    
