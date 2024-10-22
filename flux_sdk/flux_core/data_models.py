@@ -119,18 +119,26 @@ class WorkLocation:
     """
     This contains the details of the work location of an employee.
     """
+    """ Location code of the work location """
     location_code: str
+    """ City of the work location """
     city: str
+    """ State of the work location """
     state: str
+    """ Zip code of the work location """
     zip_code: str
+    """ Date since when the employee has been working at this location """
     location_effective_date: datetime
 
 class Department:
     """
     This contains the details of a department.
     """
+    """ Reference code of the department """
     department_reference_code: str
+    """ Name of the department """
     department_name: str
+    """ Date since when the employee has been working in this department """
     department_effective_date: datetime
 
 

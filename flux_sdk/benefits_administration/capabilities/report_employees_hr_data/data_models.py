@@ -68,6 +68,8 @@ class EmploymentHours:
     hours_effective_date: datetime
 
 class JobDetails:
+    """ This object contains details about the employees current job as required by the Ben Admin Apps"""
+
     """ The employees job title """
     title: str
     """ The date the employee took on this job title """
