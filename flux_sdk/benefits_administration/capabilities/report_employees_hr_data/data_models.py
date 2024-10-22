@@ -65,6 +65,20 @@ class EmploymentHours:
     """ The date the employee began this hours schedule """
     hours_effective_date: datetime
 
+class JobDetails:
+    """ The employees job title """
+    title: str
+    """ The date the employee took on this job title """
+    job_effective_date: datetime
+    """ The employees department code """
+    department_code: str
+    """ The date the employee entered this department """
+    department_effective_date: datetime
+    """ The employees location code """
+    location_code: str
+    """ The date the employee entered this location """
+    location_effective_date: datetime
+
 
 class Employment:
     """ Object describing the employees employment contract """
@@ -75,6 +89,8 @@ class Employment:
     pay: Pay
     """ If the employee has left the company and then been rehired """
     is_rehire: bool
+    """ Job details of the employee """
+    job_details: JobDetails
     """ The last date the employee is with the company, if leaving/left """
     termination_date: datetime | None
     """ The reason the employee is leaving the company, if leaving/left """
@@ -97,25 +113,6 @@ class BenefitsEligibilityStatus:
     eligibility: BenefitsEligibility
     """ The date that this status began for the employee """
     effective_date: datetime
-
-class JobStatus:
-    """ The employees job title """
-    title: str
-    """ The date the employee took on this job title """
-    effective_date: datetime
-
-class DepartmentStatus:
-    """ The employees department code """
-    department_code: str
-    """ The date the employee entered this department """
-    effective_date: datetime
-
-class LocationStatus:
-    """ The employees location code """
-    location_code: str
-    """ The date the employee entered this location """
-    effective_date: datetime
-
 
 class EmployeeStatus:
     """ The employees employment status """
@@ -148,12 +145,6 @@ class EmployeeHrData:
     status: EmployeeStatus
     """ Whether or not the employee is considered eligible for benefits """
     benefits_eligibility: BenefitsEligibilityStatus
-    """ An object describing the employees job details """
-    job: JobStatus
-    """ An object describing the employees department """
-    department: DepartmentStatus
-    """ An object describing the employees location """
-    location: LocationStatus
 
 
 
