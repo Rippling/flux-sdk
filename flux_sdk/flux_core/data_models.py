@@ -128,7 +128,7 @@ class WorkLocation:
     """ Zip code of the work location """
     zip_code: Optional[str]
     """ Date since when the employee has been working at this location """
-    location_effective_date: Optional[datetime]
+    effective_date: Optional[datetime]
 
 class Department:
     """
@@ -137,9 +137,9 @@ class Department:
     """ Reference code of the department """
     department_reference_code: str
     """ Name of the department """
-    department_name: str
+    name: str
     """ Date since when the employee has been working in this department """
-    department_effective_date: datetime
+    effective_date: datetime
 
 
 
