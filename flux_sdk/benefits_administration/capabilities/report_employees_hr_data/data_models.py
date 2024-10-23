@@ -71,13 +71,13 @@ class JobDetails:
     """ This object contains details about the employees current job as required by the Ben Admin Apps"""
 
     """ The employees job title """
-    title: str
+    title: Optional[str]
     """ The date the employee took on this job title """
-    job_effective_date: datetime
+    job_effective_date: Optional[datetime]
     """ The employees department """
-    department: Department
+    department: Optional[Department]
     """ The employees location """
-    location: WorkLocation
+    location: Optional[WorkLocation]
 
 
 class Employment:
@@ -90,7 +90,7 @@ class Employment:
     """ If the employee has left the company and then been rehired """
     is_rehire: bool
     """ Job details of the employee """
-    job_details: JobDetails
+    job_details: Optional[JobDetails]
     """ The last date the employee is with the company, if leaving/left """
     termination_date: datetime | None
     """ The reason the employee is leaving the company, if leaving/left """

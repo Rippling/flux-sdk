@@ -120,15 +120,15 @@ class WorkLocation:
     This contains the details of the work location of an employee.
     """
     """ Location code of the work location """
-    location_code: str
+    location_code: Optional[str]
     """ City of the work location """
-    city: str
+    city: Optional[str]
     """ State of the work location """
-    state: str
+    state: Optional[str]
     """ Zip code of the work location """
-    zip_code: str
+    zip_code: Optional[str]
     """ Date since when the employee has been working at this location """
-    location_effective_date: datetime
+    location_effective_date: Optional[datetime]
 
 class Department:
     """
