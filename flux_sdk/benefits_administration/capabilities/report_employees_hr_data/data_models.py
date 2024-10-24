@@ -4,12 +4,14 @@ from enum import Enum
 from typing import Any, Optional
 
 from flux_sdk.flux_core.data_models import (
+    Department,
     Employee,
     EmployeeState,
     EmploymentType,
     PayFrequency,
     PayTimeUnit,
     TerminationType,
+    WorkLocation,
 )
 
 
@@ -65,6 +67,18 @@ class EmploymentHours:
     """ The date the employee began this hours schedule """
     hours_effective_date: datetime
 
+class JobDetails:
+    """ This object contains details about the employees current job as required by the Ben Admin Apps"""
+
+    """ The employees job title """
+    title: Optional[str]
+    """ The date the employee took on this job title """
+    job_effective_date: Optional[datetime]
+    """ The employees department """
+    department: Optional[Department]
+    """ The employees location """
+    location: Optional[WorkLocation]
+
 
 class Employment:
     """ Object describing the employees employment contract """
@@ -75,6 +89,8 @@ class Employment:
     pay: Pay
     """ If the employee has left the company and then been rehired """
     is_rehire: bool
+    """ Job details of the employee """
+    job_details: Optional[JobDetails]
     """ The last date the employee is with the company, if leaving/left """
     termination_date: datetime | None
     """ The reason the employee is leaving the company, if leaving/left """
@@ -129,3 +145,7 @@ class EmployeeHrData:
     status: EmployeeStatus
     """ Whether or not the employee is considered eligible for benefits """
     benefits_eligibility: BenefitsEligibilityStatus
+
+
+
+
