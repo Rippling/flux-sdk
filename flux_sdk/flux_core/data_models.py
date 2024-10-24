@@ -119,6 +119,7 @@ class WorkLocation:
     """
     This contains the details of the work location of an employee.
     """
+
     """ Location code of the work location """
     location_code: Optional[str]
     """ City of the work location """
@@ -134,6 +135,7 @@ class Department:
     """
     This contains the details of a department.
     """
+
     """ Reference code of the department """
     department_reference_code: str
     """ Name of the department """
