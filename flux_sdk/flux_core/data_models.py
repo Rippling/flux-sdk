@@ -137,11 +137,11 @@ class Department:
     """
 
     """ Reference code of the department """
-    department_reference_code: str
+    department_reference_code: Optional[str]
     """ Name of the department """
-    name: str
+    name: Optional[str]
     """ Date since when the employee has been working in this department """
-    effective_date: datetime
+    effective_date: Optional[datetime]
 
 
 
