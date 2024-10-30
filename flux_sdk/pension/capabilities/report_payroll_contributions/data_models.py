@@ -106,7 +106,6 @@ class PayrollRunContribution:
     amount: Decimal
 
 
-
 class EoyInfo:
     """
     This contains payroll contribution year to date of employee for all possible deduction types. If year to date
