@@ -104,7 +104,6 @@ class PayrollRunContribution:
     """
     deduction_type: ContributionType
     amount: Decimal
-    id: str
 
 
 
