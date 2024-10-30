@@ -214,6 +214,7 @@ class PayrollRunType(Enum):
     CONTRACTOR_LATE_PAYMENTS = 17
     QUARTERLY_WAGE_RECONCILIATION = 18
     QUARTERLY_CORRECTION = 19
+    BULK_TERMINATION = 20
 
 
 class OperatingMode(Enum):
