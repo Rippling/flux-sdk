@@ -115,6 +115,35 @@ class Employee:
     work_location_nickname: Optional[str]
     teams: Optional[list[str]]
 
+class WorkLocation:
+    """
+    This contains the details of the work location of an employee.
+    """
+
+    """ Location code of the work location """
+    location_code: Optional[str]
+    """ City of the work location """
+    city: Optional[str]
+    """ State of the work location """
+    state: Optional[str]
+    """ Zip code of the work location """
+    zip_code: Optional[str]
+    """ Date since when the employee has been working at this location """
+    effective_date: Optional[datetime]
+
+class Department:
+    """
+    This contains the details of a department.
+    """
+
+    """ Reference code of the department """
+    department_reference_code: Optional[str]
+    """ Name of the department """
+    name: Optional[str]
+    """ Date since when the employee has been working in this department """
+    effective_date: Optional[datetime]
+
+
 
 class ContributionType(Enum):
     """
@@ -187,6 +216,7 @@ class PayrollRunType(Enum):
     CONTRACTOR_LATE_PAYMENTS = 17
     QUARTERLY_WAGE_RECONCILIATION = 18
     QUARTERLY_CORRECTION = 19
+    BULK_TERMINATION = 20
 
 
 class OperatingMode(Enum):
@@ -280,4 +310,3 @@ class AppDisconnectedError(Exception):
     This exception is raised when the app is disconnected from the third-party system.
     """
     pass
-    
