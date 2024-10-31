@@ -169,7 +169,8 @@ class ContributionType(Enum):
     COMPANY_MATCH_ROTH_403B = 16
     COMPANY_MATCH_457B = 17
     COMPANY_MATCH_ROTH_457B = 18
-
+    SIMPLE_IRA = 19
+    COMPANY_MATCH_SIMPLE_IRA = 20
 
 class DeductionType(Enum):
     """
@@ -188,6 +189,7 @@ class DeductionType(Enum):
     ROTH_403B = 7
     _457B = 8
     ROTH_457B = 9
+    SIMPLE_IRA = 10
 
 
 class PayrollRunType(Enum):
@@ -214,6 +216,7 @@ class PayrollRunType(Enum):
     CONTRACTOR_LATE_PAYMENTS = 17
     QUARTERLY_WAGE_RECONCILIATION = 18
     QUARTERLY_CORRECTION = 19
+    BULK_TERMINATION = 20
 
 
 class OperatingMode(Enum):
