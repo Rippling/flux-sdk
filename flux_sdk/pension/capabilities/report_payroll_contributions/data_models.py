@@ -104,6 +104,10 @@ class PayrollRunContribution:
     """
     deduction_type: ContributionType
     amount: Decimal
+    id: str
+    """
+    unique identifier for handling same type of deduction type
+    """
 
 
 class EoyInfo:
