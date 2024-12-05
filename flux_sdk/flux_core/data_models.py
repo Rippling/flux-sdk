@@ -17,6 +17,14 @@ class LeaveType(Enum):
     MEDICAL = 11
     MILITARY = 12
 
+class LeaveInfo:
+    """
+    This contains employee leave of absence details corresponding to a leave type.
+    """
+    leave_type: LeaveType
+    start_date: date
+    return_date: date
+    is_paid: bool
 
 class EmployeeState(Enum):
     """
