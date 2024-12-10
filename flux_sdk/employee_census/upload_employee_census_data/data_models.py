@@ -8,18 +8,9 @@ from flux_sdk.flux_core.data_models import (
 
 class EmployeeCensusUploadSettings:
     """
-    This is one of the params for "format_employee_data" and has metadata about 
-    the upload such as environment, company_id, etc
+    This is one of the params for "format_employee_data" and has metadata about the upload.
     """
-
-    environment: str
-    """
-    The field representing the app environment. TS denotes Testing and AP denotes live. 
-    If not provided it will default to Testing
-    """
-
-    company_id: str
-    """This field denotes the company id"""   
+    pass
 
 class EmployeeCensusDataRecord:
     """
