@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from decimal import Decimal
 from enum import Enum
 from typing import Optional
 
@@ -25,6 +26,13 @@ class LeaveInfo:
     start_date: date
     return_date: date
     is_paid: bool
+
+class MonetaryValue:
+    """ Object describing a value in a specific currency """
+    """ A value of currency """
+    value: Decimal
+    """ The type of currency"""
+    currency_type: str
 
 class EmployeeState(Enum):
     """
