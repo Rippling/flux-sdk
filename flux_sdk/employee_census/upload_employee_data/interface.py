@@ -10,7 +10,7 @@ class UploadEmployeeData(ABC):
     def format_employee_data(employee_data_records: list[EmployeeDataRecord]) -> File:
         """A function that takes a list of EmployeeDataRecord and returns a formatted file.
 
-        Given a list of EmployeeDataRecord, prepare a file for upload somewhere.
+        Given a list of EmployeeDataRecord, format them into a file based on the third party app's specs and upload it to a remote server.
         :param employee_data_records: The list of employee records to format.
         :return: File
         """
