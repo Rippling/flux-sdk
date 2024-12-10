@@ -6,7 +6,7 @@ from flux_sdk.flux_core.data_models import (
 )
 
 
-class EmployeeCensusDataRecordUploadSettings:
+class EmployeeCensusUploadSettings:
     """
     This is one of the params for "format_employee_data" and has metadata about 
     the upload such as environment, company_id, etc
