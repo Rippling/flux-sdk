@@ -28,10 +28,14 @@ class LeaveInfo:
     is_paid: bool
 
 class MonetaryValue:
-    """ Object describing a value in a specific currency """
-    """ A value of currency """
+    """
+    Object describing a value in a specific currency
+    """
+
+    """ A value of currency, for ex, the '5' in 5 USD """
     value: Decimal
-    """ The type of currency"""
+    
+    """ The type of currency, for ex, 'USD' """
     currency_type: str
 
 class EmployeeState(Enum):
