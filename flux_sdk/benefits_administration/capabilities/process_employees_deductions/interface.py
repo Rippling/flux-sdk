@@ -4,7 +4,6 @@ from io import StringIO
 from flux_sdk.benefits_administration.capabilities.process_employees_deductions.data_models import (
     DeductionDetails,
     EmployeeDeductionMetaData,
-    ExternalDeductionCodeToRipplingCode,
 )
 
 
