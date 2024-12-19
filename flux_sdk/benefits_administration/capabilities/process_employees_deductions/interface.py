@@ -19,7 +19,9 @@ class ProcessEmployeesDeductions(ABC):
     @staticmethod
     @abstractmethod
     def format_and_fetch_deduction_info(
-        stream: StringIO, deduction_code_mapping: list[ExternalDeductionCodeToRipplingCode], metadata: list[EmployeeDeductionMetaData]
+        stream: StringIO,
+        deduction_code_mapping: list[ExternalDeductionCodeToRipplingCode],
+        metadata: list[EmployeeDeductionMetaData]
     ) -> list[DeductionDetails]:
         """
         This method receives the file which contains the deductions relevant to the companies employees and returns the
