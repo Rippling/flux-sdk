@@ -23,3 +23,6 @@ class ExternalDeductionCodeToRipplingCode:
     rippling_code: str
     rippling_deduction_field: DeductionCodeField
 
+class EmployeeDeductionMetaData:
+    role_id: str
+    emp_id: str

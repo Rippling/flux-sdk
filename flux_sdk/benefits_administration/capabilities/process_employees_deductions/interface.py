@@ -4,6 +4,7 @@ from typing import Any
 
 from flux_sdk.benefits_administration.capabilities.process_employees_deductions.data_models import (
     DeductionDetails,
+    ExternalDeductionCodeToRipplingCode, EmployeeDeductionMetaData,
 )
 
 
@@ -18,12 +19,13 @@ class ProcessEmployeesDeductions(ABC):
     @staticmethod
     @abstractmethod
     def format_and_fetch_deduction_info(
-        stream: StringIO, metadata: dict[str, Any]
+        stream: StringIO, deduction_code_mapping: list[ExternalDeductionCodeToRipplingCode], metadata: list[EmployeeDeductionMetaData]
     ) -> list[DeductionDetails]:
         """
         This method receives the file which contains the deductions relevant to the companies employees and returns the
         deductions details for each employee
-        :param StringIO:
-        :param dict:
+        :param StringIO: filestream
+        :param list[ExternalDeductionCodeToRipplingCode]: contains the mapping of the role to deduction code
+        :param list[EmployeeDeductionMetaData]: contains metadata for the deduction like role_id, emp_id
         :return list[DeductionDetails]:
         """
