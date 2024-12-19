@@ -20,14 +20,12 @@ class ProcessEmployeesDeductions(ABC):
     @abstractmethod
     def format_and_fetch_deduction_info(
         stream: StringIO,
-        deduction_code_mapping: list[ExternalDeductionCodeToRipplingCode],
-        metadata: list[EmployeeDeductionMetaData]
+        metadata: EmployeeDeductionMetaData
     ) -> list[DeductionDetails]:
         """
         This method receives the file which contains the deductions relevant to the companies employees and returns the
         deductions details for each employee
         :param StringIO: filestream
-        :param list[ExternalDeductionCodeToRipplingCode]: contains the mapping of the role to deduction code
-        :param list[EmployeeDeductionMetaData]: contains metadata for the deduction like role_id, emp_id
+        :param EmployeeDeductionMetaData: contains metadata for the deduction like deduction code mapping and mappings like employee_id: role_id
         :return list[DeductionDetails]:
         """

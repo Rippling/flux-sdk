@@ -24,5 +24,5 @@ class ExternalDeductionCodeToRipplingCode:
     rippling_deduction_field: DeductionCodeField
 
 class EmployeeDeductionMetaData:
-    role_id: str
-    emp_id: str
+    deduction_codes: list[ExternalDeductionCodeToRipplingCode]
+    employee_role_map: dict[str, str]
