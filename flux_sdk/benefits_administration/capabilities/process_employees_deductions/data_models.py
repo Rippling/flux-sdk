@@ -35,4 +35,4 @@ class EmployeeRoleData:
 
 class EmployeeDeductionMetaData:
     deduction_codes: list[ExternalDeductionCodeToRipplingCode]
-    employee_role_map: list[EmployeeRoleData] | None
+    employeeRoleData: list[EmployeeRoleData] | None

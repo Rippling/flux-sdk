@@ -25,6 +25,7 @@ class ProcessEmployeesDeductions(ABC):
         This method receives the file which contains the deductions relevant to the companies employees and returns the
         deductions details for each employee
         :param StringIO: filestream
-        :param EmployeeDeductionMetaData: contains metadata for the deduction like deduction code mapping and mappings like employee_id: role_id
+        :param EmployeeDeductionMetaData: contains metadata for the deduction like deduction code mapping
+         and mappings like employee_id: role_id
         :return list[DeductionDetails]:
         """
