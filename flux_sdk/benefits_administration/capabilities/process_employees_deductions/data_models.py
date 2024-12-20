@@ -35,3 +35,4 @@ class EmployeeDeductionMetaData:
     deduction_codes: list[ExternalDeductionCodeToRipplingCode]
     employees_role_data: list[EmployeeRoleData] | None
     unique_id_type: UniqueIdTypes | None
+    company_id: str | None
