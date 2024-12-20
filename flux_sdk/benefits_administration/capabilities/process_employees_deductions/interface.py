@@ -3,7 +3,7 @@ from io import StringIO
 
 from flux_sdk.benefits_administration.capabilities.process_employees_deductions.data_models import (
     DeductionDetails,
-    ExternalDeductionCodeToRipplingCode,
+    EmployeeDeductionMetadata,
 )
 
 
@@ -18,12 +18,14 @@ class ProcessEmployeesDeductions(ABC):
     @staticmethod
     @abstractmethod
     def format_and_fetch_deduction_info(
-        stream: StringIO, deduction_code_mapping: list[ExternalDeductionCodeToRipplingCode]
+        stream: StringIO,
+        metadata: EmployeeDeductionMetadata
     ) -> list[DeductionDetails]:
         """
         This method receives the file which contains the deductions relevant to the companies employees and returns the
         deductions details for each employee
-        :param StringIO:
-        :param list[ExternalDeductionCodeToRipplingCode]:
+        :param StringIO: filestream
+        :param EmployeeDeductionMetadata: contains metadata for the deduction like deduction code mapping
+         and mappings like employee_id: role_id, and the company's unique id type
         :return list[DeductionDetails]:
         """
