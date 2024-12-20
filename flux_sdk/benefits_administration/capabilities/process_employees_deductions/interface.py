@@ -3,7 +3,7 @@ from io import StringIO
 
 from flux_sdk.benefits_administration.capabilities.process_employees_deductions.data_models import (
     DeductionDetails,
-    EmployeeDeductionMetaData,
+    EmployeeDeductionMetadata,
 )
 
 
@@ -19,7 +19,7 @@ class ProcessEmployeesDeductions(ABC):
     @abstractmethod
     def format_and_fetch_deduction_info(
         stream: StringIO,
-        metadata: EmployeeDeductionMetaData
+        metadata: EmployeeDeductionMetadata
     ) -> list[DeductionDetails]:
         """
         This method receives the file which contains the deductions relevant to the companies employees and returns the
