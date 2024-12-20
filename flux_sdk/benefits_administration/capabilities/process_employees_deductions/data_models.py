@@ -25,9 +25,9 @@ class ExternalDeductionCodeToRipplingCode:
 
 class EmployeeRoleData:
     role_id: str
-    employee_number: str
+    employee_number: str | None
 
 class EmployeeDeductionMetadata:
     deduction_codes: list[ExternalDeductionCodeToRipplingCode]
-    employees_role_data: list[EmployeeRoleData]
-    company_id: str
+    employees_role_data: list[EmployeeRoleData] | None
+    company_id: str | None
