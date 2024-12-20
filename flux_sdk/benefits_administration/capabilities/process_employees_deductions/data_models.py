@@ -24,15 +24,14 @@ class ExternalDeductionCodeToRipplingCode:
     rippling_deduction_field: DeductionCodeField
 
 class UniqueIdTypes(Enum):
-    EMPLOYEE_ID = "EmployeeId"
+    EMPLOYEE_NUMBER = "EmployeeNumber"
     SSN = "SSN"
 
 class EmployeeRoleData:
     role_id: str | None
     unique_id: str | None
-    unique_id_type: UniqueIdTypes | None
-
 
 class EmployeeDeductionMetaData:
     deduction_codes: list[ExternalDeductionCodeToRipplingCode]
-    employeeRoleData: list[EmployeeRoleData] | None
+    employeesRoleData: list[EmployeeRoleData] | None
+    unique_id_type: UniqueIdTypes | None
