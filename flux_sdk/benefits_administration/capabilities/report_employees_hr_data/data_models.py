@@ -78,6 +78,8 @@ class JobDetails:
     department: Optional[Department]
     """ The employees location """
     location: Optional[WorkLocation]
+    """ The Company Configured Employment Type"""
+    companyEmploymentType: Optional[str]
 
 
 class Employment:
