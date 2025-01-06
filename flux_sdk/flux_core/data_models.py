@@ -191,6 +191,8 @@ class ContributionType(Enum):
     COMPANY_MATCH_ROTH_457B = 18
     SIMPLE_IRA = 19
     COMPANY_MATCH_SIMPLE_IRA = 20
+    EMERGENCY_SAVINGS_ACCOUNT = 21
+    COMPANY_MATCH_EMERGENCY_SAVINGS_ACCOUNT = 22
 
 class DeductionType(Enum):
     """
@@ -210,6 +212,7 @@ class DeductionType(Enum):
     _457B = 8
     ROTH_457B = 9
     SIMPLE_IRA = 10
+    EMERGENCY_SAVINGS_ACCOUNT = 11
 
 
 class PayrollRunType(Enum):
