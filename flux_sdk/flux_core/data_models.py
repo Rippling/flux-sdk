@@ -191,6 +191,8 @@ class ContributionType(Enum):
     COMPANY_MATCH_ROTH_457B = 18
     SIMPLE_IRA = 19
     COMPANY_MATCH_SIMPLE_IRA = 20
+    ESA = 21
+    COMPANY_MATCH_ESA = 22
 
 class DeductionType(Enum):
     """
