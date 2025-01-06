@@ -210,6 +210,7 @@ class DeductionType(Enum):
     _457B = 8
     ROTH_457B = 9
     SIMPLE_IRA = 10
+    ESA = 11
 
 
 class PayrollRunType(Enum):
