@@ -122,6 +122,10 @@ class EmployeeStatus:
     """ The date when the employee entered this status """
     effective_date: datetime
 
+class VendorCustomFields:
+    field_name: str
+    field_value: str
+
 class EmployeeHrData:
     '''
     This contains the core data about an employee
@@ -147,6 +151,9 @@ class EmployeeHrData:
     status: EmployeeStatus
     """ Whether or not the employee is considered eligible for benefits """
     benefits_eligibility: BenefitsEligibilityStatus
+    """ Dynamic Fields for the Vendor """
+    vendor_custom_fields: list[VendorCustomFields]
+
 
 
 
