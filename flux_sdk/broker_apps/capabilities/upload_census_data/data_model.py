@@ -1,0 +1,42 @@
+from typing import Optional
+
+
+class MemberData:
+    company_name: str
+    company_id: str
+    company_ein: str
+    first_name: str
+    middle_name: str
+    last_name: str
+    subscriber_email: Optional[str]
+    employee_ssn: str
+    relationship: str
+    gender: str
+    dob: str
+    member_ssn: str
+    employee_cell_phone: Optional[str]
+    address_line_1: str
+    address_line_2: str
+    city: str
+    state: str
+    zip: str
+    hire_date: Optional[str]
+    title: Optional[str]
+    employment_type: Optional[str]
+    hours: Optional[str]
+    earnings: Optional[str]
+    salary: Optional[str]
+    work_location: Optional[str]
+    employee_class: Optional[str]
+    pay_cycle: Optional[str]
+    plan_type: str
+    carrier_name: str
+    plan_name: str
+    plan_enrollment_date: str
+    coverage_tier: str
+    coverage_details: str
+    action: str
+    employee_rate: str
+    employer_rate: str
+    total_rate: str
+    smoker: str
