@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from flux_sdk.broker_apps.capabilities.upload_census_data.data_models import MemberData
 from flux_sdk.flux_core.data_models import AppContext, CompanyInfo, File
 
+
 class UploadCensusData(ABC):
     """
     This class represents the "upload census data" capability. The developer is supposed to implement
