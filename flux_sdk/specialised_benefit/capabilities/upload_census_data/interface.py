@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.specialised_benefit.capabilities.upload_census_data.data_models import MemberData
 from flux_sdk.flux_core.data_models import AppContext, CompanyInfo, File
+from flux_sdk.specialised_benefit.capabilities.upload_census_data.data_models import MemberData
 
 
 class UploadCensusData(ABC):
