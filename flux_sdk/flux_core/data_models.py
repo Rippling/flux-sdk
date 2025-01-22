@@ -335,3 +335,14 @@ class AppDisconnectedError(Exception):
     This exception is raised when the app is disconnected from the third-party system.
     """
     pass
+
+class Name:
+    """
+    This contains the details of an employee's name.
+    """
+    first: str
+    middle: Optional[str]
+    last: str
+    suffix: Optional[str]
+    title: Optional[str]
+    
