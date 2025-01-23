@@ -94,7 +94,7 @@ class LifeLineMemberDetails(BaseMemberLineDetails):
     coverageVolume: float
 
 
-type MemberLineDetails = Union[LifeLineMemberDetails]
+
 
 class GroupingType(Enum):
     """No grouping type, plan waived"""
@@ -121,7 +121,9 @@ class LineEnrollment:
     lineType: BenefitsLineType
     effectiveDate: date
     expirationDate: date
-    enrolled_members: list[MemberLineDetails]
+    enrolled_members: list[
+        Union[LifeLineMemberDetails]
+    ]
     groupingType: GroupingType
     planId: str
 
