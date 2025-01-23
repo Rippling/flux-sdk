@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
 
 from flux_sdk.benefits_enrollments.capabilities.report_employee_enrollments.data_models import (
-    ReportEmployeeEnrollmentsConfig
+    ReportEmployeeEnrollmentsConfig,
 )
-from flux_sdk.benefits_enrollments.data_models import (
-    CompanyEnrollmentInfo
-)
+from flux_sdk.benefits_enrollments.data_models import CompanyEnrollmentInfo
 from flux_sdk.flux_core.data_models import File
+
 
 class ReportEmployeeEnrollments(ABC):
     """Provides base data to formate report on empoloyee enrollments.

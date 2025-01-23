@@ -2,11 +2,7 @@ from datetime import date
 from enum import Enum
 from typing import Union
 
-from flux_sdk.flux_core.data_models import (
-    Address,
-    Gender,
-    Name
-)
+from flux_sdk.flux_core.data_models import Address, Gender, Name
 
 
 class MemberRelationship(Enum):
