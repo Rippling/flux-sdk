@@ -28,3 +28,4 @@ class LeaveKitEmployee:
 
     annual_salary: MonetaryValue | None
     """This field indicates the value of the annual_salary for the employee with the currency."""
+
