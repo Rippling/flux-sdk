@@ -49,7 +49,6 @@ class BenefitsMember:
     """Is the member court ordered to be enrolled?"""
     courtOrdered: bool
 
-
 class BenefitsLineType(Enum):
     """
     Describes the type of benefit plan.
@@ -90,8 +89,6 @@ class LifeLineMemberDetails(BaseMemberLineDetails):
     coverageVolume: float
 
 
-
-
 class GroupingType(Enum):
     """No grouping type, plan waived"""
     NONE = "NONE"
@@ -113,25 +110,49 @@ class LineEnrollment:
     This object contains the details of an employee's enrollment 
     in a single line of coverage.
     '''
+    """The unique ID of the plan"""
+    planId: str
     """The type of benefits"""
     lineType: BenefitsLineType
+    """Date the coverage is effective"""
     effectiveDate: date
+    """Date the coverage expires"""
     expirationDate: date
+    """The members covered by this line"""
     enrolled_members: list[
-        Union[LifeLineMemberDetails]
+        Union[LifeLineMemberDetails, BaseMemberLineDetails]
     ]
+    """The group type of the enrollment"""
     groupingType: GroupingType
-    planId: str
+    
 
 class BenefitsPlan:
+    """The details of a benefit plan"""
+    """The unique ID of the plan"""
     planId: str
+    """The group ID of the plan"""
     groupId: str
+    """The name of the plan"""
     planName: str
+    """The type of benefits"""
     lineType: BenefitsLineType
+    """The plan class code"""
     classCode: str
+
+class EmployeeEnrollments:
+    """This object contains the details of an employee's enrollments in benefit plans."""
+    """The unique ID of the employee"""
+    employeeId: str
+    """The list of members in the employee's household"""
+    members: list[BenefitsMember]
+    """The list of lines the employee is enrolled in"""
+    enrollments: list[LineEnrollment]
 
 
 class CompanyEnrollmentInfo:
+    """All enrollment information for a company"""
+    """The list of plans offered by the company"""
     plans: list[BenefitsPlan]
-    employeeEnrollments: list[LineEnrollment]
+    """The list of employees and their enrollments"""
+    employeeEnrollments: list[EmployeeEnrollments]
     

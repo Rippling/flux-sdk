@@ -22,14 +22,13 @@ class ReportEmployeeEnrollments(ABC):
         config: ReportEmployeeEnrollmentsConfig,
         employee_enrollment_data: CompanyEnrollmentInfo
     ) -> File:
-        """Single line short Summary of this hook's functionality.
+        """This method is expected to use the employee data it receives to format a file to send to the 3rd party.
         
-        Detailed description of this hook.
-        You can also include examples in markdown
-        ```python
-        # Some python code.
+        The implementer is expected to use the employee level benefits data to format a file in the way 
+        the 3rd party needs it. This will often be a CSV where each line describes a single benefit
+        enrollment for an employee or a dependent.
         ```
-        :param param1: Short summary of what this param will do
-        :param param2: Short summary of what this param will do
-        :return: ReturnType
+        :param config: Includes any app config that might be helpful
+        :param employee_enrollment_data: Includes line level data on every employee and their dependents
+        :return: File
         """
