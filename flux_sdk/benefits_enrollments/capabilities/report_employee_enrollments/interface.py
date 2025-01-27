@@ -1,10 +1,7 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.benefits_enrollments.capabilities.report_employee_enrollments.data_models import (
-    ReportEmployeeEnrollmentsConfig,
-)
 from flux_sdk.benefits_enrollments.data_models import CompanyEnrollmentInfo
-from flux_sdk.flux_core.data_models import File
+from flux_sdk.flux_core.data_models import File, Employee
 
 
 class ReportEmployeeEnrollments(ABC):
@@ -19,8 +16,8 @@ class ReportEmployeeEnrollments(ABC):
     @staticmethod
     @abstractmethod
     def format_employee_enrollment_data(
-        config: ReportEmployeeEnrollmentsConfig,
-        employee_enrollment_data: CompanyEnrollmentInfo
+        companyEnrollmentInfo: CompanyEnrollmentInfo,
+        employees: list[Employee],
     ) -> File:
         """This method is expected to use the employee data it receives to format a file to send to the 3rd party.
         
@@ -29,6 +26,7 @@ class ReportEmployeeEnrollments(ABC):
         enrollment for an employee or a dependent.
         ```
         :param config: Includes any app config that might be helpful
-        :param employee_enrollment_data: Includes line level data on every employee and their dependents
+        :param companyEnrollmentInfo: Includes line level data on every employee and their dependents
+        :param Employee: HR data for each employee
         :return: File
         """

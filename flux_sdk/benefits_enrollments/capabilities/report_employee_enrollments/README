@@ -1,0 +1,26 @@
+This capability is responsible for accepting data that describes the companies benefits the lines which employees are enrolled in and returning a formated file to be sent to the 3rd party according to the app configuration. 
+
+
+An simple implementation might look like
+```
+COLUMNS = [
+    # column strings
+]
+def format_employee_enrollment_data(
+        companyEnrollmentInfo: CompanyEnrollmentInfo,
+        employee: list[Employee]
+    ) -> File:
+    csv_output = contextlib.closing(io.StringIO())
+    writer = csv.DictWriter(csv_output, fieldnames=COLUMNS)
+
+    for employee_enrollment in companyEnrollmentInfo.employeeEnrollments:
+        row = {
+            # define data for each column here
+        }
+        writer.writerow(row)
+
+    file = File()
+    file.name = # your file name
+    file.content = csv_output.getvalue().encode()
+    return file
+```

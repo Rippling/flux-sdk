@@ -124,7 +124,8 @@ class LineEnrollment:
     ]
     """The group type of the enrollment"""
     groupingType: GroupingType
-    
+    """Indicates if the employee is enrolled in COBRA"""
+    isCobra: bool
 
 class BenefitsPlan:
     """The details of a benefit plan"""
@@ -139,7 +140,7 @@ class BenefitsPlan:
     """The plan class code"""
     classCode: str
 
-class EmployeeEnrollments:
+class EmployeeEnrollment:
     """This object contains the details of an employee's enrollments in benefit plans."""
     """The unique ID of the employee"""
     employeeId: str
@@ -154,5 +155,5 @@ class CompanyEnrollmentInfo:
     """The list of plans offered by the company"""
     plans: list[BenefitsPlan]
     """The list of employees and their enrollments"""
-    employeeEnrollments: list[EmployeeEnrollments]
+    employeeEnrollments: list[EmployeeEnrollment]
     
