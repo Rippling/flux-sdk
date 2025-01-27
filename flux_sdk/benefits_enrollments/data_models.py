@@ -53,26 +53,66 @@ class BenefitsLineType(Enum):
     """
     Describes the type of benefit plan.
     """
-    """Medical"""
+    """Medical plan"""
     MEDICAL = "MEDICAL"
-    """Dental"""
+    """Dental plan"""
     DENTAL = "DENTAL"
-    """Vision"""
+    """Vision plan"""
     VISION = "VISION"
-    """Life"""
+    """Short term disability plan"""
+    SHORT_DISABILITY = "SHORT_DISABILITY"
+    """Long term disability plan"""
+    LONG_DISABILITY = "LONG_DISABILITY"
+    """Life insurance plan"""
     LIFE = "LIFE"
-    """Voluntary life"""
-    VOLUNTARY_LIFE = "VOLUNTARY_LIFE"
-    """Secondary life"""
+    """Acc"""
+    ACCIDENTAL_DEATH_AND_DISMEMBERMENT = "ACCIDENTAL_DEATH_AND_DISMEMBERMENT"
+    """Supplemental life insurance plan"""
     SECONDARY_LIFE = "SECONDARY_LIFE"
-    """Accidental death and dismemberment"""
-    ADD = "ADD"
-    """Disability"""
-    DISABILITY = "DISABILITY"
-    """FSA"""
+    """Voluntary life insurance plan"""
+    VOLUNTARY_LIFE = "VOLUNTARY_LIFE"
+    """Critical illness plan"""
+    CRITICAL_ILLNESS = "CRITICAL_ILLNESS"
+    """Parking benefits"""
+    PARKING = "PARKING"
+    """Transit benefits"""
+    TRANSIT = "TRANSIT"
+    """Health savings account"""
     FSA = "FSA"
-    """HSA"""
-    HSA = "HSA"
+    """Health savings account"""
+    HEALTH_SAVING = "HEALTH_SAVING"
+    """Cancer insurance plan"""
+    CANCER = "CANCER"
+    """Accident insurance plan"""
+    ACCIDENT = "ACCIDENT"
+    """Hospital indemnity plan"""
+    HOSPITAL = "HOSPITAL"
+    """Employee assistance program"""
+    EMPLOYEE_ASSISTANCE_PROGRAM = "EMPLOYEE_ASSISTANCE_PROGRAM"
+    """Pet insurance plan"""
+    PET_INSURANCE = "PET_INSURANCE"
+    """Travel insurance"""
+    TRAVEL_INSURANCE = "TRAVEL_INSURANCE"
+    """"Legal aid benefit"""
+    LEGAL_AID = "LEGAL_AID"
+    """Identity theft protection"""
+    IDENTITY_THEFT = "IDENTITY_THEFT"
+    """Remote medical care"""
+    TELEMEDICINE = "TELEMEDICINE"
+    """Mental health benefits"""
+    MENTAL_HEALTH = "MENTAL_HEALTH"
+    """Fertility program"""
+    FERTILITY = "FERTILITY"
+    """Financial wellness program"""
+    FINANCIAL_WELLNESS = "FINANCIAL_WELLNESS"
+    """Primary care program"""
+    PRIMARY_CARE = "PRIMARY_CARE"
+    """Maternity benefits"""
+    MATERNITY = "MATERNITY"
+    """Care assistance"""
+    CARE_NAVIGATION = "CARE_NAVIGATION"
+    """Health reimbursement account"""
+    HEALTH_REIMBURSEMENT = "HEALTH_REIMBURSEMENT"
 
 class BaseMemberLineDetails:
     """
@@ -86,7 +126,9 @@ class LifeLineMemberDetails(BaseMemberLineDetails):
     This object contains the details of an individual enrolled in a life benefit plan.
     """
     """The amount of coverage for this member"""
-    coverageVolume: float
+    baseCoverageVolume: float
+    """The amount of voluntary coverage for this member"""
+    voluntaryCoverageVolume: float
 
 
 class GroupingType(Enum):
@@ -126,6 +168,8 @@ class LineEnrollment:
     groupingType: GroupingType
     """Indicates if the employee is enrolled in COBRA"""
     isCobra: bool
+    """Indicates if the employee has waived the plan"""
+    isWaived: bool
 
 class BenefitsPlan:
     """The details of a benefit plan"""
@@ -140,7 +184,7 @@ class BenefitsPlan:
     """The plan class code"""
     classCode: str
 
-class EmployeeEnrollment:
+class EmployeeEnrollments:
     """This object contains the details of an employee's enrollments in benefit plans."""
     """The unique ID of the employee"""
     employeeId: str
@@ -155,5 +199,5 @@ class CompanyEnrollmentInfo:
     """The list of plans offered by the company"""
     plans: list[BenefitsPlan]
     """The list of employees and their enrollments"""
-    employeeEnrollments: list[EmployeeEnrollment]
+    employeeEnrollments: list[EmployeeEnrollments]
     
