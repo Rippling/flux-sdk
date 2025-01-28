@@ -103,6 +103,8 @@ class Employment:
     original_hire_date: datetime
     """ The date the employee will begin to be paid with the company """
     w2_start_date: datetime
+    """ The permanent profile number - unique across rehired roles at same company """
+    permanent_profile_number: Optional[str]
     
 
 class BenefitsEligibility(Enum):

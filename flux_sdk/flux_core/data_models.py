@@ -150,6 +150,8 @@ class WorkLocation:
     zip_code: Optional[str]
     """ Date since when the employee has been working at this location """
     effective_date: Optional[datetime]
+    """ Nickname of work location """
+    nickname: Optional[str]
 
 class Department:
     """
