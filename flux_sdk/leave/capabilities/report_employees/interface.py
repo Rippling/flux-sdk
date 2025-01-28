@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.leave_kit.capabilities.report_employees.data_models import (
+from flux_sdk.leave.capabilities.report_employees.data_models import (
     LeaveKitEmployee,
 )
 from flux_sdk.flux_core.data_models import File
