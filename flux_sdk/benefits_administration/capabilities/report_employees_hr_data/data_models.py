@@ -62,8 +62,10 @@ class EmploymentHours:
     type: EmploymentType
     """ The date that the employee took on this employment type """
     type_effective_date: datetime
-    """ The expected hours per week, if hourly """
+    """ Deprecated - The expected hours per week, if hourly """
     hours_per_week: int | None
+    """ The expected hours per week, if hourly """
+    hours_per_week_v2: float | None
     """ The date the employee began this hours schedule """
     hours_effective_date: datetime
 
