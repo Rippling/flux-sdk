@@ -2,7 +2,6 @@ from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 from typing import Any, Optional
-from typing_extensions import deprecated
 
 from flux_sdk.flux_core.data_models import (
     Department,
@@ -63,7 +62,7 @@ class EmploymentHours:
     type: EmploymentType
     """ The date that the employee took on this employment type """
     type_effective_date: datetime
-    @deprecated("Use hours_per_week_v2 instead")
+    """ Deprecated - The expected hours per week, if hourly """
     hours_per_week: int | None
     """ The expected hours per week, if hourly """
     hours_per_week_v2: float | None
