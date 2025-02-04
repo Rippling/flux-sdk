@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from flux_sdk.flux_core.data_models import Employee, File
-from flux_sdk.insurance_borker.report_employee_enrollments.data_models import CompanyEnrollmentInfo
+from flux_sdk.insurance_broker.capabilities.report_employee_enrollments.data_models import CompanyEnrollmentInfo
 
 
 class ReportEmployeeEnrollments(ABC):
