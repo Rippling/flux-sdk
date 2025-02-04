@@ -5,7 +5,7 @@ from typing import Union
 from flux_sdk.flux_core.data_models import Address, Gender, Name
 
 
-class MemberRelationship(Enum):
+class DependentRelationship(Enum):
     """
     Describes the relationship of the member to the employee.
     """
@@ -22,32 +22,34 @@ class MemberRelationship(Enum):
     """The ex-domestic partner of the employee"""
     EX_DOMESTIC_PARTNER = "EX_DOMESTIC_PARTNER"
 
-class BenefitsMember:
+
+class BenefitsDependent:
     """
     This object contains the details of an individual enrolled in a benefit plan.
     """
     """The unique ID"""
     id: str
-    """The name of the member"""
+    """The name of the dependent"""
     name: Name
-    """The social security number of the member"""
+    """The social security number of the dependent"""
     ssn: str
-    """The date of birth of the member"""
+    """The date of birth of the dependent"""
     dateOfBirth: date
-    """The address of the member"""
+    """The address of the dependent"""
     address: Address
-    """The relationship of the member to the employee"""
-    relationship: MemberRelationship
-    """The gender of the member"""
+    """The relationship of the dependent to the employee"""
+    relationship: DependentRelationship
+    """The gender of the dependent"""
     gender: Gender
-    """Does the member smoke?"""
+    """Does the dependent smoke?"""
     smoker: bool
-    """Is the member disabled?"""
+    """Is the dependent disabled?"""
     disabled: bool
-    """IS the member a veteran?"""
+    """IS the dependent a veteran?"""
     military: bool
-    """Is the member court ordered to be enrolled?"""
+    """Is the dependent court ordered to be enrolled?"""
     courtOrdered: bool
+
 
 class BenefitsLineType(Enum):
     """
@@ -114,20 +116,15 @@ class BenefitsLineType(Enum):
     """Health reimbursement account"""
     HEALTH_REIMBURSEMENT = "HEALTH_REIMBURSEMENT"
 
-class BaseMemberLineDetails:
-    """
-    Common object for all member line details
-    """
-    """The members unique ID"""
-    member_id: str
-
-class LifeLineMemberDetails(BaseMemberLineDetails):
+class DependentLineDetails:
     """
     This object contains the details of an individual enrolled in a life benefit plan.
     """
-    """The amount of coverage for this member"""
+    """The dependent unique ID"""
+    dependentId: str
+    """The amount of coverage for this dependent, is 0 on non-life lines"""
     baseCoverageVolume: float
-    """The amount of voluntary coverage for this member"""
+    """The amount of voluntary coverage for this dependent, is 0 on non-life lines"""
     voluntaryCoverageVolume: float
 
 
@@ -147,9 +144,10 @@ class GroupingType(Enum):
     """Employee and two or more dependents (deprecated)"""
     EMPLOYEE_TWO_OR_MORE = "EMPLOYEE_TWO_OR_MORE"
 
+
 class LineEnrollment:
     '''
-    This object contains the details of an employee's enrollment 
+    This object contains the details of an employee's enrollment
     in a single line of coverage.
     '''
     """The unique ID of the plan"""
@@ -160,10 +158,8 @@ class LineEnrollment:
     effectiveDate: date
     """Date the coverage expires"""
     expirationDate: date
-    """The members covered by this line"""
-    enrolled_members: list[
-        Union[LifeLineMemberDetails, BaseMemberLineDetails]
-    ]
+    """The dependents covered by this line"""
+    enrolledDependents: list[DependentLineDetails]
     """The group type of the enrollment"""
     groupingType: GroupingType
     """Indicates if the employee is enrolled in COBRA"""
@@ -171,25 +167,24 @@ class LineEnrollment:
     """Indicates if the employee has waived the plan"""
     isWaived: bool
 
+
 class BenefitsPlan:
     """The details of a benefit plan"""
     """The unique ID of the plan"""
-    planId: str
+    id: str
     """The group ID of the plan"""
     groupId: str
     """The name of the plan"""
     planName: str
-    """The type of benefits"""
-    lineType: BenefitsLineType
-    """The plan class code"""
-    classCode: str
+
+
 
 class EmployeeEnrollments:
     """This object contains the details of an employee's enrollments in benefit plans."""
     """The unique ID of the employee"""
     employeeId: str
-    """The list of members in the employee's household"""
-    members: list[BenefitsMember]
+    """The list of dependents in the employee's household"""
+    dependents: list[BenefitsDependent]
     """The list of lines the employee is enrolled in"""
     enrollments: list[LineEnrollment]
 
@@ -200,4 +195,3 @@ class CompanyEnrollmentInfo:
     plans: list[BenefitsPlan]
     """The list of employees and their enrollments"""
     employeeEnrollments: list[EmployeeEnrollments]
-    
