@@ -335,3 +335,17 @@ class AppDisconnectedError(Exception):
     This exception is raised when the app is disconnected from the third-party system.
     """
     pass
+
+class Name:
+    """
+    This contains the details of an employee's name.
+    """
+    first: str
+    """ The middle name of the employee """
+    middle: Optional[str]
+    """ The last name of the employee """
+    last: str
+    """ The suffix of the employee """
+    suffix: Optional[str]
+    """ The prefix of the employee """
+    title: Optional[str]
