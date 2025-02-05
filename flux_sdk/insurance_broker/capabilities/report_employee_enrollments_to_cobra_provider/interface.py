@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 
 from flux_sdk.flux_core.data_models import Employee, File
-from flux_sdk.insurance_broker.capabilities.report_employee_enrollments.data_models import CompanyEnrollmentInfo
+from flux_sdk.insurance_broker.capabilities.report_employee_enrollments_to_cobra_provider.data_models import (
+    CompanyEnrollmentInfo,
+)
 
 
-class ReportEmployeeEnrollments(ABC):
+class ReportEmployeeEnrollmentsToCobraProvider(ABC):
     """Provides base data to formate report on empoloyee enrollments.
     
     The data on all company plans and employee enrollments will be provided.
