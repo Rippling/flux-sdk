@@ -132,7 +132,7 @@ class VendorCustomFields:
 
 class EmployeeHrData:
     '''
-    This contains the core data about an employee
+    This contains the base data about an employee
     which is relevant to a benefits administration provider
     '''
     """ The employee's unique identifier in Rippling """
