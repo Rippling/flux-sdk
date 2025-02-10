@@ -165,6 +165,8 @@ class LineEnrollment:
     isCobra: bool
     """Indicates if the employee has waived the plan"""
     isWaived: bool
+    """The unique id of the enrollment event that created this line enrollment"""
+    eventId: str
 
 
 class BenefitsPlan:
@@ -176,6 +178,95 @@ class BenefitsPlan:
     """The name of the plan"""
     planName: str
 
+class EnrollmentEventReason(Enum):
+    """The reasons an enrollment event can occur"""
+    """The employee is newly hired"""
+    NEW_HIRE = "NEW_HIRE"
+    """The company has an open enrollment event"""
+    OPEN_ENROLLMENT = "OPEN_ENROLLMENT"
+    """The company has a new group enrollment event"""
+    NEW_GROUP_ENROLLMENT = "NEW_GROUP_ENROLLMENT"
+    """The company transfered benefits into Rippling"""
+    BENEFITS_TRANSFER = "BENEFITS_TRANSFER"
+    """The company canceled a line(s) of coverage"""
+    GROUP_COVERAGE_CANCELATION = "GROUP_COVERAGE_CANCELATION"
+    """Manual correction to the employee's enrollment"""
+    MANUAL_CORRECTION = "MANUAL_CORRECTION"
+    """The employee is newly married"""
+    MARRIED = "MARRIED"
+    """The employee has a new child"""
+    NEW_CHILD = "NEW_CHILD"
+    """The employee has a new adopted child"""
+    ADOPTED_CHILD = "ADOPTED_CHILD"
+    """The employee gets divorced"""
+    DIVORCE = "DIVORCE"
+    """The employee passes away"""
+    DEATH = "DEATH"
+    """The employee is newly guardian"""
+    NEWLY_GUARDIAN = "NEWLY_GUARDIAN"
+    """The employee has a new foster child"""
+    NEW_FOSTER_CHILD = "NEW_FOSTER_CHILD"
+    """The employee has a new domestic partnership"""
+    NEW_DOMESTIC_PARTNERSHIP = "NEW_DOMESTIC_PARTNERSHIP"
+    """The employee moves to a new location"""
+    MOVED = "MOVED"
+    """The employee has lost coverage from outside the company"""
+    LOST_COVERAGE = "LOST_COVERAGE"
+    """The employee's dependent has lost coverage outside the company"""
+    DEPENDENT_LOST_COVERAGE = "DEPENDENT_LOST_COVERAGE"
+    """The employee's dependent has gained coverage outside the company"""
+    DEPENDENT_GAINED_COVERAGE = "DEPENDENT_GAINED_COVERAGE"
+    """The employee has moved outside the USA"""
+    DEPENDENT_MOVED_OUTSIDE_USA = "DEPENDENT_MOVED_OUTSIDE_USA"
+    """The employee has been court ordered to enroll a dependent"""
+    COURT_ORDERED = "COURT_ORDERED"
+    """The employee has a new green card"""
+    NEW_GREEN_CARD = "NEW_GREEN_CARD"
+    """The employee has enrolled in coverage through a dependent"""
+    ENROLLING_IN_DEPENDENT_COVERAGE = "ENROLLING_IN_DEPENDENT_COVERAGE"
+    """The employee is enrolling in coverage outside the company"""
+    ENROLLING_OTHER_COVERAGE = "ENROLLING_OTHER_COVERAGE"
+    """The employee's dependents other benefit costs have changed"""
+    DEPENDENT_COVERAGE_COST_CHANGED = "DEPENDENT_COVERAGE_COST_CHANGED"
+    """The companies broker has changed"""
+    BROKER_CHANGE = "BROKER_CHANGE"
+    """The employee has a Covid-19 related enrollment"""
+    COVID_19 = "COVID_19"
+    """The employee has FSA changes due to COVID-19"""
+    FSA_COVID_19 = "FSA_COVID_19"
+    """The employee has a midyear enrollment due to COVID-19"""
+    COVID_19_MIDYEAR_ENROLLMENT = "COVID_19_MIDYEAR_ENROLLMENT"
+    """NDT has changed"""
+    NDT_CHANGE = "NDT_CHANGE"
+    """The employee's dependent has aged out of dependent coverage"""
+    AGE_OUT_DEPENDENT = "AGE_OUT_DEPENDENT"
+    """The employee changed hours to full time"""
+    CHANGE_TO_FULL_TIME = "CHANGE_TO_FULL_TIME"
+    """The employee voluntarily terminated their employment"""
+    VOLUNTARY_TERMINATION = "VOLUNTARY_TERMINATION"
+    """The employee was terminated by the company"""
+    INVOLUNTARY_TERMINATION = "INVOLUNTARY_TERMINATION"
+    """The employee is retiring"""
+    RETIREMENT = "RETIREMENT"
+    """The employee abandoned their employment"""
+    ABANDON_EMPLOYMENT = "ABANDON_EMPLOYMENT"
+    """The employee declined an open offer"""
+    OFFER_DECLINED = "OFFER_DECLINED"
+    """The employer rescinded a previously extended offer"""
+    RESCIND_EMPLOYMENT_OFFER = "RESCIND_EMPLOYMENT_OFFER"
+    """The employee canceled a previously accepted offer"""
+    RENEGE_EMPLOYEMENT = "RENEGE_EMPLOYEMENT"
+    """The employee has changed to part time hours"""
+    CHANGE_TO_PART_TIME = "CHANGE_TO_PART_TIME"
+
+class EnrollmentEvent:
+    """The event that created an enrollment"""
+    """The unique ID of the event"""
+    eventId: str
+    """The date of the event"""
+    eventDate: date
+    """The reason for the event"""
+    eventReason: EnrollmentEventReason
 
 
 class EmployeeEnrollments:
@@ -186,6 +277,8 @@ class EmployeeEnrollments:
     dependents: list[BenefitsDependent]
     """The list of lines the employee is enrolled in"""
     enrollments: list[LineEnrollment]
+    """The list of events that created enrollments"""
+    events: list[EnrollmentEvent]
 
 
 class CompanyEnrollmentInfo:
