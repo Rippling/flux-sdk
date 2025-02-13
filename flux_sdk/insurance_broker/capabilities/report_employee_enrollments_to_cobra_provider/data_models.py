@@ -203,6 +203,8 @@ class EnrollmentEventReason(Enum):
     ADOPTED_CHILD = "ADOPTED_CHILD"
     """The employee gets divorced"""
     DIVORCE = "DIVORCE"
+    """The employee is legal separated from domestic partner"""
+    LEGAL_SEPARATION = "LEGAL_SEPARATION"
     """The employee passes away"""
     DEATH = "DEATH"
     """The employee is newly guardian"""
