@@ -241,3 +241,11 @@ class EmployeePayrollRecord:
     imputed_pay: This field indicates the value of the total imputed pay for the employee for this payroll run
     """
     imputed_pay: Optional[Decimal]
+    """
+    eligible_plan_comp: This field indicates the value of total eligible earning types for 401k/403B for this payroll run 
+    """
+    eligible_plan_comp: Optional[Decimal]
+    """
+    eligible_ytd_plan_comp: This field indicates the value of total eligible earning types for 401k/403B for an entire year till this date 
+    """
+    eligible_ytd_plan_comp: Optional[Decimal]
