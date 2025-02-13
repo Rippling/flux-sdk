@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.flux_core.data_models import Employee, File
+from flux_sdk.flux_core.data_models import AppContext, File
 from flux_sdk.insurance_broker.capabilities.report_employee_enrollments_to_cobra_provider.data_models import (
-    CompanyEnrollmentInfo,
+    CobraEmployeeEnrollment,
 )
 
 
@@ -18,8 +18,8 @@ class ReportEmployeeEnrollmentsToCobraProvider(ABC):
     @staticmethod
     @abstractmethod
     def format_employee_enrollment_data(
-        companyEnrollmentInfo: CompanyEnrollmentInfo,
-        employees: list[Employee],
+        enrollments: list[CobraEmployeeEnrollment],
+        app_context: AppContext,
     ) -> File:
         """This method is expected to use the employee data it receives to format a file to send to the 3rd party.
         
@@ -28,7 +28,7 @@ class ReportEmployeeEnrollmentsToCobraProvider(ABC):
         enrollment for an employee or a dependent.
         ```
         :param config: Includes any app config that might be helpful
-        :param companyEnrollmentInfo: Includes line level data on every employee and their dependents
-        :param Employee: HR data for each employee
+        :param enrollments: Includes line level data on every employee and their dependents
+        :param context: Includes any context data that might be helpful
         :return: File
         """

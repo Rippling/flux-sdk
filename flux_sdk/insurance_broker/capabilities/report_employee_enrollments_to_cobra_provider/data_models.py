@@ -1,7 +1,7 @@
 from datetime import date
 from enum import Enum
 
-from flux_sdk.flux_core.data_models import Address, Gender, Name
+from flux_sdk.flux_core.data_models import Address, Employee, Gender, Name
 
 
 class DependentRelationship(Enum):
@@ -287,3 +287,36 @@ class CompanyEnrollmentInfo:
     plans: list[BenefitsPlan]
     """The list of employees and their enrollments"""
     employeeEnrollments: list[EmployeeEnrollments]
+
+
+class CustomMapping:
+    """
+    A data model representing the mapping of plan names to their respective IDs and benefit tiers.
+
+    Attributes:
+        plan_name (str): The name of the plan.
+        plan_id (str): The unique identifier for the plan.
+        benefit_tier (str): The benefit tier associated with the plan.
+    """
+    plan_id: str
+    plan_name: str
+    benefit_tier: GroupingType
+    benefit_tier_name: str
+
+
+class CobraEmployeeEnrollment:
+    """
+    Represents the enrollments of an employee and their dependents in a COBRA plan.
+
+    Attributes:
+        employee (Employee): The employee who is enrolling in the COBRA plan.
+        dependents (list[BenefitsDependent]): A list of dependents who are also enrolling in the COBRA plan.
+        enrollment_event (EnrollmentEvent): The event that triggered the enrollment.
+        line (LineEnrollment): The specific line of enrollment for the employee.
+        plan (CustomMapping): The mapping of the plan name for the enrollment.
+    """
+    employee: Employee
+    dependents: list[BenefitsDependent]
+    enrollment_event: EnrollmentEvent
+    line: LineEnrollment
+    plan: CustomMapping
