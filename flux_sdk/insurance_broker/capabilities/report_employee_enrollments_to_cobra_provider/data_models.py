@@ -68,6 +68,8 @@ class BenefitsLineType(Enum):
     LIFE = "LIFE"
     """Acc"""
     ACCIDENTAL_DEATH_AND_DISMEMBERMENT = "ACCIDENTAL_DEATH_AND_DISMEMBERMENT"
+    """AD&D with voluntary buyup"""
+    VOLUNTARY_ACCIDENTAL_DEATH_AND_DISMEMBERMENT = "VOLUNTARY_ACCIDENTAL_DEATH_AND_DISMEMBERMENT"
     """Supplemental life insurance plan"""
     SECONDARY_LIFE = "SECONDARY_LIFE"
     """Voluntary life insurance plan"""
@@ -114,6 +116,7 @@ class BenefitsLineType(Enum):
     CARE_NAVIGATION = "CARE_NAVIGATION"
     """Health reimbursement account"""
     HEALTH_REIMBURSEMENT = "HEALTH_REIMBURSEMENT"
+    
 
 class DependentLineDetails:
     """
@@ -200,6 +203,8 @@ class EnrollmentEventReason(Enum):
     ADOPTED_CHILD = "ADOPTED_CHILD"
     """The employee gets divorced"""
     DIVORCE = "DIVORCE"
+    """The employee is legal separated from domestic partner"""
+    LEGAL_SEPARATION = "LEGAL_SEPARATION"
     """The employee passes away"""
     DEATH = "DEATH"
     """The employee is newly guardian"""
