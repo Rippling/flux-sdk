@@ -304,7 +304,7 @@ class CustomMapping:
     benefit_tier_name: str
 
 
-class CobraEmployeeEnrollments:
+class CobraEmployeeEnrollment:
     """
     Represents the enrollments of an employee and their dependents in a COBRA plan.
 
