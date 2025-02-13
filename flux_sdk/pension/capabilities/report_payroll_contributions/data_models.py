@@ -242,10 +242,10 @@ class EmployeePayrollRecord:
     """
     imputed_pay: Optional[Decimal]
     """
-    eligible_plan_comp: This field indicates the value of total eligible earning types for 401k/403B for this payroll run 
+    eligible_plan_comp: This field indicates the total eligible earning types for 401k/403B 
     """
     eligible_plan_comp: Optional[Decimal]
     """
-    eligible_ytd_plan_comp: This field indicates the value of total eligible earning types for 401k/403B for an entire year till this date 
+    eligible_ytd_plan_comp: This field indicates the total YTD eligible earning types for 401k/403B 
     """
     eligible_ytd_plan_comp: Optional[Decimal]
