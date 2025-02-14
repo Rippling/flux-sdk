@@ -1,7 +1,7 @@
 from datetime import date
 from enum import Enum
 
-from flux_sdk.flux_core.data_models import Address, Gender, Name
+from flux_sdk.flux_core.data_models import Address, Employee, Gender, Name
 
 
 class DependentRelationship(Enum):
@@ -68,6 +68,8 @@ class BenefitsLineType(Enum):
     LIFE = "LIFE"
     """Acc"""
     ACCIDENTAL_DEATH_AND_DISMEMBERMENT = "ACCIDENTAL_DEATH_AND_DISMEMBERMENT"
+    """AD&D with voluntary buyup"""
+    VOLUNTARY_ACCIDENTAL_DEATH_AND_DISMEMBERMENT = "VOLUNTARY_ACCIDENTAL_DEATH_AND_DISMEMBERMENT"
     """Supplemental life insurance plan"""
     SECONDARY_LIFE = "SECONDARY_LIFE"
     """Voluntary life insurance plan"""
@@ -114,6 +116,7 @@ class BenefitsLineType(Enum):
     CARE_NAVIGATION = "CARE_NAVIGATION"
     """Health reimbursement account"""
     HEALTH_REIMBURSEMENT = "HEALTH_REIMBURSEMENT"
+    
 
 class DependentLineDetails:
     """
@@ -200,6 +203,8 @@ class EnrollmentEventReason(Enum):
     ADOPTED_CHILD = "ADOPTED_CHILD"
     """The employee gets divorced"""
     DIVORCE = "DIVORCE"
+    """The employee is legal separated from domestic partner"""
+    LEGAL_SEPARATION = "LEGAL_SEPARATION"
     """The employee passes away"""
     DEATH = "DEATH"
     """The employee is newly guardian"""
@@ -287,3 +292,36 @@ class CompanyEnrollmentInfo:
     plans: list[BenefitsPlan]
     """The list of employees and their enrollments"""
     employeeEnrollments: list[EmployeeEnrollments]
+
+
+class CustomMapping:
+    """
+    A data model representing the mapping of plan names to their respective IDs and benefit tiers.
+
+    Attributes:
+        plan_name (str): The name of the plan.
+        plan_id (str): The unique identifier for the plan.
+        benefit_tier (str): The benefit tier associated with the plan.
+    """
+    plan_id: str
+    plan_name: str
+    benefit_tier: GroupingType
+    benefit_tier_name: str
+
+
+class CobraEmployeeEnrollment:
+    """
+    Represents the enrollments of an employee and their dependents in a COBRA plan.
+
+    Attributes:
+        employee (Employee): The employee who is enrolling in the COBRA plan.
+        dependents (list[BenefitsDependent]): A list of dependents who are also enrolling in the COBRA plan.
+        enrollment_event (EnrollmentEvent): The event that triggered the enrollment.
+        line (LineEnrollment): The specific line of enrollment for the employee.
+        plan (CustomMapping): The mapping of the plan name for the enrollment.
+    """
+    employee: Employee
+    dependents: list[BenefitsDependent]
+    enrollment_event: EnrollmentEvent
+    line: LineEnrollment
+    plan: CustomMapping
