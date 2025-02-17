@@ -1,12 +1,10 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.flux_core.data_models import File
-from flux_sdk.flux_core.data_models import (
-    Employee
-)
 from flux_sdk.emergency_savings_account.capabilities.report_employee_record.data_models import (
     EmployeeUploadSettings,
 )
+from flux_sdk.flux_core.data_models import Employee, File
+
 
 class ReportEmployees(ABC):
     @staticmethod
