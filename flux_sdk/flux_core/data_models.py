@@ -134,6 +134,7 @@ class Employee:
     termination_reason: Optional[str]   # The termination reason of the employee if the employee is terminated.
     work_location_nickname: Optional[str]
     teams: Optional[list[str]]
+    company_employment_type_label: Optional[str]
 
 class WorkLocation:
     """
