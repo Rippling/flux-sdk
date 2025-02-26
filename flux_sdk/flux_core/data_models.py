@@ -276,7 +276,7 @@ class ReportData:
     This contains the export of the report.
     """
 
-    rows: ReportRow
+    rows: list[ReportRow]
 
 class AppContext:
     """
