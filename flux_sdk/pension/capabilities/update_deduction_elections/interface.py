@@ -6,7 +6,7 @@ from flux_sdk.pension.capabilities.update_deduction_elections.data_models import
 )
 
 
-class UpdateDeductionElections(Upd):
+class UpdateDeductionElections(ABC):
     """Update deduction elections for employees in Rippling via data in your application.
 
     This class represents the "update deduction elections" capability. The developer is supposed to implement
