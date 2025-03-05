@@ -6,7 +6,7 @@ from flux_sdk.pension.capabilities.update_deduction_elections.data_models import
 )
 
 
-class UpdateDeductionElections(ABC):
+class UpdatePayrollContributions(ABC):
     """Update payroll_contribution elections for employees in Rippling via data in your application.
 
     This class represents the "update payroll_contribution elections" capability. The developer is supposed to implement
@@ -27,15 +27,3 @@ class UpdateDeductionElections(ABC):
         :param stream: Contains the stream
         :return: list[EmployeeDeductionSetting]
         """
-
-    # TODO: Define the parse_deduction on the config
-    # @staticmethod
-    # @abstractmethod
-    # def parse_deduction(record: dict[str, str]) -> EmployeeDeductionSetting:
-    #     """
-    #     This method receives a dictionary with a key-value pair generally representing a row in a csv file or a line
-    #     in a fixed-width file or something similar. The developer is expected to return a singular
-    #     EmployeeDeductionSetting
-    #     :param record: represents a row or line in the data source in key value format
-    #     :return: EmployeeDeductionSetting
-    #     """

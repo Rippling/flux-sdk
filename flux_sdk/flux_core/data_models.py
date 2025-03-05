@@ -171,8 +171,8 @@ class Department:
 class ContributionType(Enum):
     """
     This enum is an exhaustive list of all 401k Contribution types supported by Rippling. Developers are expected
-    to use this to fetch the Employee deduction contribution based on contribution type. If a contribution type your app
-    requires is not present please reach out to apps@rippling.com to add support for that particular deduction.
+    to use this to fetch the Employee payroll_contribution contribution based on contribution type. If a contribution type your app
+    requires is not present please reach out to apps@rippling.com to add support for that particular payroll_contribution.
     """
     _401K = 1
     ROTH = 2
@@ -199,9 +199,9 @@ class ContributionType(Enum):
 
 class DeductionType(Enum):
     """
-    This enum is an exhaustive list of all 401k deduction types supported by Rippling. Developers are expected
-    to create EmployeeDeductionSetting with deduction_type being among this list. If a deduction your app requires is
-    not present please reach out to apps@rippling.com to add support for that particular deduction.
+    This enum is an exhaustive list of all 401k payroll_contribution types supported by Rippling. Developers are expected
+    to create EmployeeDeductionSetting with deduction_type being among this list. If a payroll_contribution your app requires is
+    not present please reach out to apps@rippling.com to add support for that particular payroll_contribution.
     """
 
     _401K = 0

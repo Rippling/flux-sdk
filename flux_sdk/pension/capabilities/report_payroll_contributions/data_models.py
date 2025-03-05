@@ -100,21 +100,21 @@ class PayrollUploadSettings:
 
 class PayrollRunContribution:
     """
-    This contains payroll contribution amount corresponding to a particular deduction type for the employee.
+    This contains payroll contribution amount corresponding to a particular payroll_contribution type for the employee.
     """
     deduction_type: ContributionType
     amount: Decimal
     id: str
     """
-    unique identifier for handling same type of deduction type
+    unique identifier for handling same type of payroll_contribution type
     """
 
 
 class EoyInfo:
     """
-    This contains payroll contribution year to date of employee for all possible deduction types. If year to date
-    deduction sum your app requires is not present please reach out to apps@rippling.com to add support for that
-    particular deduction.
+    This contains payroll contribution year to date of employee for all possible payroll_contribution types. If year to date
+    payroll_contribution sum your app requires is not present please reach out to apps@rippling.com to add support for that
+    particular payroll_contribution.
     """
     """
     year_to_date_pretax_deferral: This field contains the year to date pre-tax deferral contribution
@@ -154,7 +154,7 @@ class EoyInfo:
 
 class EmployeeDeduction:
     """
-    This contains employee deduction details corresponding to a deduction type.
+    This contains employee payroll_contribution details corresponding to a payroll_contribution type.
     """
     deduction_type: DeductionType
     is_percentage: bool
