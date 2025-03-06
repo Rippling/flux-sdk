@@ -54,6 +54,8 @@ class Pay:
     salary_or_equivalent: MonetaryValue
     """ The value the employee expects in commission, if commission is possible """
     expected_commission: MonetaryValue | None
+    """ The value the employee expects in bonus """
+    expected_bonus: MonetaryValue | None
 
 class EmploymentHours:
     """ Object describing the employees working hours """
