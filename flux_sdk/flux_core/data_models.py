@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Optional
+from typing import Any, Optional
 
 
 class LeaveType(Enum):
@@ -264,6 +264,19 @@ class File:
     name: str
     content: bytes
 
+class ReportRow:
+    """
+    Represents each row in a report exported data.
+    """
+
+    fields: dict[str, Any]
+
+class ReportData:
+    """
+    This contains the export of the report.
+    """
+
+    rows: list[ReportRow]
 
 class AppContext:
     """
