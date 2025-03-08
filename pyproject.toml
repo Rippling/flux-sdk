@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rippling-flux-sdk"
-version = "0.56"
+version = "0.57"
 description = "Defines the interfaces and data-models used by Rippling Flux Apps."
 authors = ["Rippling Apps <apps@rippling.com>"]
 readme = "README.md"
@@ -10,6 +10,8 @@ packages = [{include="flux_sdk"}]
 python = "^3.10"
 "ruamel.yaml" = "0.17.10"
 click = ">=8.0,<9"
+pydantic = {version = "2.9.0", extras = ["email"] }
+pydantic-core = "*"  # tied to pydantic version
 
 [tool.poetry.group.dev.dependencies]
 pytest = "7.2.1"
