@@ -264,12 +264,20 @@ class File:
     name: str
     content: bytes
 
+class ReportField:
+    """
+    Represents each field in a report exported data.
+    """
+    field_id: str
+    field_name: str
+    value: Any
+
 class ReportRow:
     """
     Represents each row in a report exported data.
     """
 
-    fields: dict[str, Any]
+    fields: list[ReportField]
 
 class ReportData:
     """
