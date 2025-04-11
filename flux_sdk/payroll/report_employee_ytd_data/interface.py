@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from flux_sdk.flux_core.data_models import File, ReportData
 
 
-class ReportEmployeeYTDData(ABC):
+class ReportEmployeeYtdData(ABC):
     @staticmethod
     @abstractmethod
     def format_employee_ytd_data(employee_ytd_data: ReportData) -> File:
