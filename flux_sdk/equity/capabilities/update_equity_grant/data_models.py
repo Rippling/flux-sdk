@@ -15,7 +15,7 @@ class EquityVestingEvent(BaseModel):
     vest_quantity: the total quantity of the vesting event
     vested_quantity: the quantity which is vested
     vest_performance_condition: sometimes, a vesting event is tied to extra condition like employee performance,
-    vest_canceled_quantity: total quantity that has been canceled
+    vest_canceled_quantity: quantity that has been canceled in the vesting event
     i.e. it's not necessarily vested past the vest_date
     """
     vest_date: datetime
