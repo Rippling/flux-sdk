@@ -263,6 +263,8 @@ class EnrollmentEventReason(Enum):
     RENEGE_EMPLOYEMENT = "RENEGE_EMPLOYEMENT"
     """The employee has changed to part time hours"""
     CHANGE_TO_PART_TIME = "CHANGE_TO_PART_TIME"
+    """The reason cannot be found"""
+    UNKNOWN = "UNKNOWN"
 
 class EnrollmentEvent:
     """The event that created an enrollment"""
