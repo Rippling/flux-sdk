@@ -81,3 +81,4 @@ class EmployeeEnrollment:
     department: Optional[str]
     hsa_annual_limit_type: Optional[str]
     record_sent_timestamp: Optional[date]
+    enrollment_state: Optional[str]
