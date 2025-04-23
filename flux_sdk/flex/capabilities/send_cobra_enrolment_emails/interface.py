@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.flex.capabilities.get_emails.data_models import Email
+from flux_sdk.flex.capabilities.send_cobra_enrolment_emails.data_models import Email
 from flux_sdk.flex.capabilities.update_enrollments.data_models import EmployeeEnrollment
 
 
-class GetEmails(ABC):
+class SendCobraEnrolmentEmails(ABC):
     """
-    This class represents the "get emails" capability. The developer is supposed to implement
+    This class represents the "send cobra enrolment emails" capability. The developer is supposed to implement
     get_emails_to_send in their implementation. For further details regarding their
     implementation details, check their documentation.
 
