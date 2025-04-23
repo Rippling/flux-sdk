@@ -1,0 +1,23 @@
+from typing import (  # noqa
+    Any,
+    Dict,
+    List,
+    Optional,
+)
+
+
+class Email:
+    template_name: str
+    recipients_data: List[Dict[str, Any]]
+    global_data: dict
+    attachments: Optional[List[Dict[str, Any]]] = None
+    cc_everyone: Optional[bool] = False
+    includeInactiveCompanies: Optional[bool] = False
+    includeTestCompanies: Optional[bool] = False
+    includePeoProspects: Optional[bool] = False
+    smsOnly: Optional[bool] = False
+    sendSecurely: Optional[bool] = False
+    name_space: Optional[str] = None
+    unique_key: Optional[str] = None
+    reply_to: Optional[str] = None
+    blockInternalDenylistEmails: Optional[bool] = False
