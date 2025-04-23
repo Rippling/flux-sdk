@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from typing import (  # noqa
     Any,
     Dict,
@@ -6,7 +7,7 @@ from typing import (  # noqa
 )
 
 
-class Email:
+class Email(BaseModel):
     template_name: str
     recipients_data: List[Dict[str, Any]]
     global_data: dict
