@@ -19,4 +19,3 @@ class Email(BaseModel):
     name_space: Optional[str] = None
     unique_key: Optional[str] = None
     reply_to: Optional[str] = None
-    blockInternalDenylistEmails: Optional[bool] = False
