@@ -15,10 +15,6 @@ class Email(BaseModel):
     global_data: dict
     attachments: Optional[List[Dict[str, Any]]] = None
     cc_everyone: Optional[bool] = False
-    includeInactiveCompanies: Optional[bool] = False
-    includeTestCompanies: Optional[bool] = False
-    includePeoProspects: Optional[bool] = False
-    smsOnly: Optional[bool] = False
     sendSecurely: Optional[bool] = False
     name_space: Optional[str] = None
     unique_key: Optional[str] = None
