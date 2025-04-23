@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from flux_sdk.flex.capabilities.update_enrollments.data_models import EmployeeEnrollment
 from flux_sdk.flex.capabilities.send_email.data_models import Email
+from flux_sdk.flex.capabilities.update_enrollments.data_models import EmployeeEnrollment
 
 
 class SendEmail(ABC):
