@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from flux_sdk.flex.capabilities.send_cobra_enrollment_emails.data_models import Email
 from flux_sdk.flex.capabilities.update_enrollments.data_models import EmployeeEnrollment
+from flux_sdk.flux_core.data_models import AppContext, CompanyInfo
 
 
 class SendCobraEnrollmentEmails(ABC):
@@ -15,11 +16,16 @@ class SendCobraEnrollmentEmails(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_emails_to_send(employee_enrollments: list[EmployeeEnrollment]) -> list[Email]:
+    def get_emails_to_send(company_info: CompanyInfo, employee_enrollments: list[EmployeeEnrollment],
+                           app_context: AppContext) -> list[Email]:
         """A function that converts employee enrollments to Email objects.
 
         This method a list of EmployeeEnrollment objects. The developer is expected to
         return the Email objects which has to be sent to the vendor.
-        :param employee_enrollments:
+        :param company_info: contains information about company
+        :param employee_enrollments: contains list of cobra enrollments
+        :param app_context: contains information about customer_settings
         :return: List of Email objects.
+        This email object generated has the fields required to send emails via rippling main.
+        refer to send_email method in rippling-main/app/common/email.py
         """
