@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from flux_sdk.flex.capabilities.send_cobra_enrollment_emails.data_models import Email
 from flux_sdk.flex.capabilities.update_enrollments.data_models import EmployeeEnrollment
+from flux_sdk.flux_core.data_models import AppContext, CompanyInfo
 
 
 class SendCobraEnrollmentEmails(ABC):
@@ -15,11 +16,14 @@ class SendCobraEnrollmentEmails(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_emails_to_send(employee_enrollments: list[EmployeeEnrollment]) -> list[Email]:
+    def get_emails_to_send(company_info: CompanyInfo, employee_enrollments: list[EmployeeEnrollment],
+                                        app_context: AppContext) -> list[Email]:
         """A function that converts employee enrollments to Email objects.
 
         This method a list of EmployeeEnrollment objects. The developer is expected to
         return the Email objects which has to be sent to the vendor.
+        :param company_info:
         :param employee_enrollments:
+        :param app_context:
         :return: List of Email objects.
         """
