@@ -17,13 +17,15 @@ class SendCobraEnrollmentEmails(ABC):
     @staticmethod
     @abstractmethod
     def get_emails_to_send(company_info: CompanyInfo, employee_enrollments: list[EmployeeEnrollment],
-                                        app_context: AppContext) -> list[Email]:
+                           app_context: AppContext) -> list[Email]:
         """A function that converts employee enrollments to Email objects.
 
         This method a list of EmployeeEnrollment objects. The developer is expected to
         return the Email objects which has to be sent to the vendor.
-        :param company_info:
-        :param employee_enrollments:
-        :param app_context:
+        :param company_info: contains information about company
+        :param employee_enrollments: contains list of cobra enrollments
+        :param app_context: contains information about customer_settings
         :return: List of Email objects.
+        This email object generated has the fields required to send emails via rippling main.
+        refer to send_email method in rippling-main/app/common/email.py
         """
