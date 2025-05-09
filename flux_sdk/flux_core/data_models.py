@@ -135,6 +135,7 @@ class Employee:
     work_location_nickname: Optional[str]
     teams: Optional[list[str]]
     company_employment_type_label: Optional[str]
+    ein: Optional[str]
 
 class WorkLocation:
     """
