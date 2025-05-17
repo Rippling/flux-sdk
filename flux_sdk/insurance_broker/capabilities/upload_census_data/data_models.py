@@ -40,3 +40,6 @@ class MemberData:
     employer_rate: str
     total_rate: str
     smoker: str
+    role_status: str
+    plan_effective_date: str
+    plan_deduction_frequency: str
