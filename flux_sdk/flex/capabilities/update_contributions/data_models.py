@@ -29,3 +29,5 @@ class EmployeeContribution:
     employee: Optional[Employee]
     fsa_plan_type: Optional[FSAPlanType]
     enrollment: EmployeeEnrollment
+    employee_contribution: Optional[Decimal]
+    employer_contribution: Optional[Decimal]
