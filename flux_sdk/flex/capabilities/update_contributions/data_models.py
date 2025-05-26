@@ -17,6 +17,25 @@ class PlanType(Enum):
 
 
 class EmployeeContribution:
+    """
+    Data model representing an Employee contribution record.
+
+    Attributes:
+        role_id (str): Unique identifier for the employee's role.
+        ssn (str): Employee's Social Security Number.
+        employee_number (str): Unique identifier for the employee.
+        plan_name (PlanType): Name/type of the insurance or benefits plan.
+        contribution_date (date): Date when the contribution was made.
+        contribution_type (str): Type of contribution.
+        contribution_amount (Decimal): Amount of the contribution for the period.
+        yearly_contribution_amount (Decimal): Total contribution amount for the year.
+        tax_year (Optional[str]): Tax year the contribution is associated with.
+        employee (Optional[Employee]): Reference to the employee record.
+        fsa_plan_type (Optional[FSAPlanType]): Type of Flexible Spending Account plan, if applicable.
+        enrollment (EmployeeEnrollment): Enrollment record associated with the contribution.
+        employee_contribution (Optional[Decimal]): Portion of the contribution paid by the employee.
+        employer_contribution (Optional[Decimal]): Portion of the contribution paid by the employer.
+    """
     role_id: str
     ssn: str
     employee_number: str
