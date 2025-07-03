@@ -1,5 +1,5 @@
 version: 2025-05-14-16-39-10
 services:
   - name: flux-sdk
-    team: ben-mrkt-p-p
-    jira_project_key: BENPNP
+    team: apps
+    jira_project_key: APPS
