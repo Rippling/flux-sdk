@@ -1,0 +1,5 @@
+version: 2025-05-14-16-39-10
+services:
+  - name: flux-sdk
+    team: apps
+    jira_project_key: APPS
