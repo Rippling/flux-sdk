@@ -1,4 +1,44 @@
+from datetime import datetime
+
+from common_types.enum import RPStrEnum
 from pydantic import BaseModel
+
+
+class ErrorCode(RPStrEnum):
+    """
+    Represents error codes for domain event validation.
+    This is a placeholder for the actual error codes used in validation responses.
+    """
+
+    INVALID_EVENT_TYPE = "ERRVAL001"
+    """
+    Error code for invalid event type.
+    """
+
+    MISSING_MANDATORY_FIELD = "ERRVAL002"
+    """
+    Error code for missing mandatory field in the event payload.
+    """
+
+    INVALID_PAYLOAD = "ERRVAL003"
+    """
+    Error code for invalid payload structure in the event.
+    """
+
+    AUTHENTICATION_FAILED = "ERRAUT004"
+    """
+    Error code for authentication failure when processing the event.
+    """
+
+    CONNECTION_ERROR = "ERRCON005"
+    """
+    Error code for connection issues when attempting to process the event.
+    """
+
+    UNKNOWN_ERROR = "ERRUN0001"
+    """
+    Error code for an unknown error that occurred during event processing.
+    """
 
 
 class UpdatedData(BaseModel):
@@ -7,8 +47,19 @@ class UpdatedData(BaseModel):
     This is a placeholder for the actual updates structure.
     """
     field_name: str
+    """
+    Field name that has been updated.
+    """
+
     old_value: str | None = None
+    """
+    Previous value of the field before the update.
+    """
+
     new_value: str | None = None
+    """
+    New Current value of the field after the update.
+    """
 
 
 class DomainEvent(BaseModel):
@@ -17,10 +68,31 @@ class DomainEvent(BaseModel):
     This is a placeholder for the actual domain event structure.
     """
     object_type: str
+    """
+    Object Type of the domain event, e.g., "Quotes".
+    """
+
     event_type: str
-    payload: dict
-    upserted_data: list[UpdatedData] | None = None
-    timestamp: str
+    """
+    Event Type of the domain event, e.g., "Create", "Update", "Delete".
+    """
+
+    payload: dict = {}
+    """
+    Payload of the domain event, containing the data related to the event.
+    """
+
+    upserted_data: list[UpdatedData] = []
+    """
+    Data that has been upserted in the event, if applicable.
+    """
+
+    timestamp_utc: datetime = datetime.utcnow()
+    """
+    Timestamp of the domain event, indicating when it occurred.
+    Timestamp is in UTC format.
+    It also helpful in determining the freshness of the event.
+    """
 
 
 class ValidationResponse(BaseModel):
@@ -29,4 +101,37 @@ class ValidationResponse(BaseModel):
     This is a placeholder for the actual validation response structure.
     """
     is_valid: bool
-    error_messages: list[str] | None = None
+    """
+    Indicates whether the domain event is valid or not.
+    """
+
+    error_code: ErrorCode | None = None
+    """
+    Error code indicating the type of validation error, if any.
+    """
+
+    messages: list[str] = []
+    """
+    List of messages providing details about the validation status of the domain event.
+    """
+
+
+class PublishEventResponse(BaseModel):
+    """
+    Represents the response from publishing a domain event.
+    This is a placeholder for the actual publish event response structure.
+    """
+    success: bool
+    """
+    Indicates whether the event was successfully published or not.
+    """
+
+    error_code: ErrorCode | None = None
+    """
+    Error code indicating the type of error, if any, during event publishing.
+    """
+
+    message: str | None = None
+    """
+    List of messages providing details about the event publishing status.
+    """
