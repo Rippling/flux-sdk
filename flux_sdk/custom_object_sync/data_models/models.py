@@ -10,7 +10,7 @@ class ErrorCode(RPStrEnum):
     This is a placeholder for the actual error codes used in validation responses.
     """
 
-    INVALID_EVENT_TYPE = "ERRVAL001"
+    INVALID_OBJECT_TYPE = "ERRVAL001"
     """
     Error code for invalid event type.
     """
@@ -72,7 +72,7 @@ class DomainObject(BaseModel):
     Object Type of the domain event, e.g., "Quotes".
     """
 
-    object_type: str
+    operation: str
     """
     Event Type of the domain event, e.g., "Create", "Update", "Delete".
     """
