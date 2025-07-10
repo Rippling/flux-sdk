@@ -1,10 +1,10 @@
 from datetime import datetime
+from enum import Enum
 
-from common_types.enum import RPStrEnum
 from pydantic import BaseModel
 
 
-class ErrorCode(RPStrEnum):
+class ErrorCode(Enum):
     """
     Represents error codes for domain event validation.
     This is a placeholder for the actual error codes used in validation responses.
