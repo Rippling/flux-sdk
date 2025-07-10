@@ -1,4 +1,6 @@
-from flux_sdk.etl.data_models.domain_event import DomainEvent, ValidationResponse
+from typing import Any
+
+from flux_sdk.etl.data_models.domain_event import DomainEvent, PublishEventResponse, ValidationResponse
 
 
 class DomainEventBridgeInterface:
@@ -9,7 +11,7 @@ class DomainEventBridgeInterface:
     that serves as a bridge for domain events.
     """
 
-    def publish_event(self, event: DomainEvent) -> None:
+    def publish_event(self, event: DomainEvent) -> PublishEventResponse:
         """
         Publish a domain event to the vendor.
         Here app developers can implement the logic to send the event to the appropriate vendor or service.
@@ -18,6 +20,19 @@ class DomainEventBridgeInterface:
             event (dict): The domain event to be published.
         """
         raise NotImplementedError("Method 'publish_event' must be implemented.")
+
+    def transform_event(self, event: DomainEvent) -> dict[str, Any]:
+        """
+        Transform a domain event before publishing it.
+
+        Args:
+            event (DomainEvent): The domain event to be transformed.
+
+        Returns:
+            dict[str, Any]: The transformed event data ready for publishing.
+        """
+        raise NotImplementedError("Method 'transform_event' must be implemented.")
+
 
     def validate_event(self, event: DomainEvent) -> ValidationResponse:
         """
