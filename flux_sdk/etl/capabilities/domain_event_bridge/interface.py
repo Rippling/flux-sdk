@@ -4,7 +4,7 @@ from typing import Any
 from flux_sdk.etl.data_models.domain_event import DomainEvent, PublishEventResponse, ValidationResponse
 
 
-class DomainEventBridgeInterface(ABC):
+class DomainEventBridge(ABC):
     """
     Interface for the Domain Event Bridge.
 
