@@ -1,9 +1,10 @@
+from abc import ABC, abstractmethod
 from typing import Any
 
 from flux_sdk.etl.data_models.domain_event import DomainEvent, PublishEventResponse, ValidationResponse
 
 
-class DomainEventBridgeInterface:
+class DomainEventBridgeInterface(ABC):
     """
     Interface for the Domain Event Bridge.
 
@@ -11,7 +12,9 @@ class DomainEventBridgeInterface:
     that serves as a bridge for domain events.
     """
 
-    def publish_event(self, event: DomainEvent) -> PublishEventResponse:
+    @staticmethod
+    @abstractmethod
+    def publish_event(event: DomainEvent) -> PublishEventResponse:
         """
         Publish a domain event to the vendor.
         Here app developers can implement the logic to send the event to the appropriate vendor or service.
@@ -19,9 +22,10 @@ class DomainEventBridgeInterface:
         Args:
             event (dict): The domain event to be published.
         """
-        raise NotImplementedError("Method 'publish_event' must be implemented.")
 
-    def transform_event(self, event: DomainEvent) -> dict[str, Any]:
+    @staticmethod
+    @abstractmethod
+    def transform_event(event: DomainEvent) -> dict[str, Any]:
         """
         Transform a domain event before publishing it.
 
@@ -31,10 +35,10 @@ class DomainEventBridgeInterface:
         Returns:
             dict[str, Any]: The transformed event data ready for publishing.
         """
-        raise NotImplementedError("Method 'transform_event' must be implemented.")
 
-
-    def validate_event(self, event: DomainEvent) -> ValidationResponse:
+    @staticmethod
+    @abstractmethod
+    def validate_event(event: DomainEvent) -> ValidationResponse:
         """
         Validate a domain event.
 
@@ -47,4 +51,3 @@ class DomainEventBridgeInterface:
         Raises:
             NotImplementedError: If the method is not implemented in the subclass.
         """
-        raise NotImplementedError("Method 'validate_event' must be implemented.")
