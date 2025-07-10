@@ -62,7 +62,7 @@ class UpdatedData(BaseModel):
     """
 
 
-class DomainEvent(BaseModel):
+class DomainObject(BaseModel):
     """
     Represents a domain event that can be received by the task.
     This is a placeholder for the actual domain event structure.
@@ -72,7 +72,7 @@ class DomainEvent(BaseModel):
     Object Type of the domain event, e.g., "Quotes".
     """
 
-    event_type: str
+    object_type: str
     """
     Event Type of the domain event, e.g., "Create", "Update", "Delete".
     """
@@ -82,7 +82,7 @@ class DomainEvent(BaseModel):
     Payload of the domain event, containing the data related to the event.
     """
 
-    upserted_data: list[UpdatedData] = []
+    upserted_data: list[UpdatedData] | None = None
     """
     Data that has been upserted in the event, if applicable.
     """
@@ -116,7 +116,7 @@ class ValidationResponse(BaseModel):
     """
 
 
-class PublishEventResponse(BaseModel):
+class PublishObjectResponse(BaseModel):
     """
     Represents the response from publishing a domain event.
     This is a placeholder for the actual publish event response structure.
