@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -61,39 +62,69 @@ class UpdatedData(BaseModel):
     New Current value of the field after the update.
     """
 
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Convert the updated data to a dictionary representation.
+        This method is useful for serialization or logging purposes.
+        """
+        return {
+            "field_name": self.field_name,
+            "old_value": self.old_value,
+            "new_value": self.new_value,
+        }
+
 
 class DomainObject(BaseModel):
     """
-    Represents a domain event that can be received by the task.
-    This is a placeholder for the actual domain event structure.
+    Represents a domain object that can be received by the task.
+    This is a placeholder for the actual domain object structure.
     """
-    object_type: str
+    object_name: str
     """
-    Object Type of the domain event, e.g., "Quotes".
-    """
-
-    operation: str
-    """
-    Event Type of the domain event, e.g., "Create", "Update", "Delete".
+    Object Type of the domain object, e.g., "cpq".
     """
 
-    payload: dict = {}
+    object_api_name: str
     """
-    Payload of the domain event, containing the data related to the event.
+    Object API name of the domain object, e.g., "Quotes".
+    """
+
+    payload: dict[str, Any] = {}
+    """
+    Payload of the domain object, containing the data related to the object.
     """
 
     upserted_data: list[UpdatedData] | None = None
     """
-    Data that has been upserted in the event, if applicable.
+    Data that has been upserted in the object, if applicable.
     """
 
-    timestamp_utc: datetime = datetime.utcnow()
+    last_updated_ts_utc: datetime = datetime.utcnow()
     """
-    Timestamp of the domain event, indicating when it occurred.
+    Timestamp of the domain object, indicating when it occurred.
     Timestamp is in UTC format.
-    It also helpful in determining the freshness of the event.
+    It also helpful in determining the freshness of the object.
     """
 
+    current_change_ts_utc: datetime = datetime.utcnow()
+    """
+    Timestamp of the domain object, indicating when currently it was changed.
+    Timestamp is in UTC format.
+    """
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Convert the domain object to a dictionary representation.
+        This method is useful for serialization or logging purposes.
+        """
+        return {
+            "object_name": self.object_name,
+            "object_api_name": self.object_api_name,
+            "payload": self.payload,
+            "upserted_data": [data.to_dict() for data in self.upserted_data] if self.upserted_data else None,
+            "last_updated_ts_utc": self.last_updated_ts_utc.isoformat(),
+            "current_change_ts_utc": self.current_change_ts_utc.isoformat(),
+        }
 
 class ValidationResponse(BaseModel):
     """
@@ -116,7 +147,7 @@ class ValidationResponse(BaseModel):
     """
 
 
-class PublishObjectResponse(BaseModel):
+class PushObjectResponse(BaseModel):
     """
     Represents the response from publishing a domain event.
     This is a placeholder for the actual publish event response structure.
@@ -135,3 +166,82 @@ class PublishObjectResponse(BaseModel):
     """
     List of messages providing details about the event publishing status.
     """
+
+
+class DomainObjectRecordQuery(BaseModel):
+    record_ids: list[str]
+    """
+    Ids of the domain object records to be queried.
+    """
+
+    query_params: dict[str, Any] | None = None
+    """
+    Other query parameters to filter the domain object records.
+    """
+
+    def __str__(self) -> str:
+        return f"DomainObjectRecordQuery(object_ids={self.record_ids}, query_params={self.query_params})"
+
+
+class DomainObjectQuery(BaseModel):
+    """
+    Represents a query for fetching domain objects.
+    This is a placeholder for the actual query structure.
+    """
+    object_name: str
+    """
+    Object Type of the domain object, e.g., "cpq".
+    """
+
+    object_api_name: str
+    """
+    Object API name of the domain object, e.g., "Quotes".
+    """
+
+    record_query: DomainObjectRecordQuery
+    """
+    Domain object record query, which contains the object IDs and query parameters.
+    """
+
+    def __str__(self) -> str:
+        return (f"DomainObjectQuery(object_name={self.object_name}, object_api_name={self.object_api_name}, "
+                f"record_query={self.record_query})")
+
+
+class FetchedExternalRecord(BaseModel):
+    """
+    Context data for the FetchDomainObjectTask.
+    This class is used to pass the query parameters for fetching the domain object from the vendor.
+    """
+    fetched_data: dict[str, Any] = {}
+    """
+    Fetched data from the vendor.
+    """
+
+    fetched_by_query: DomainObjectQuery
+    """
+    Query parameters used to fetch the domain object.
+    """
+
+    def __str__(self) -> str:
+        return f"FetchedExternalRecord(fetched_data={self.fetched_data}, fetched_by_query={self.fetched_by_query})"
+
+
+class PushObjectRequest(BaseModel):
+    """
+    Represents the request to push a domain object to the vendor.
+    This is a placeholder for the actual push request structure.
+    """
+    domain_object: DomainObject
+    """
+    The domain object to be pushed to the vendor.
+    """
+
+    request_payload: dict[str, Any]
+    """
+    The payload of the request to be sent to the vendor.
+    This payload is typically the transformed version of the domain object.
+    """
+
+    def __str__(self) -> str:
+        return f"PushObjectRequest(domain_object={self.domain_object}, request_payload={self.request_payload})"
