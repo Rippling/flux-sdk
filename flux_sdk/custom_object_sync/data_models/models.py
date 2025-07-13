@@ -7,44 +7,44 @@ from pydantic import BaseModel
 
 class ErrorCode(Enum):
     """
-    Represents error codes for domain event validation.
+    Represents error codes for domain object validation.
     This is a placeholder for the actual error codes used in validation responses.
     """
 
     INVALID_OBJECT_TYPE = "ERRVAL001"
     """
-    Error code for invalid event type.
+    Error code for invalid object type.
     """
 
     MISSING_MANDATORY_FIELD = "ERRVAL002"
     """
-    Error code for missing mandatory field in the event payload.
+    Error code for missing mandatory field in the object payload.
     """
 
     INVALID_PAYLOAD = "ERRVAL003"
     """
-    Error code for invalid payload structure in the event.
+    Error code for invalid payload structure in the object.
     """
 
     AUTHENTICATION_FAILED = "ERRAUT004"
     """
-    Error code for authentication failure when processing the event.
+    Error code for authentication failure when processing the object.
     """
 
     CONNECTION_ERROR = "ERRCON005"
     """
-    Error code for connection issues when attempting to process the event.
+    Error code for connection issues when attempting to process the object.
     """
 
     UNKNOWN_ERROR = "ERRUN0001"
     """
-    Error code for an unknown error that occurred during event processing.
+    Error code for an unknown error that occurred during object processing.
     """
 
 
 class UpdatedData(BaseModel):
     """
-    Represents the updates that have been made to the domain event.
+    Represents the updates that have been made to the domain object.
     This is a placeholder for the actual updates structure.
     """
     field_name: str
@@ -61,6 +61,10 @@ class UpdatedData(BaseModel):
     """
     New Current value of the field after the update.
     """
+
+    def __str__(self) -> str:
+        return (f"UpdatedData(field_name={self.field_name}, old_value={self.old_value}, "
+                f"new_value={self.new_value})")
 
     def to_dict(self) -> dict[str, Any]:
         """
@@ -112,6 +116,12 @@ class DomainObject(BaseModel):
     Timestamp is in UTC format.
     """
 
+    def __str__(self) -> str:
+        return (f"DomainObject(object_name={self.object_name}, object_api_name={self.object_api_name}, "
+                f"payload={self.payload}, upserted_data={self.upserted_data}, "
+                f"last_updated_ts_utc={self.last_updated_ts_utc.isoformat()}, "
+                f"current_change_ts_utc={self.current_change_ts_utc.isoformat()})")
+
     def to_dict(self) -> dict[str, Any]:
         """
         Convert the domain object to a dictionary representation.
@@ -128,12 +138,12 @@ class DomainObject(BaseModel):
 
 class ValidationResponse(BaseModel):
     """
-    Represents the response from the validation of a domain event.
+    Represents the response from the validation of a domain object.
     This is a placeholder for the actual validation response structure.
     """
     is_valid: bool
     """
-    Indicates whether the domain event is valid or not.
+    Indicates whether the domain object is valid or not.
     """
 
     error_code: ErrorCode | None = None
@@ -143,29 +153,58 @@ class ValidationResponse(BaseModel):
 
     messages: list[str] = []
     """
-    List of messages providing details about the validation status of the domain event.
+    List of messages providing details about the validation status of the domain object.
     """
 
+    def __str__(self) -> str:
+        return (f"ValidationResponse(is_valid={self.is_valid}, error_code={self.error_code}, "
+                f"messages={self.messages})")
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Convert the validation response to a dictionary representation.
+        This method is useful for serialization or logging purposes.
+        """
+        return {
+            "is_valid": self.is_valid,
+            "error_code": self.error_code.value if self.error_code else None,
+            "messages": self.messages
+        }
 
 class PushObjectResponse(BaseModel):
     """
-    Represents the response from publishing a domain event.
-    This is a placeholder for the actual publish event response structure.
+    Represents the response from publishing a domain object.
+    This is a placeholder for the actual publish object response structure.
     """
     success: bool
     """
-    Indicates whether the event was successfully published or not.
+    Indicates whether the object was successfully published or not.
     """
 
     error_code: ErrorCode | None = None
     """
-    Error code indicating the type of error, if any, during event publishing.
+    Error code indicating the type of error, if any, during object publishing.
     """
 
     message: str | None = None
     """
-    List of messages providing details about the event publishing status.
+    List of messages providing details about the object publishing status.
     """
+
+    def __str__(self) -> str:
+        return (f"PushObjectResponse(success={self.success}, error_code={self.error_code}, "
+                f"message={self.message})")
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Convert the push object response to a dictionary representation.
+        This method is useful for serialization or logging purposes.
+        """
+        return {
+            "success": self.success,
+            "error_code": self.error_code.value if self.error_code else None,
+            "message": self.message
+        }
 
 
 class DomainObjectRecordQuery(BaseModel):
@@ -181,6 +220,16 @@ class DomainObjectRecordQuery(BaseModel):
 
     def __str__(self) -> str:
         return f"DomainObjectRecordQuery(object_ids={self.record_ids}, query_params={self.query_params})"
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Convert the domain object record query to a dictionary representation.
+        This method is useful for serialization or logging purposes.
+        """
+        return {
+            "record_ids": self.record_ids,
+            "query_params": self.query_params if self.query_params else {}
+        }
 
 
 class DomainObjectQuery(BaseModel):
@@ -206,6 +255,17 @@ class DomainObjectQuery(BaseModel):
     def __str__(self) -> str:
         return (f"DomainObjectQuery(object_name={self.object_name}, object_api_name={self.object_api_name}, "
                 f"record_query={self.record_query})")
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Convert the domain object query to a dictionary representation.
+        This method is useful for serialization or logging purposes.
+        """
+        return {
+            "object_name": self.object_name,
+            "object_api_name": self.object_api_name,
+            "record_query": self.record_query.to_dict()
+        }
 
 
 class FetchedExternalRecord(BaseModel):
@@ -245,3 +305,13 @@ class PushObjectRequest(BaseModel):
 
     def __str__(self) -> str:
         return f"PushObjectRequest(domain_object={self.domain_object}, request_payload={self.request_payload})"
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Convert the push object request to a dictionary representation.
+        This method is useful for serialization or logging purposes.
+        """
+        return {
+            "domain_object": self.domain_object.to_dict(),
+            "request_payload": self.request_payload
+        }

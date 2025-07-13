@@ -26,7 +26,7 @@ class CustomObjectInwardSync(ABC):
             fetched_external_record (FetchedExternalRecord): The domain object to be transformed in DomainObject format.
 
         Returns:
-            dict[str, Any]: The transformed object data ready for publishing.
+            DomainObject: The transformed object data ready for publishing.
         """
 
     @staticmethod
@@ -36,7 +36,7 @@ class CustomObjectInwardSync(ABC):
         Validate a domain object.
 
         Args:
-            fetched_record (dict): The fetched domain object to be validated.
+            fetched_record (FetchedExternalRecord): The fetched domain object to be validated.
 
         Returns:
             ValidationResponse: The response containing validation results.
@@ -53,7 +53,7 @@ class CustomObjectInwardSync(ABC):
         Fetch a domain object based on the provided query.
 
         Args:
-            query (dict): The query parameters to filter the domain objects.
+            query (DomainObjectQuery): The query parameters to filter the domain objects.
 
         Returns:
             FetchedExternalRecord: The fetched domain object.

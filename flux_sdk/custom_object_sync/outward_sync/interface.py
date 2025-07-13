@@ -24,7 +24,11 @@ class CustomObjectOutwardSync(ABC):
         Here app developers can implement the logic to send the event to the appropriate vendor or service.
         flux-proxy session will be used to publish the event.
         Args:
-            push_object_request (dict): The payload of domain event to be published.
+            push_object_request (PushObjectRequest): The payload of domain event to be published.
+
+        Returns:
+            PushObjectResponse: The response containing the status of the push operation.
+            PushObjectResponse is a Pydantic model that contains the response data.
         """
 
     @staticmethod
@@ -37,7 +41,7 @@ class CustomObjectOutwardSync(ABC):
             domain_object (DomainObject): The domain event to be transformed.
 
         Returns:
-            dict[str, Any]: The transformed event data ready for publishing.
+            PushObjectRequest: The transformed event data ready for publishing.
         """
 
     @staticmethod
@@ -47,7 +51,7 @@ class CustomObjectOutwardSync(ABC):
         Validate a domain event.
 
         Args:
-            domain_object (dict): The domain object to be validated.
+            domain_object (DomainObject): The domain object to be validated.
 
         Returns:
             ValidationResponse: The response containing validation results.
