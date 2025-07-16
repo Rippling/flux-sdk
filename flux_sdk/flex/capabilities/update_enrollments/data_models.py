@@ -12,6 +12,7 @@ class BenefitType(Enum):
     COMMUTER = 2
 
 
+# Enum which indicates if EmployeeEnrollment is being used as Participant record or Enrollment record
 class RecordType(Enum):
     Participant = 0
     Enrollment = 1
