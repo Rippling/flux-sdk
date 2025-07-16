@@ -104,6 +104,8 @@ class PayrollRunContribution:
     """
     deduction_type: ContributionType
     amount: Decimal
+    deduction_amount: Decimal
+    is_percentage: bool
     id: str
     """
     unique identifier for handling same type of deduction type
