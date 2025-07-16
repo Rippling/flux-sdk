@@ -1,7 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Any
 
-from flux_sdk.custom_object_sync.data_models.models import DomainObject, PublishObjectResponse, ValidationResponse
+from flux_sdk.custom_object_sync.data_models.models import (
+    DomainObject,
+    PushObjectRequest,
+    PushObjectResponse,
+    ValidationResponse,
+)
 
 
 class CustomObjectOutwardSync(ABC):
@@ -14,36 +18,40 @@ class CustomObjectOutwardSync(ABC):
 
     @staticmethod
     @abstractmethod
-    def push_object(payload: dict[str, Any]) -> PublishObjectResponse:
+    def push_object(push_object_request: PushObjectRequest) -> PushObjectResponse:
         """
         Publish a domain event to the vendor.
         Here app developers can implement the logic to send the event to the appropriate vendor or service.
         flux-proxy session will be used to publish the event.
         Args:
-            payload (dict): The payload of domain event to be published.
+            push_object_request (PushObjectRequest): The payload of domain event to be published.
+
+        Returns:
+            PushObjectResponse: The response containing the status of the push operation.
+            PushObjectResponse is a Pydantic model that contains the response data.
         """
 
     @staticmethod
     @abstractmethod
-    def transform_object(object: DomainObject) -> dict[str, Any]:
+    def transform_object(domain_object: DomainObject) -> PushObjectRequest:
         """
         Transform a domain event before publishing it.
 
         Args:
-            event (DomainObject): The domain event to be transformed.
+            domain_object (DomainObject): The domain event to be transformed.
 
         Returns:
-            dict[str, Any]: The transformed event data ready for publishing.
+            PushObjectRequest: The transformed event data ready for publishing.
         """
 
     @staticmethod
     @abstractmethod
-    def validate_object(object: DomainObject) -> ValidationResponse:
+    def validate_object(domain_object: DomainObject) -> ValidationResponse:
         """
         Validate a domain event.
 
         Args:
-            event (dict): The domain event to be validated.
+            domain_object (DomainObject): The domain object to be validated.
 
         Returns:
             ValidationResponse: The response containing validation results.
