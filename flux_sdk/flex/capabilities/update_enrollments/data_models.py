@@ -12,6 +12,12 @@ class BenefitType(Enum):
     COMMUTER = 2
 
 
+# Enum which indicates if EmployeeEnrollment is being used as Participant record or Enrollment record
+class RecordType(Enum):
+    Participant = 0
+    Enrollment = 1
+
+
 # specify the family enrollment status for HSA
 class HSAFamilyType(Enum):
     UNSPECIFIED = 0
@@ -82,3 +88,4 @@ class EmployeeEnrollment:
     hsa_annual_limit_type: Optional[str]
     record_sent_timestamp: Optional[date]
     enrollment_state: Optional[str]
+    record_type = Optional[RecordType]
