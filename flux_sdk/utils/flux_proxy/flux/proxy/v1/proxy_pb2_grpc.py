@@ -29,26 +29,6 @@ class FluxProxyServiceStub(object):
                 request_serializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.EndSessionRequest.SerializeToString,
                 response_deserializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.EndSessionResponse.FromString,
                 )
-        self.NewCredential = channel.unary_unary(
-                '/flux.proxy.v1.FluxProxyService/NewCredential',
-                request_serializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.NewCredentialRequest.SerializeToString,
-                response_deserializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.NewCredentialResponse.FromString,
-                )
-        self.CheckCredential = channel.unary_unary(
-                '/flux.proxy.v1.FluxProxyService/CheckCredential',
-                request_serializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.CheckCredentialRequest.SerializeToString,
-                response_deserializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.CheckCredentialResponse.FromString,
-                )
-        self.DeleteCredential = channel.unary_unary(
-                '/flux.proxy.v1.FluxProxyService/DeleteCredential',
-                request_serializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.DeleteCredentialRequest.SerializeToString,
-                response_deserializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.DeleteCredentialResponse.FromString,
-                )
-        self.UpdateCredential = channel.unary_unary(
-                '/flux.proxy.v1.FluxProxyService/UpdateCredential',
-                request_serializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.UpdateCredentialRequest.SerializeToString,
-                response_deserializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.UpdateCredentialResponse.FromString,
-                )
 
 
 class FluxProxyServiceServicer(object):
@@ -74,32 +54,6 @@ class FluxProxyServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def NewCredential(self, request, context):
-        """Credential management.  Credentials are never exposed once they have been stored in the proxy.
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def CheckCredential(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DeleteCredential(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def UpdateCredential(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-
 def add_FluxProxyServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetCACertificates': grpc.unary_unary_rpc_method_handler(
@@ -116,27 +70,7 @@ def add_FluxProxyServiceServicer_to_server(servicer, server):
                     servicer.EndSession,
                     request_deserializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.EndSessionRequest.FromString,
                     response_serializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.EndSessionResponse.SerializeToString,
-            ),
-            'NewCredential': grpc.unary_unary_rpc_method_handler(
-                    servicer.NewCredential,
-                    request_deserializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.NewCredentialRequest.FromString,
-                    response_serializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.NewCredentialResponse.SerializeToString,
-            ),
-            'CheckCredential': grpc.unary_unary_rpc_method_handler(
-                    servicer.CheckCredential,
-                    request_deserializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.CheckCredentialRequest.FromString,
-                    response_serializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.CheckCredentialResponse.SerializeToString,
-            ),
-            'DeleteCredential': grpc.unary_unary_rpc_method_handler(
-                    servicer.DeleteCredential,
-                    request_deserializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.DeleteCredentialRequest.FromString,
-                    response_serializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.DeleteCredentialResponse.SerializeToString,
-            ),
-            'UpdateCredential': grpc.unary_unary_rpc_method_handler(
-                    servicer.UpdateCredential,
-                    request_deserializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.UpdateCredentialRequest.FromString,
-                    response_serializer=flux_dot_proxy_dot_v1_dot_proxy__pb2.UpdateCredentialResponse.SerializeToString,
-            ),
+            )
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'flux.proxy.v1.FluxProxyService', rpc_method_handlers)
@@ -195,73 +129,5 @@ class FluxProxyService(object):
         return grpc.experimental.unary_unary(request, target, '/flux.proxy.v1.FluxProxyService/EndSession',
             flux_dot_proxy_dot_v1_dot_proxy__pb2.EndSessionRequest.SerializeToString,
             flux_dot_proxy_dot_v1_dot_proxy__pb2.EndSessionResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def NewCredential(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/flux.proxy.v1.FluxProxyService/NewCredential',
-            flux_dot_proxy_dot_v1_dot_proxy__pb2.NewCredentialRequest.SerializeToString,
-            flux_dot_proxy_dot_v1_dot_proxy__pb2.NewCredentialResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def CheckCredential(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/flux.proxy.v1.FluxProxyService/CheckCredential',
-            flux_dot_proxy_dot_v1_dot_proxy__pb2.CheckCredentialRequest.SerializeToString,
-            flux_dot_proxy_dot_v1_dot_proxy__pb2.CheckCredentialResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def DeleteCredential(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/flux.proxy.v1.FluxProxyService/DeleteCredential',
-            flux_dot_proxy_dot_v1_dot_proxy__pb2.DeleteCredentialRequest.SerializeToString,
-            flux_dot_proxy_dot_v1_dot_proxy__pb2.DeleteCredentialResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def UpdateCredential(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/flux.proxy.v1.FluxProxyService/UpdateCredential',
-            flux_dot_proxy_dot_v1_dot_proxy__pb2.UpdateCredentialRequest.SerializeToString,
-            flux_dot_proxy_dot_v1_dot_proxy__pb2.UpdateCredentialResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
